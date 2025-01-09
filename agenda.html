@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Agenda</title>
+  <title>Mes Sites</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
       margin: 0;
-      padding: 0;
     }
 
     header {
@@ -20,7 +16,7 @@
       text-align: center;
     }
 
-    h1 {
+    header h1 {
       color: #fff;
       font-size: 36px;
       margin: 0;
@@ -40,21 +36,40 @@
       color: #fff;
       font-size: 14px;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .reminder div {
+
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Agenda</h1>
-  </header>
-
-  
+<header>
+  <h1>Calendar</h1>
+</header> 
 <main>
-  
+ 
+  <div class="reminder">
+    
+  </div>
+ 
+ 
 </main>
-
-  
-  <footer>
-    <p>&copy; 2024 Quantix. Tous droits réservés.</p>
-  </footer>
+<footer>
+  <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
+</footer>
 </body>
+<script>
+// change footer date
+const d = new Date();
+let year = d.getFullYear();
+document.getElementById("date").innerHTML = year;
+</script>
 </html>
