@@ -12,12 +12,19 @@ class tag {
 		this.bgColor = bgColor;
 	}
 }
-reminderArr = [];
+reminderArr = [
+	new myReminderClass(
+      "As you can see, this is a test",
+      "A test",
+      "Testing",
+      "Tests"
+    )
+];
 tagArr = [];
 
 reminderArr.forEach(function(element, index) {
 	let reminder = document.createElement("div");
-	reminder.class = "reminder";
+	reminder.className = "reminder";
 	reminder.id = `remDiv${index}`;
 	document.body.appendChild(reminder);
 	const elem_attributes = {
@@ -31,17 +38,22 @@ reminderArr.forEach(function(element, index) {
 		},
 		tagged: {
 			htmlType: "a",
-			elemContent: element.tag
+			elemContent: element.tag.content,
+            elemBgColor: element.tag.bgColor
 		},
 		text: {
 			htmlType: "p",
 			elemContent: element.content
 		}
 	}; 
-	Object.keys(myDict).forEach(function(element){
+	Object.keys(elem_attributes).forEach(function(element){
 		let elem = document.createElement(elem_attributes.element.htmlType);
-		elem.class = "reminder";
+        elem.innerHTML = elem_attributes.element.elemContent;
+		elem.className = "reminder";
 		elem.id = `rem${elem_attributes.element.htmlType}${index}`;
+        if (elem_attributes.element.htmlType === "a") {
+        	elem.style.background-color = elem_attributes.element.elemBgColor;
+        }
 		document.getElementById(`remDiv${index}`).appendChild(elem);
 	});
 });
