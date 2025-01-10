@@ -57,7 +57,10 @@
   <h1>Calendar</h1>
 </header> 
 <main id="main">
+ 
 
+ 
+ 
 </main>
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
@@ -68,7 +71,7 @@
 const d = new Date();
 let year = d.getFullYear();
 document.getElementById("date").innerHTML = year;
-
+</script>
   
 <script>
 function adjustColorBrightness(color, percent) {
@@ -135,11 +138,11 @@ reminderArr.forEach(function(element, index) {
             elemBgColor: element.tag.bgColor
         },
         date: {
-            htmlType: "p",
+            htmlType: "h3",
             elemContent: "For : " + element.date.toLocaleDateString('en-GB')
         },
         topic: {
-            htmlType: "p",
+            htmlType: "h2",
             elemContent: element.subject.name // Corrected to display subject name
         },
         text: {
@@ -158,6 +161,5 @@ reminderArr.forEach(function(element, index) {
         document.getElementById(`remDiv${index}`).appendChild(elem);
     });
 });
-</script>
 </script>
 </html>
