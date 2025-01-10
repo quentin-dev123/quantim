@@ -2,8 +2,6 @@
 <html>
 <head>
   <title>Agenda</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
   <style>
     body {
       margin: 0;
@@ -27,7 +25,6 @@
     main {
       background-color: #1d2a35;
       padding: 20px;
-      text-align: center;
       min-height: calc(100vh - 225px);
     }
 
@@ -38,57 +35,33 @@
       color: #fff;
       font-size: 14px;
     }
-    
-    
-    
     .reminder-container {
-        padding-top: 15px;
-        margin-left: 2.5vw;
-        margin-right: 2.5vw;
-        border-radius: 15px;
-        display: inline-block;
-        width: 40vw;
-        height: 102px;
-        overflow: auto;
-        color: #fff
-    }
-    
-    
-    .reminder-tag {
-        padding: 7px;
-        padding-right: 10px;
-        padding-left: 10px;
-        border-radius: 20px;
-        font-size: 13px;
-    }
-    
-    .reminder-date {
-    	font-family: "Anaheim", sans-serif;
-        font-size: 13px;
-    }
-    
-    .reminder-title {
-    	font-family: "Architects Daughter", sans-serif;
-        font-size: 23px;
-        font-weight: bold;
-        line-height: 0.1;
-    }
-    
-    .reminder-content {
-    
-    }
+	padding: 10px;
+    border-radius: 41px;
+    display: inline-block;
+    width: 200px;
+}
+.remindera {
+	display: inline-block;
+    padding: 3px;
+    border-radius: 5px;
+}
+.reminderh3 {
+	display: inline-block;
+    padding-left: 10px;
+}
   </style>
 </head>
 <body>
 <header>
-  <h1>Calendar</h1>
+  <h1>Agenda personnel</h1>
 </header> 
-
 <main id="main">
+ 
 
-
+ 
+ 
 </main>
-
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
 </footer>
@@ -137,70 +110,62 @@ class mySubjectClass {
 }
 
 const tagArr = {
-    test: new tag("Urgent", "red"),
-    test2: new tag("Urgent2", "green"),
+    test: new tag("Urgent", "red")
 };
 const subjectArr = {
-	testing: new mySubjectClass("Coding", "green"),
-    testing2: new mySubjectClass("Francais", "blue"),
+	testing: new mySubjectClass("Coding", "blue")
 };
 
 const reminderArr = [
     new myReminderClass(
-        "Finir de développer ce site !",
+        "Finir de développer ce site ! C'est important !",
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
-    ),
-    
-    new myReminderClass(
-        "Finir de développer ce site !2",
-        subjectArr.testing2,
-        tagArr.test2,
-        new Date("2024-01-25")
-    ),
+    )
 ];
 
 reminderArr.forEach(function(element, index) {
     let reminder = document.createElement("div");
-    reminder.className = "reminder-container";
-    reminder.style.backgroundColor = element.subject.bgColor;
+    reminder.className = "reminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
     document.getElementById("main").appendChild(reminder);
-    
-    
     const elem_attributes = {
         tagged: {
             htmlType: "a",
-            htmlClass: "tag",
             elemContent: element.tag.content,
             elemBgColor: element.tag.bgColor
         },
         date: {
-            htmlType: "nobr",
-            htmlClass: "date",
-            elemContent: " Pour : " + element.date.toLocaleDateString('en-GB')
+            htmlType: "h3",
+            elemContent: "For : " + element.date.toLocaleDateString('en-GB')
         },
         topic: {
-            htmlType: "p",
-            htmlClass: "title",
+            htmlType: "h2",
             elemContent: element.subject.name // Corrected to display subject name
         },
         text: {
             htmlType: "p",
-            htmlClass: "content",
             elemContent: element.content
         }
     }; 
     Object.keys(elem_attributes).forEach(function(attr){
         let elem = document.createElement(elem_attributes[attr].htmlType);
         elem.innerHTML = elem_attributes[attr].elemContent;
-        elem.className = `reminder-${elem_attributes[attr].htmlClass}`; // Made class more specific
+        elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
         elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
         if (elem_attributes[attr].htmlType === "a") {
-            elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+            elem.style.backgroundColor = 			elem_attributes[attr].elemBgColor;
+            document.getElementById(`remDiv${index}`).appendChild(elem);
+        } else if (elem_attributes[attr].htmlType === "h2") {
+        	center = document.createElement("center");
+            center.id = `remCenter${index}`;
+            document.getElementById(`remDiv${index}`).appendChild(center);
+       		document.getElementById(`remCenter${index}`).appendChild(elem);
+        } else {
+        	document.getElementById(`remDiv${index}`).appendChild(elem);
         }
-        reminder.appendChild(elem);
     });
 });
 </script>
