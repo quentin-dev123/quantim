@@ -1,4 +1,4 @@
-bg = {
+const bg = {
   Français: "#004164",
   SVT: "#006412ff",
   Maths: "#004164",
@@ -16,4 +16,12 @@ function remove_space_hyphen(text) {
   text = text.replaceAll(" ", "");
   text = text.replaceAll("-", "");
   return text
+}
+
+function getcolor(subject) {
+  subject = remove_space_hyphen(subject)
+  if (subject in bg) {
+    return bg[subject]
+  } else {
+    return bg["Autre"]
 }
