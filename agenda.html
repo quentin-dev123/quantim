@@ -56,13 +56,8 @@
 <header>
   <h1>Calendar</h1>
 </header> 
-<main>
- 
-  <div class="reminder">
-    
-  </div>
- 
- 
+<main id="main">
+
 </main>
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
@@ -132,7 +127,7 @@ reminderArr.forEach(function(element, index) {
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
-    document.body.appendChild(reminder);
+    document.getElementById("main").appendChild(reminder);
     const elem_attributes = {
         tagged: {
             htmlType: "a",
