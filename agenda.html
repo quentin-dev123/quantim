@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mes Sites</title>
+  <title>Agenda</title>
   <style>
     body {
       margin: 0;
@@ -140,11 +140,11 @@ reminderArr.forEach(function(element, index) {
             elemBgColor: element.tag.bgColor
         },
         date: {
-            htmlType: "h3",
+            htmlType: "p",
             elemContent: "For : " + element.date.toLocaleDateString('en-GB')
         },
         topic: {
-            htmlType: "h2",
+            htmlType: "p",
             elemContent: element.subject.name // Corrected to display subject name
         },
         text: {
