@@ -50,7 +50,27 @@
         width: 40vw;
         height: 102px;
         overflow: auto;
-        color: #fff
+        color: #fff;
+        
+        /* Zoom */
+        transform: matrix3d( 
+          1, 0, 1, 0, 
+          0, 1, 1, 0, 
+          1, 1, 0, 0, 
+          0, 0, 0, 1 
+        );
+        transition: transform 1s;
+    }
+    
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus {
+      transform: rotate3d(1, 1, 1, 0deg)
+      matrix3d(
+      1, 0, 1, 0,
+      0, 1, 1, 0,
+      1, 1, 0, 0,
+      0, 0, 0, 0.95);
     }
     
     
