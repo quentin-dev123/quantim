@@ -38,11 +38,8 @@
       font-size: 14px;
     }
     
-.reminderh3 {
-	display: inline-block;
-    padding-left: 10px;
-}
-.reminder-container {
+
+.reminder-container { 
         padding: 10px;
         margin-left: 2.5vw;
         border-radius: 15px;
@@ -50,13 +47,32 @@
         max-width: calc(100% - 20px); 
         width: 250px;
         margin-right: 20px;
+        margin-bottom: 20px;
         height: 115px;
         overflow-y: auto;
-        color: #fff
-}
+        color: #fff;
+
+transform: matrix3d( 
+          1, 0, 1, 0, 
+          0, 1, 1, 0, 
+          1, 1, 0, 0, 
+          0, 0, 0, 1 
+        );
+        transition: transform 1s;
+    }
     
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus {
+      transform: rotate3d(1, 1, 1, 0deg)
+      matrix3d(
+      1, 0, 1, 0,
+      0, 1, 1, 0,
+      1, 1, 0, 0,
+      0, 0, 0, 0.95);
+    }
     
-    .remindera {
+    .remindera { /*TAG*/ 
         padding: 7px;
         padding-right: 10px;
         padding-left: 10px;
@@ -64,13 +80,13 @@
         font-size: 13px;
     }
     
-    .remindernobr {
+    .remindernobr { /*DATE*/ 
     	font-family: "Anaheim", sans-serif;
         font-size: 13px;
         padding-left: 10px;
     }
     
-    .reminderh2 {
+    .reminderh2 { /*TOPIC*/ 
     	font-family: "Architects Daughter", sans-serif;
         font-size: 23px;
         font-weight: bold;
@@ -148,7 +164,13 @@ const reminderArr = [
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
-    )
+    ),
+    new myReminderClass(
+        "Finir de développer ce site ! C'est important !",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
 ];
 
 reminderArr.forEach(function(element, index) {
