@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Agenda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->  
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
   <style>
@@ -28,6 +29,7 @@
       background-color: #1d2a35;
       padding: 20px;
       min-height: calc(100vh - 225px);
+      text-align: center;
     }
 
     footer {
@@ -39,20 +41,40 @@
     }
     
 
-.reminder-container { 
-        padding: 10px;
+	.reminder-container { 
+        /* For mobile phones: */
+        width: 80vw;
         margin-left: 2.5vw;
+        margin-right: 2.5vw;
+        
+        @media only screen and (min-width: 400px) {
+          /* For tablets: */
+          width: 40vw;
+        }
+        
+        @media only screen and (min-width: 730px) {
+          /* For computers: */
+          width: 28vw;
+          margin-left: 1.75vw;
+          margin-right: 1.75vw;
+        }
+        
+        @media only screen and (min-width: 950px) {
+          /* For computers: */
+          width: 20vw;
+          margin-left: 1vw;
+          margin-right: 1vw;
+        }
+        
+        margin-bottom: 15px;
+        padding-top: 15px;
         border-radius: 15px;
         display: inline-block;
-        max-width: calc(100% - 20px); 
-        width: 250px;
-        margin-right: 20px;
-        margin-bottom: 20px;
-        height: 115px;
-        overflow-y: auto;
+        height: 102px;
+        overflow: auto;
         color: #fff;
 
-transform: matrix3d( 
+		transform: matrix3d( 
           1, 0, 1, 0, 
           0, 1, 1, 0, 
           1, 1, 0, 0, 
@@ -152,23 +174,43 @@ class mySubjectClass {
 }
 
 const tagArr = {
-    test: new tag("Urgent", "red")
+    test: new tag("Urgent", "red"),
+    test2: new tag("Important", "green"),
 };
 const subjectArr = {
-	testing: new mySubjectClass("Coding", "#0A79BC")
+	testing: new mySubjectClass("Mathématiques", "#640000ff"),
+    testing2: new mySubjectClass("Français", "#004164"),
 };
 
 const reminderArr = [
     new myReminderClass(
-        "Finir de développer ce site ! C'est important !",
+        "Apporter ses affaires de géométrie",
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
     ),
+    
     new myReminderClass(
-        "Finir de développer ce site ! C'est important !",
-        subjectArr.testing,
-        tagArr.test,
+        "Lire le livre",
+        subjectArr.testing2,
+        tagArr.test2,
+        new Date("2024-01-25")
+    ),
+    new myReminderClass(
+        "Lire le livre",
+        subjectArr.testing2,
+        tagArr.test2,
+        new Date("2024-01-25")
+    ),new myReminderClass(
+        "Lire le livre",
+        subjectArr.testing2,
+        tagArr.test2,
+        new Date("2024-01-25")
+    ),
+    new myReminderClass(
+        "Lire le livre",
+        subjectArr.testing2,
+        tagArr.test2,
         new Date("2024-01-25")
     ),
 ];
