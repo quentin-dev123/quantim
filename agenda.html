@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Agenda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
   <style>
     body {
@@ -39,33 +40,33 @@
       color: #fff;
       font-size: 14px;
     }
-    
 
-	.reminder-container { 
+
+	.reminder-container {
         /* For mobile phones: */
         width: 80vw;
         margin-left: 2.5vw;
         margin-right: 2.5vw;
-        
+
         @media only screen and (min-width: 400px) {
           /* For tablets: */
           width: 40vw;
         }
-        
+
         @media only screen and (min-width: 730px) {
           /* For computers: */
           width: 28vw;
           margin-left: 1.75vw;
           margin-right: 1.75vw;
         }
-        
+
         @media only screen and (min-width: 950px) {
           /* For computers: */
           width: 20vw;
           margin-left: 1vw;
           margin-right: 1vw;
         }
-        
+
         margin-bottom: 15px;
         padding-top: 15px;
         border-radius: 15px;
@@ -74,15 +75,15 @@
         overflow: auto;
         color: #fff;
 
-		transform: matrix3d( 
-          1, 0, 1, 0, 
-          0, 1, 1, 0, 
-          1, 1, 0, 0, 
-          0, 0, 0, 1 
+		transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
         );
         transition: transform 1s;
     }
-    
+
     /* Hover = Zoom */
     .reminder-container:hover,
     .reminder-container:focus {
@@ -93,22 +94,22 @@
       1, 1, 0, 0,
       0, 0, 0, 0.95);
     }
-    
-    .remindera { /*TAG*/ 
+
+    .remindera { /*TAG*/
         padding: 7px;
         padding-right: 10px;
         padding-left: 10px;
         border-radius: 20px;
         font-size: 13px;
     }
-    
-    .remindernobr { /*DATE*/ 
+
+    .remindernobr { /*DATE*/
     	font-family: "Anaheim", sans-serif;
         font-size: 13px;
         padding-left: 10px;
     }
-    
-    .reminderh2 { /*TOPIC*/ 
+
+    .reminderh2 { /*TOPIC*/
     	font-family: "Architects Daughter", sans-serif;
         font-size: 23px;
         font-weight: bold;
@@ -119,12 +120,12 @@
 <body>
 <header>
   <h1>Agenda personnel</h1>
-</header> 
+</header>
 <main id="main">
- 
 
- 
- 
+
+
+
 </main>
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
@@ -136,7 +137,7 @@ const d = new Date();
 let year = d.getFullYear();
 document.getElementById("date").innerHTML = year;
 </script>
-  
+
 <script>
 function adjustColorBrightness(color, percent) {
     let num = parseInt(color.slice(1), 16);
@@ -221,7 +222,7 @@ reminderArr.forEach(function(element, index) {
             htmlType: "p",
             elemContent: element.content
         }
-    }; 
+    };
     Object.keys(elem_attributes).forEach(function(attr){
         let elem = document.createElement(elem_attributes[attr].htmlType);
         elem.innerHTML = elem_attributes[attr].elemContent;
@@ -231,8 +232,8 @@ reminderArr.forEach(function(element, index) {
             elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
         } else if (elem_attributes[attr].htmlType === "h2") {
             elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
-        } 
-        document.getElementById(`remDiv${index}`).appendChild(elem);
+        }
+        reminder.appendChild(elem);
     });
 });
 remHTMLcontainers.forEach(function(div){
