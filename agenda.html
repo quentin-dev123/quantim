@@ -174,53 +174,35 @@ class mySubjectClass {
 }
 
 const tagArr = {
-    test: new tag("Urgent", "red"),
-    test2: new tag("Important", "green"),
+    test: new tag("Urgent", "red")
 };
 const subjectArr = {
-	testing: new mySubjectClass("Mathématiques", "#640000ff"),
-    testing2: new mySubjectClass("Français", "#004164"),
+	testing: new mySubjectClass("Coding", "#0A79BC")
 };
 
 const reminderArr = [
     new myReminderClass(
-        "Apporter ses affaires de géométrie",
+        "Finir de développer ce site ! C'est important !",
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
     ),
-    
     new myReminderClass(
-        "Lire le livre",
-        subjectArr.testing2,
-        tagArr.test2,
-        new Date("2024-01-25")
-    ),
-    new myReminderClass(
-        "Lire le livre",
-        subjectArr.testing2,
-        tagArr.test2,
-        new Date("2024-01-25")
-    ),new myReminderClass(
-        "Lire le livre",
-        subjectArr.testing2,
-        tagArr.test2,
-        new Date("2024-01-25")
-    ),
-    new myReminderClass(
-        "Lire le livre",
-        subjectArr.testing2,
-        tagArr.test2,
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
         new Date("2024-01-25")
     ),
 ];
+
+const remHTMLcontainers = []; // Array for all reminder Divs before being added
 
 reminderArr.forEach(function(element, index) {
     let reminder = document.createElement("div");
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
-    document.getElementById("main").appendChild(reminder);
+    remHTMLcontainers.push(reminder);
     const elem_attributes = {
         tagged: {
             htmlType: "a",
@@ -247,17 +229,14 @@ reminderArr.forEach(function(element, index) {
         elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
         if (elem_attributes[attr].htmlType === "a") {
             elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
-            document.getElementById(`remDiv${index}`).appendChild(elem);
         } else if (elem_attributes[attr].htmlType === "h2") {
-        	center = document.createElement("center");
-            center.id = `remCenter${index}`;
             elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
-            document.getElementById(`remDiv${index}`).appendChild(center);
-       		document.getElementById(`remCenter${index}`).appendChild(elem);
-        } else {
-        	document.getElementById(`remDiv${index}`).appendChild(elem);
-        }
+        } 
+        document.getElementById(`remDiv${index}`).appendChild(elem);
     });
+});
+remHTMLcontainers.forEach(function(div){
+	document.getElementById("main").appendChild(div);
 });
 </script>
 </html>
