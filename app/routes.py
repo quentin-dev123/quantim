@@ -13,7 +13,8 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Hello, World!"
+    print(request.args)
+    return render_template('index.html', title="Agenda Personnel", user="test")
 
 #------------------------------------------------------
 # WEB
