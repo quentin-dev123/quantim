@@ -6,7 +6,7 @@ from flask import jsonify, abort, request, render_template, redirect, current_ap
 from git import Repo
 from . import helpers, create_app
 
-#from .models import Tag, Reminder
+from .models import Tag, Reminder
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
@@ -15,17 +15,17 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 @app.route('/')
 @app.route('/index')
 def index():
-    #reminders = Reminder.query.all()
+    reminders = Reminder.query.all()
     return render_template('index.html', title="Agenda Personnel", user="test", reminders=reminders)
 
 #------------------------------------------------------
 # API
 #--- Claim ------------
-'''@app.route("/api/reminder/list", methods=["GET"])
+@app.route("/api/reminder/list", methods=["GET"])
 def get_reminders():
     reminders = Reminder.query.all()
     return jsonify([r.to_json() for r in reminders])
-'''
+
 
 #------------------------------------------------------
 # Auto deploy
