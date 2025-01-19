@@ -9,7 +9,7 @@ from . import helpers, create_app, db
 
 from .models import Tag, Reminder, Users
 
-#from .models import Tag, Reminder
+from .models import Tag, Reminder
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
