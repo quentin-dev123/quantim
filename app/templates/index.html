@@ -47,25 +47,21 @@
     }
     
     const tagArr = {
-        test: new tag("Urgent", "red")
+        Urgent: new tag("Urgent", "red")
     };
     const subjectArr = {
         testing: new mySubjectClass("Coding", "#0A79BC")
     };
     
     const reminderArr = [
+    {% for r in reminders %}
         new myReminderClass(
-            "Finir de développer ce site ! C'est important !",
-            subjectArr.testing,
-            tagArr.test,
-            new Date("2024-01-25")
+            "{{ r['content'] }}",
+            new mySubjectClass("{{ r['subject'] }}", "#0A79BC"),
+            tagArr.{{ r['tag'].value }},
+            new Date("{{ r['date'].strftime('%Y-%m-%d') }}")
         ),
-        new myReminderClass(
-            "Code!",
-            subjectArr.testing,
-            tagArr.test,
-            new Date("2024-01-25")
-        ),
+    {% endfor %}
     ];
     
     const remHTMLcontainers = []; // Array for all reminder Divs before being added
