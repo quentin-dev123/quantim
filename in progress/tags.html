@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>The optgroup element</h1>
+
+<p>
+⏰ Longue durée
+⚡ Tâche rapide
+👥 Travail de groupe
+🔧 Préparation requise
+📖 Révision
+📚 Lecture
+</p>
+
+<form action="/action_page.php">
+  <label for="cars">Choisi une importance : <label>
+  <select  style="background-color: #42ADFF" name="cars" id="cars" required>
+      <option value="Urgent" style="background-color: red">Urgent</option>
+      <option value="Very Important" style="background-color: orange">Très Important</option>
+      <option value="Important" style="background-color: yellow">Important</option>
+      <option value="Normal" selected style="background-color: #42ADFF">Normal</option>
+      <option value="Optionel" style="background-color: #2BFF00">Optionel</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+
+
+<form action="/action_page.php">
+  <label for="cars">Choisi un tag : <label>
+  <select name="cars" id="cars">
+      <option value="aucun" selected></option>
+      <option value="Longue durée">⏰ Longue durée</option>
+      <option value="Tâche rapide">⚡ Tâche rapide</option>
+      <option value="Travail de groupe">👥 Travail de groupe</option>
+      <option value="Préparation requise">🔧 Préparation requise</option>
+      <option value="Révision">📖 Révision</option>
+      <option value="Lecture">📚 Lecture</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+ 
+</body>
+<javascript>
+</html>
