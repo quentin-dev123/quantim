@@ -32,6 +32,12 @@
       min-height: calc(100vh - 225px);
       text-align: center;
     }
+    
+    
+    .add-dev-div {
+    	background-color: #1d2a35;
+        text-align: center;
+    }
 
     footer {
       background-color: #171921;
@@ -115,6 +121,36 @@
         font-weight: bold;
         line-height: 0.1;
     }
+    
+    
+    .add-dev-button {
+    	background-color: #04AA6D;
+        color: white;
+        padding: 14px 20px;
+        border: none;
+        cursor: pointer;
+        width: 90%;
+        opacity: 0.9;
+        border-radius: 10px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: zoom 1s;
+      }
+
+      .add-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+    }
   </style>
 </head>
 <body>
@@ -127,6 +163,9 @@
 
 
 </main>
+<div class="add-dev-div">
+<button class="add-dev-button" id="">Ajouter un devoir/rappel</button>
+</div>
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
 </footer>
