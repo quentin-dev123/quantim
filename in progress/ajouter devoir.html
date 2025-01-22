@@ -21,7 +21,7 @@ input[type=text]:focus, input[type=date]:focus {
 }
 
 /* Set a style for all buttons */
-button {
+.button {
   background-color: #04AA6D;
   color: white;
   padding: 14px 20px;
@@ -32,7 +32,7 @@ button {
   opacity: 0.9;
 }
 
-button:hover {
+.button:hover {
   opacity:1;
 }
 
@@ -76,7 +76,7 @@ button:hover {
 }
 
 /* Style the horizontal ruler */
-hr {
+.hr {
   border: 1px solid #f1f1f1;
   margin-bottom: 25px;
 }
@@ -112,19 +112,16 @@ hr {
 }
 </style>
 <body>
-
-<h2>Modal Signup Form</h2>
-
-<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="button">Sign Up</button>
 
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-  <form class="modal-content" action="/action_page.php">
+  <form class="modal-content" action="#" onsubmit="onsubmit()">
     <div class="container">
     <div style="text-align: center">
       <h1>Ajouter un devoir / rappel</h1>
     </div>
-      <hr>
+      <hr class="hr">
       <label for="matière"><b>Matière / Titre</b></label>
       <input type="text" placeholder="Entrez la matière" name="matière" required>
       
@@ -156,8 +153,8 @@ hr {
   </select>
   
       <div class="clearfix">
-        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Annuler</button>
-        <button type="submit" class="signupbtn">Ajouter</button>
+        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn button">Annuler</button>
+        <button type="submit" class="signupbtn button">Ajouter</button>
       </div>
     </div>
   </form>
@@ -200,6 +197,5 @@ dateElm.min = year + '-' + month + '-' + day
       this.style.backgroundColor = selectedOption.style.backgroundColor;
         });
 </script>
-
 </body>
 </html>
