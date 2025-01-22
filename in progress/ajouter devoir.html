@@ -5,7 +5,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
 
 /* Full-width input fields */
-input[type=text], input[type=date] {
+input[type=text], input[type=date], select {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -134,9 +134,27 @@ hr {
       <label for="email"><b>Date</b></label>
       <input type="date" min="2025-01-01" name="date" id="date" required>
 
-	<label for="importance"><b>Importance</b></label>
-	<input type="radio" id="Important" name="importance" value="CSS" required>
-  <label for="css">CSS</label><br>
+	<label for="tag"><b>Tag</b><label>
+      <select style="background-color: #42ADFF" name="tag" id="tag" required>
+          <option value="Urgent" style="background-color: red" >Urgent</option>
+          <option value="Very Important" style="background-color: orange">Très Important</option>
+          <option value="Important" style="background-color: yellow">Important</option>
+          <option value="Normal" selected style="background-color: #42ADFF">Normal</option>
+          <option value="Optionel" style="background-color: #2BFF00">Optionel</option>
+      </select>
+      
+      
+  <label for="icon"><b>Icône</b><label>
+  <select name="icon" id="icon">
+      <option value="" selected>Aucun</option>
+      <option value="Longue durée">⏰ Longue durée</option>
+      <option value="Tâche rapide">⚡ Tâche rapide</option>
+      <option value="Travail de groupe">👥 Travail de groupe</option>
+      <option value="Préparation requise">🔧 Préparation requise</option>
+      <option value="Révision">📖 Révision</option>
+      <option value="Lecture">📚 Lecture</option>
+  </select>
+  
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Annuler</button>
         <button type="submit" class="signupbtn">Ajouter</button>
@@ -156,7 +174,7 @@ window.onclick = function(event) {
   }
 }
 
-
+// set min date to now
 var dateElm = document.getElementById('date');
 const d = new Date();
 const year = d.getFullYear();
@@ -166,6 +184,21 @@ const days = ['01','02','03','04','05','06','07','08','09','10','11','12','13','
 const day = days[d.getDate() - 1];
 
 dateElm.min = year + '-' + month + '-' + day
+
+
+
+
+// Change background color when selection changes
+      const select = document.getElementById('tag');
+
+    // Set initial background color
+    select.style.backgroundColor = select.options[select.selectedIndex].style.backgroundColor;
+
+    // Change background color when selection changes
+    select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      this.style.backgroundColor = selectedOption.style.backgroundColor;
+        });
 </script>
 
 </body>
