@@ -4,19 +4,11 @@
 
 <h1>The optgroup element</h1>
 
-<p>
-⏰ Longue durée
-⚡ Tâche rapide
-👥 Travail de groupe
-🔧 Préparation requise
-📖 Révision
-📚 Lecture
-</p>
 
 <form action="/action_page.php">
-  <label for="cars">Choisi une importance : <label>
-  <select  style="background-color: #42ADFF" name="cars" id="cars" required>
-      <option value="Urgent" style="background-color: red">Urgent</option>
+  <label for="importance">Choisi une importance : <label>
+  <select style="background-color: #42ADFF" name="importance" id="importance" required>
+      <option value="Urgent" style="background-color: red" >Urgent</option>
       <option value="Very Important" style="background-color: orange">Très Important</option>
       <option value="Important" style="background-color: yellow">Important</option>
       <option value="Normal" selected style="background-color: #42ADFF">Normal</option>
@@ -28,9 +20,9 @@
 
 
 <form action="/action_page.php">
-  <label for="cars">Choisi un tag : <label>
-  <select name="cars" id="cars">
-      <option value="aucun" selected></option>
+  <label for="tag">Choisi un tag : <label>
+  <select name="tag" id="tag">
+      <option value="" disabled selected>Sélectionner un tag</option>
       <option value="Longue durée">⏰ Longue durée</option>
       <option value="Tâche rapide">⚡ Tâche rapide</option>
       <option value="Travail de groupe">👥 Travail de groupe</option>
@@ -43,5 +35,17 @@
 </form>
  
 </body>
-<javascript>
+<script>
+// Chnage background color when selection changes
+      const select = document.getElementById('importance');
+
+    // Set initial background color
+    select.style.backgroundColor = select.options[select.selectedIndex].style.backgroundColor;
+
+    // Change background color when selection changes
+    select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      this.style.backgroundColor = selectedOption.style.backgroundColor;
+        });
+</script>
 </html>
