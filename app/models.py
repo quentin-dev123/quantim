@@ -1,5 +1,6 @@
 from . import db
 from enum import Enum
+from flask_login import UserMixin
 
 R_SUBJECT_MAX_SIZE=100
 R_CONTENT_MAX_SIZE=500
@@ -22,7 +23,11 @@ class Reminder(db.Model):
             'subject': self.subject,
             'content': self.content,
             'date': self.date.isoformat(),
-            'amount': self.amount,
-            'tag': self.tag,
+            'tag': self.tag
         }
-        return js
+        return js 
+
+class Users(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)

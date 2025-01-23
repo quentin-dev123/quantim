@@ -12,7 +12,7 @@
     }
 
     header {
-      background-image: url('https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg');
+      background-image: url('{% block header_bg_image %} {% endblock %}');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
