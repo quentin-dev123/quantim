@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% block title %} Accueuil {% endblock %}
 {% block header %} Accueuil {% endblock %}
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
@@ -6,12 +7,4 @@
 <a href="/login">Se connecter</a><br>
 Vous n'avez pas de compte ?<a href="/register">Enregistrez vous</a>
 </p>
-{% endblock %}
-{% block script %}
-
-    // change footer date
-    const d = new Date();
-    let year = d.getFullYear();
-    document.getElementById("date").innerHTML = year;
-
 {% endblock %}
