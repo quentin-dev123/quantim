@@ -131,4 +131,10 @@
 <script>
     {% block script %} {% endblock %}
 </script>
+<script>
+	// change footer date
+    const d = new Date();
+    let year = d.getFullYear();
+    document.getElementById("date").innerHTML = year;
+</script>
 </html>
