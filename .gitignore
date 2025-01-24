@@ -2,4 +2,4 @@
 __pycache__
 env.*.sh
 .env
-dev.sqlite
+*.sqlite
