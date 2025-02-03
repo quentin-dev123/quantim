@@ -16,6 +16,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DEV_DATABASE_URL")
+    SECRET_KEY = os.getenv("DEV_SECRET_KEY")
 
 class TestingConfig(Config):
     TESTING = True

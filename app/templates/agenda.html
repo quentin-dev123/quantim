@@ -2,9 +2,10 @@
 {% block title %} {{ title }} {% endblock %}
 {% block header %} {{ title }} {% endblock %}
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
+{% block content %}
+<a href="/logout" style="font-size: 100;color:azure; display: block;">log out</a>
+{% endblock %}
 {% block script %}
-
-    
 
     function adjustColorBrightness(color, percent) {
         let num = parseInt(color.slice(1), 16);
@@ -49,7 +50,7 @@
     };
     
     const reminderArr = [
-    {% for r in reminders %}
+    {% for r in reminders %} // Implementation naïve, utiliser fetch() (plus tard)
         new myReminderClass(
             "{{ r['content'] }}",
             new mySubjectClass("{{ r['subject'] }}", "#0A79BC"),
@@ -102,4 +103,4 @@
     remHTMLcontainers.forEach(function(div){
         document.getElementById("main").appendChild(div);
     });
-{% endblock %}
+    {% endblock %}
