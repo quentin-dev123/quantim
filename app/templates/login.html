@@ -1,0 +1,14 @@
+{% extends 'form.html' %}
+
+{% set title = "Se connecter" %}
+{% set previous_destination = "/home" %}
+{% set next_destination = "/agenda" %} 
+{% set fetch_destination = "/login" %}
+
+{% block form_content %} 
+<label for="email"><b> Entrer votre adresse email </b></label>
+<input type="email" placeholder="Email" name="email" autocomplete="username" required>
+<label for="password"><b> Entrer votre mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required>
+<p>Vous n'avez pas de compte ? <a href="register">S'inscrire</a> </p>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'form.html' %}
+
+{% set title = "Créer un rappel" %}
+{% set previous_destination = "/agenda" %}
+{% set next_destination = "/agenda" %} 
+{% set fetch_destination = "/api/reminder" %}
+{% set fetch_destination2 = "/api/tag" %}
+
+{% block form_content %} 
+<select class="form-select" name="subject" id="subject_select" onchange="changeSelect('subject', 'subject_select')">
+    <option value="" hidden disabled selected>Choisissez une matière</option>
+    <optgroup id="optionGroup" style="display: none;" label="Matières">
+    </optgroup>
+    <option value="new">+ Plus</option>
+</select>
+<select class="form-select" name="tag" id="tag_select" onchange="changeSelect('tag', 'tag_select')">
+    <option value="" hidden disabled selected>Choisissez un tag</option>
+    <optgroup id="optionGroup2" style="display: none;" label="Tags">
+    </optgroup>
+    <option value="new">+ Plus</option>
+</select>
+<label for="date"><b> Entrer la date pour ce rappel </b></label>
+<input type="date" name="date" id="datePicker" required>
+<br>
+<label for="content"><b> Entrer le contenu du rappel </b></label>
+<input type="text" placeholder="Contenu" name="content" required>
+{% endblock %}
+{% block other_content %} 
+<div id="tag_modal" class="my_modal" style="display: none;">
+    <span onclick="close_a_modal(tag_modal)" class="my_close" title="my_close Modal">&times;</span>
+    <form class="my_modal-content my_animate" id="form">
+      <div class="my_container">
+        <h1>Nouveau Tag</h1>
+        <hr>
+        <label for="content"><b> Choisissez le nom du Tag</b></label>
+        <input type="text" placeholder="Nom" name="content" required>
+        <br>
+        <label for="bg_color"><b> Choisissez la couleur associé </b></label>
+        <input type="color" name="bg_color" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+            </div>
+        <div class="my_clearfix">
+          <button type="button" onclick="close_a_modal(tag_modal)" class="my_cancelbtn">Annuler</button>
+          <button type="submit" class="my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="subject_modal" class="my_modal" style="display: none;">
+    <span onclick="close_a_modal(subject_modal)" class="my_close" title="my_close Modal">&times;</span>
+    <form class="my_modal-content my_animate" id="form">
+      <div class="my_container">
+        <h1>Nouvelle Matière</h1>
+        <hr>
+        <label for="content"><b> Entrez le nom de la matière</b></label>
+        <input type="text" placeholder="Nom" name="content" required>
+        <br>
+        <label for="bg_color"><b> Choisissez la couleur associé </b></label>
+        <input type="color" name="bg_color" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+            </div>
+        <div class="my_clearfix">
+          <button type="button" onclick="close_a_modal(subject_modal)" class="my_cancelbtn">Annuler</button>
+          <button type="submit" class="my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+
+{% block script %} 
+<script>
+
+const tag_modal = document.getElementById("tag_modal")
+const subject_modal = document.getElementById("subject_modal")
+
+function close_a_modal (the_modal) {
+    document.getElementById("subject_select").selectedIndex = 0;
+    document.getElementById("tag_select").selectedIndex = 0;
+    the_modal.style.display = "none";
+}
+
+const datePicker = document.getElementById("datePicker");
+datePicker.min = new Date().toISOString().split("T")[0];
+
+async function dynamic_options(fetch_route, optgroup_id){
+    let optionGroup = document.getElementById(optgroup_id);
+    let result = await fetch(fetch_route)
+    const response = await result.json();
+    if (response !== "") {
+        response.forEach(element => {
+            let option = document.createElement("option");
+            option.value = element.id;
+            option.innerHTML = element.content;
+            optionGroup.appendChild(option);
+        });
+        optionGroup.style.display = "block";
+    }
+};
+
+dynamic_options("/api/tag", "optionGroup2");
+dynamic_options("/api/subject", "optionGroup");
+
+function changeSelect(elem, elemId) {
+    if (document.getElementById(elemId).value ===  "new") {
+        switch (elem) {
+            case "tag" :
+                tag_modal.style.display = "block";
+                break;
+            case "subject" :
+                subject_modal.style.display = "block";
+                break;
+        }
+    }
+}
+
+async function secondary_modal(event, post_link, modalElem, optgroup_id) {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Get elements
+    const formElem = modalElem.querySelector("form")
+    const formChildren = formElem.elements;
+    const alertDiv = formElem.querySelector(".alert.alert-danger");
+    const alertText = alertDiv.querySelector("span")
+    const alertLink = alertDiv.querySelector("a");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    for (let i = 0; i < formChildren.length; i++) {
+        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+            	userAnswers[formChildren[i].name] = formChildren[i].value;
+        }
+    }
+
+    // Make a POST request to the server
+    let result = await fetch(post_link, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    const response = await result.json();
+    if (result.ok) {
+        console.log(response["content"])
+        let optionGroup = document.getElementById(optgroup_id);
+        let option = document.createElement("option");
+        option.value = response.id;
+        option.innerHTML = response.content;
+        optionGroup.appendChild(option);
+        close_a_modal(modalElem)
+    } else if (result.status === 400) {
+        alertText.innerHTML = response["message"];
+        if (response["link_display"]) {
+            alertLink.innerHTML = response["link_display"];
+            alertLink.href = response["link_href"];
+        } else {
+            alertLink.innerHTML = "";
+        }
+        alertDiv.style.display = "block";
+    }
+}
+
+tag_modal.querySelector("form").addEventListener("submit", function(event){
+    secondary_modal(event, "/api/tag", tag_modal, "tag_select");
+});
+subject_modal.querySelector("form").addEventListener("submit", function(event){
+    secondary_modal(event, "/api/subject", subject_modal, "subject_select");
+});
+</script>
+{% endblock %}
