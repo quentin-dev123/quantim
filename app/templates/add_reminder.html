@@ -170,9 +170,11 @@ async function secondary_modal(event, post_link, modalElem, optgroup_id) {
 
 tag_modal.querySelector("form").addEventListener("submit", function(event){
     secondary_modal(event, "/api/tag", tag_modal, "tag_select");
+    document.getElementById("Nom_tag").innerHTML = "";
 });
 subject_modal.querySelector("form").addEventListener("submit", function(event){
     secondary_modal(event, "/api/subject", subject_modal, "subject_select");
+    document.getElementById("Nom_subject").innerHTML = "";
 });
 </script>
 {% endblock %}
