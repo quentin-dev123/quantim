@@ -92,7 +92,7 @@ async function fetchData () {
                 if (elem_attributes[attr].htmlType === "a") {
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
-                    elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
+                    elem.style.color = adjustColorBrightness(subject.bgColor, 70);
                 }
                 reminder.appendChild(elem);
             });
