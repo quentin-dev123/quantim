@@ -209,7 +209,7 @@
 <body>
 <header>
   <h1>{% block header %} {% endblock %}</h1>
-  <span class="menu_icon" onclick="openNav()">&#9776;</span>
+  {% block menu_icon %} {% endblock %}
 </header>
 <main id="main">
     {% block content %} {% endblock %}
