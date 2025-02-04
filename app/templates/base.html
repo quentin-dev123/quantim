@@ -209,6 +209,7 @@
 <body>
 <header>
   <h1>{% block header %} {% endblock %}</h1>
+  <span class="menu_icon" onclick="openNav()">&#9776;</span>
 </header>
 <main id="main">
     {% block content %} {% endblock %}
@@ -216,6 +217,11 @@
 <footer>
   <p>&copy; <span id=date>2024-2025</span> Quantix. Tous droits réservés.</p>
 </footer>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">Home</a>
+  <a href="#">Log out</a>
+</div>
 </body>
 <script>
     {% block script %} {% endblock %}
