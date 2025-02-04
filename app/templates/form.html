@@ -196,7 +196,7 @@ select {
 var modal = document.getElementById('id01');
 
 function close_modal () {
-    location.replace("{{previous_destination}}"); 
+    history.back();
 }
 
 {% block modal_close_func %}
