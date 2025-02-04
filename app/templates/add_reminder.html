@@ -7,9 +7,9 @@
 {% set fetch_destination2 = "/api/tag" %}
 
 {% block form_content %} 
-<label for="subject_id"><b>Matière / Titre</b></label>
+<label for="subject_id"><b>Matière</b></label>
 <select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
-    <option value="" hidden disabled selected>Choisissez une matière ou un titre</option>
+    <option value="" hidden disabled selected>Choisissez une matière</option>
     <optgroup id="optionGroup" style="display: none;" label="Matières">
     </optgroup>
     <option value="new">+ Plus</option>
@@ -56,7 +56,7 @@
       <div class="my_container">
         <h1>Nouvelle Matière</h1>
         <hr>
-        <label for="content"><b>Matière / Titre</b></label>
+        <label for="content"><b>Matière</b></label>
         <input type="text" placeholder="Nom" name="content" id="Nom_matiere" required>
         <br>
         <label for="bg_color"><b>Couleur</b></label>
