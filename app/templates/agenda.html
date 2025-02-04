@@ -4,7 +4,6 @@
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
 {% block content %}
 <a href="/logout" style="font-size: 100;color:azure; display: block;">log out</a>
-<a class="add-dev-button" href="/add_reminder">+</a>
 {% endblock %}
 {% block script %}
 
@@ -48,11 +47,10 @@
             this.bgColor = bgColor;
         }
     }
-    
-    const tagArr =  loadRessource("/api/tag");
-    const subjectArr =  loadRessource("/api/subject");       
-    const reminderArr = loadRessource("/api/reminder");
-async function fetchReminders () {
+          
+async function fetchData () {
+    const tagArr = await loadRessource("/api/tag");
+    const subjectArr = await loadRessource("/api/subject"); 
     const reminderArr = await loadRessource("/api/reminder");
     
     if (Array.isArray(reminderArr)) {
@@ -60,15 +58,17 @@ async function fetchReminders () {
     
         reminderArr.forEach(function(element, index) {
             let reminder = document.createElement("div");
+            let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagtArr.find(myTag => myTag.id === element.tag_id);
             reminder.className = "reminder-container"; // Renamed for clarity
-            reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
+            reminder.style.backgroundColor = subject.bgColor; // Corrected typo
             reminder.id = `remDiv${index}`;
             remHTMLcontainers.push(reminder);
             const elem_attributes = {
                 tagged: {
                     htmlType: "a",
-                    elemContent: element.tag.content,
-                    elemBgColor: element.tag.bgColor
+                    elemContent: tag.content,
+                    elemBgColor: tag.bgColor
                 },
                 date: {
                     htmlType: "nobr",
@@ -76,7 +76,7 @@ async function fetchReminders () {
                 },
                 topic: {
                     htmlType: "h2",
-                    elemContent: element.subject.name // Corrected to display subject name
+                    elemContent: subject.content // Corrected to display subject name
                 },
                 text: {
                     htmlType: "p",
@@ -104,6 +104,6 @@ async function fetchReminders () {
     }
 }
 
-fetchReminders();
+fetchData();
     
     {% endblock %}
