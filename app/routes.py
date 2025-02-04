@@ -79,10 +79,13 @@ def subjects():
         user=current_user,
         user_id=current_user.id
     )
-    db.session.add(subject)
-    db.session.commit()
-    return jsonify({"message": "Subject created succesfully"}), 200
-
+    if db.session.query(Subject).filter_by(content=subject.content, user_id=current_user.id).first() is None:
+        db.session.add(subject)
+        db.session.commit()
+        return jsonify(subject.to_json()), 200
+    else:
+        return jsonify({"message": "Une matière avec le même nom existe déjà"}), 400
+        
 @app.route("/api/tag", methods=["GET", "POST"]) 
 @login_required
 def tags():
