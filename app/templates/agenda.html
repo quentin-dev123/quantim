@@ -20,6 +20,12 @@
     
         return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
     }
+
+    async function loadRessource (ressource_route) {
+            const ressource = await fetch(ressource_route);
+            const response = await ressource.json();
+            return response;
+    }
     
     class myReminderClass {
         constructor (content, subject, tag, date) {
@@ -48,7 +54,7 @@
     const subjectArr = {
         testing: new mySubjectClass("Coding", "#0A79BC")
     };
-    
+            
     const reminderArr = [
     {% for r in reminders %} // Implementation naïve, utiliser fetch() (plus tard)
         new myReminderClass(
