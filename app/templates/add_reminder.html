@@ -8,7 +8,7 @@
 
 {% block form_content %} 
 <label for="subject_id"><b>Matière / Titre</b></label>
-<select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')">
+<select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
     <option value="" hidden disabled selected>Choisissez une matière ou un titre</option>
     <optgroup id="optionGroup" style="display: none;" label="Matières">
     </optgroup>
