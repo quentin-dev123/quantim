@@ -7,12 +7,14 @@
 {% set fetch_destination2 = "/api/tag" %}
 
 {% block form_content %} 
+<label for="subject_id"><b>Matière / Titre</b></label>
 <select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')">
-    <option value="" hidden disabled selected>Choisissez une matière</option>
+    <option value="" hidden disabled selected>Choisissez une matière ou un titre</option>
     <optgroup id="optionGroup" style="display: none;" label="Matières">
     </optgroup>
     <option value="new">+ Plus</option>
 </select>
+<label for="tag_id"><b>Tag</b></label>
 <select class="form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')">
     <option value="" hidden disabled selected>Choisissez un tag</option>
     <optgroup id="optionGroup2" style="display: none;" label="Tags">
