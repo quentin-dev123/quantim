@@ -6,6 +6,7 @@ from flask import jsonify, json, abort, request, render_template, redirect, curr
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
 from . import helpers, create_app, db
+from datetime import datetime
 
 from .models import Tag, Subject, Reminder, User
 
@@ -55,7 +56,7 @@ def reminders():
     data = json.loads(request.data)
     reminder = Reminder(
         content=data.get("content"), 
-        date=data.get("date"),
+        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
         user=current_user,
         user_id=current_user.id,
         tag_id=data.get("tag_id"),
