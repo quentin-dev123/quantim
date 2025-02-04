@@ -48,23 +48,9 @@
         }
     }
     
-    const tagArr = {
-        Urgent: new tag("Urgent", "red")
-    };
-    const subjectArr = {
-        testing: new mySubjectClass("Coding", "#0A79BC")
-    };
-            
-    const reminderArr = [
-    {% for r in reminders %} // Implementation naïve, utiliser fetch() (plus tard)
-        new myReminderClass(
-            "{{ r['content'] }}",
-            new mySubjectClass("{{ r['subject'] }}", "#0A79BC"),
-            tagArr.{{ r['tag'].value }},
-            new Date("{{ r['date'].strftime('%Y-%m-%d') }}")
-        ),
-    {% endfor %}
-    ];
+    const tagArr =  loadRessource("/api/tag");
+    const subjectArr =  loadRessource("/api/subject");       
+    const reminderArr = loadRessource("/api/reminder");
     
     const remHTMLcontainers = []; // Array for all reminder Divs before being added
     
