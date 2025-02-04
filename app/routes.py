@@ -95,8 +95,7 @@ def tags():
         user=current_user,
         user_id=current_user.id
     )
-    other_tag = db.session.query(Tag).filter_by(content=tag.content, user_id=current_user.id).first()
-    if other_tag is None:
+    if db.session.query(Tag).filter_by(content=tag.content, user_id=current_user.id).first() is None:
         db.session.add(tag)
         db.session.commit()
         return jsonify(tag.to_json()), 200
