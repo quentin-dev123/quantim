@@ -215,12 +215,15 @@
     {% block content %} {% endblock %}
 </main>
 <footer>
-  <p>&copy; <span id=date>2024-2025</span> <a href="api">Quantix</a>. Tous droits réservés.</p>
+  <p>&copy; <span id=date>2024-2025</span> <span onclick="openNav()">Quantix</span>. Tous droits réservés.</p>
 </footer>
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="/home">Home</a>
   <a href="/logout">Log out</a>
+</div>
+<div id="mySecretSidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav2()">&times;</a>
   <a href="/api/reminder">Rappels</a>
   <a href="/api/subject">Matières</a>
   <a href="/api/tag">Tags</a>
@@ -242,6 +245,15 @@
 
    function closeNav() {
      document.getElementById("mySidenav").style.width = "0";
+   }
+	
+// Secret Sidenav menu
+   function openNav() {
+     document.getElementById("mySecretSidenav").style.width = "250px";
+   }
+
+   function closeNav() {
+     document.getElementById("mySecretSidenav").style.width = "0";
    }
 </script>
 </html>
