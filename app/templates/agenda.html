@@ -63,14 +63,14 @@ async function fetchData () {
             let tag = tagArr.find(myTag => myTag.id === element.tag_id);
             element.date = new Date(element.date)
             reminder.className = "reminder-container"; // Renamed for clarity
-            reminder.style.backgroundColor = subject.bgColor; // Corrected typo
+            reminder.style.backgroundColor = subject.bg_color; // Corrected typo
             reminder.id = `remDiv${index}`;
             remHTMLcontainers.push(reminder);
             const elem_attributes = {
                 tagged: {
                     htmlType: "a",
                     elemContent: tag.content,
-                    elemBgColor: tag.bgColor
+                    elemBgColor: tag.bg_color
                 },
                 date: {
                     htmlType: "nobr",
@@ -93,7 +93,7 @@ async function fetchData () {
                 if (elem_attributes[attr].htmlType === "a") {
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
-                    elem.style.color = adjustColorBrightness(subject.bgColor, 70);
+                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
                 }
                 reminder.appendChild(elem);
             });
