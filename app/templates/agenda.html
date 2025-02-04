@@ -28,26 +28,6 @@
             return response;
     }
     
-    class myReminderClass {
-        constructor (content, subject, tag, date) {
-            this.content = content;
-            this.subject = subject; // Corrected
-            this.tag = tag;
-            this.date = date;
-        }
-    }
-    class tag {
-        constructor (content, bgColor) {
-            this.content = content;
-            this.bgColor = bgColor;
-        }
-    }
-    class mySubjectClass {
-        constructor (name, bgColor) {
-            this.name = name;
-            this.bgColor = bgColor;
-        }
-    }
           
 async function fetchData () {
     const tagArr = await loadRessource("/api/tag");
