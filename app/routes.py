@@ -5,6 +5,7 @@ import os
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
+from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db
 from datetime import datetime
 
@@ -121,6 +122,7 @@ def git_webhook():
 # User Verification
 login_manager = LoginManager()
 login_manager.init_app(app)
+bcrypt = Bcrypt(app)
 
 @login_manager.user_loader
 def loader_user(user_id):
@@ -134,7 +136,7 @@ def register():
         if User.query.filter_by(username=email).first() is None:
             if data.get("password1") == data.get("password2"):
                 user = User(username=email,
-                            password=data.get("password1"))
+                            password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8'))
                 db.session.add(user)
                 db.session.commit()
                 return jsonify({"message": "Account created successfully"}), 200 # Error here ~Probably~
@@ -158,7 +160,7 @@ def login():
         try:
             user = User.query.filter_by(
                 username=email).first()
-            if user.password == data.get('password'):
+            if bcrypt.check_password_hash(user.password, data.get('password')):
                 login_user(user)
                 return jsonify({"message": "Logged in successfully"}), 200
             raise AttributeError

@@ -1,8 +1,8 @@
-"""Change structure, add Subject class and perfected Tag class
+"""empty message
 
-Revision ID: d9fc5cd8c3c0
+Revision ID: 6f36e986df07
 Revises: 
-Create Date: 2025-01-29 21:19:01.635977
+Create Date: 2025-02-05 19:41:18.351777
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd9fc5cd8c3c0'
+revision = '6f36e986df07'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,7 +31,8 @@ def upgrade():
     sa.Column('bg_color', sa.String(length=10), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('content')
     )
     op.create_table('Tags',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -39,11 +40,11 @@ def upgrade():
     sa.Column('bg_color', sa.String(length=10), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('content')
     )
     op.create_table('Reminders',
     sa.Column('reminder_id', sa.Integer(), nullable=False),
-    sa.Column('subject', sa.String(length=100), nullable=True),
     sa.Column('content', sa.String(length=500), nullable=True),
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.Column('tag_id', sa.Integer(), nullable=True),
