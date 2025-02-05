@@ -79,7 +79,7 @@ def subjects():
         user=current_user,
         user_id=current_user.id
     )
-    if db.session.query(Subject).filter_by(content=subject.content, user_id=current_user.id).first() is None:
+    if Subject.query.filter_by(content=subject.content, user_id=current_user.id).first() is None:
         db.session.add(subject)
         db.session.commit()
         return jsonify(subject.to_json()), 200
@@ -99,7 +99,7 @@ def tags():
         user=current_user,
         user_id=current_user.id
     )
-    if db.session.query(Tag).filter_by(content=tag.content, user_id=current_user.id).first() is None:
+    if Tag.query.filter_by(content=tag.content, user_id=current_user.id).first() is None:
         db.session.add(tag)
         db.session.commit()
         return jsonify(tag.to_json()), 200
@@ -131,7 +131,7 @@ def register():
     if request.method == "POST":
         data = json.loads(request.data)
         email = data.get('email')
-        if db.session.query(User).filter_by(username=email).first() is None:
+        if User.query.filter_by(username=email).first() is None:
             if data.get("password1") == data.get("password2"):
                 user = User(username=email,
                             password=data.get("password1"))
