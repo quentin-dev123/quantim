@@ -42,36 +42,42 @@
     }
 
 
-     .reminder-container {
+	.reminder-container {
         /* For mobile phones: */
-            width: 80vw;
+        width: 80vw;
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
+	vertical-align: middle;
 
-            @media only screen and (min-width: 400px) {
-              /* For tablets: */
-              width: 40vw;
-            }
+        @media only screen and (min-width: 400px) {
+          /* For tablets: */
+          width: 40vw;
+        }
 
-            @media only screen and (min-width: 730px) {
-              /* For computers: */
-              width: 28vw;
-            }
+        @media only screen and (min-width: 730px) {
+          /* For computers: */
+          width: 28vw;
+          margin-left: 1.75vw;
+          margin-right: 1.75vw;
+        }
 
-            @media only screen and (min-width: 950px) {
-              /* For computers: */
-              width: 21vw;
-            }
-            
-        height: 102px;
-        padding: 0px;
+        @media only screen and (min-width: 950px) {
+          /* For computers: */
+          width: 20vw;
+          margin-left: 1vw;
+          margin-right: 1vw;
+        }
+
+        margin-bottom: 15px;
         padding-top: 15px;
         border-radius: 15px;
-        color: #fff;
-        cursor: pointer;
-        
+        display: inline-block;
+        height: 102px;
         overflow: auto;
-        
-        
-		transform: matrix3d(
+        color: #fff;
+	cursor: pointer;
+
+	transform: matrix3d(
           1, 0, 1, 0,
           0, 1, 1, 0,
           1, 1, 0, 0,
@@ -79,12 +85,10 @@
         );
         transition: transform 1s;
     }
-    
 
     /* Hover = Zoom */
     .reminder-container:hover,
-    .reminder-container:focus,
-    .reminder-container-zoom{
+    .reminder-container:focus {
       transform: rotate3d(1, 1, 1, 0deg)
       matrix3d(
       1, 0, 1, 0,
@@ -219,104 +223,6 @@
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
-
-
-
-
-
-
-
-	  /* Overlay */
-      .container {
-            position: relative;
-            display: inline-block;
-            /* For mobile phones: */
-            width: 80vw;
-            margin-left: 2.5vw;
-            margin-right: 2.5vw;
-
-            @media only screen and (min-width: 400px) {
-              /* For tablets: */
-              width: 40vw;
-            }
-
-            @media only screen and (min-width: 730px) {
-              /* For computers: */
-              width: 28vw;
-              margin-left: 1.75vw;
-              margin-right: 1.75vw;
-            }
-
-            @media only screen and (min-width: 950px) {
-              /* For computers: */
-              width: 21vw;
-              margin-left: 1vw;
-              margin-right: 1vw;
-            }
-            
-            height: 117px;
-            margin-bottom: 15px;
-        }
-    
-      .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            /* Changed to allow pointer events when active */
-            pointer-events: none;
-            
-            border-radius: 15px;
-            z-index: 1;
-            transform: rotate3d(1, 1, 1, 0deg)
-                matrix3d(
-                1, 0, 1, 0,
-                0, 1, 1, 0,
-                1, 1, 0, 0,
-                0, 0, 0, 0.95);
-        }
-
-        .overlay.active {
-            opacity: 1;
-            /* This makes the overlay block all interactions */
-            pointer-events: all;
-        }
-        
-
-        /* Disable text selection when overlay is active */
-        .disable-content {
-            user-select: none;
-        }
-        
-        
-  
-        .edit,.cancel{
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 90%;
-            opacity: 0.9;
-            border-radius: 15px;
-        }
-        
-   		 .edit:hover,
-         .cancel:hover {
-           opacity:1;
-    	}
-        
-        .edit {
-           background-color: #04AA6D;
-        }
-
-        .cancel {
-           background-color: #f44336;
-        }
 </style>
 </head>
 <body>
