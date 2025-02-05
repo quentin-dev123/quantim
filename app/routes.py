@@ -154,7 +154,6 @@ def register():
 def login():
     if request.method == "POST":
         data = json.loads(request.data)
-        print(data)
         email = data.get('email')
         try:
             user = User.query.filter_by(
