@@ -39,39 +39,14 @@ async function fetchData () {
         const remHTMLcontainers = []; // Array for all reminder Divs before being added
     
         reminderArr.forEach(function(element, index) {
-            let container = document.createElement("div");
-    container.className = "container";
-    container.id = `container${index}`;
-    
-	let reminder = document.createElement("div");
-    reminder.className = "reminder-container"; // Renamed for clarity
-    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
-    reminder.id = `remDiv${index}`;
-    console.log(`remDiv${index}`)
-    reminder.addEventListener('click', () => toggleDarkness(index));
-    container.appendChild(reminder);
-    
-    let overlay = document.createElement("div");
-    overlay.className = "overlay";
-    overlay.id = `overlay${index}`;
-    container.appendChild(overlay);
-    
-    let edit = document.createElement("button");
-    edit.className = "edit";
-    edit.innerHTML = "Modifier";
-    edit.id = `edit${index}`;
-    
-    let cancel = document.createElement("button");
-    cancel.className = "cancel";
-    cancel.innerHTML = "Annuler";
-    cancel.addEventListener('click', () => toggleDarkness(index));
-    cancel.id = `cancel${index}`;
-
-    overlay.appendChild(edit);
-    overlay.appendChild(cancel);
-    
-    
-    remHTMLcontainers.push(container);
+            let reminder = document.createElement("div");
+            let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
+            element.date = new Date(element.date)
+            reminder.className = "reminder-container"; // Renamed for clarity
+            reminder.style.backgroundColor = subject.bg_color; // Corrected typo
+            reminder.id = `remDiv${index}`;
+            remHTMLcontainers.push(reminder);
             const elem_attributes = {
                 tagged: {
                     htmlType: "a",
@@ -112,20 +87,6 @@ async function fetchData () {
     }
 }
 
-
-function toggleDarkness(index) {
-    const overlay = document.getElementById(`overlay${index}`);
-    const remDiv = document.getElementById(`remDiv${index}`);
-    
-    
-    
-    overlay.classList.toggle('active');
-    remDiv.classList.toggle('disable-content');
-    remDiv.classList.toggle('reminder-container-zoom');
-}
-            
-
-            
 fetchData();
     
     {% endblock %}
