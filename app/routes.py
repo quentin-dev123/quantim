@@ -74,7 +74,7 @@ def subjects():
         subjects = Subject.query.filter_by(user_id=current_user.id).all()
         return jsonify([s.to_json() for s in subjects])
     data = json.loads(request.data)
-    if Subject.query.filter_by(content=subject.content, user_id=current_user.id).first() is None:
+    if Subject.query.filter_by(content=data.get("content"), user_id=current_user.id).first() is None:
         subject = Subject(
             content=data.get("content"), 
             bg_color=data.get("bg_color"),
@@ -94,7 +94,7 @@ def tags():
         tags = Tag.query.filter_by(user_id=current_user.id).all()
         return jsonify([t.to_json() for t in tags])
     data = json.loads(request.data)
-    if Tag.query.filter_by(content=tag.content, user_id=current_user.id).first() is None:
+    if Tag.query.filter_by(content=data.get("content"), user_id=current_user.id).first() is None:
         tag = Tag(
             content=data.get("content"), 
             bg_color=data.get("bg_color"),
