@@ -75,13 +75,14 @@
 
 {% block script %} 
 <script>
-
+function findIndexfromOptionName( select, optionName ) {
+    let options = Array.from( select.options );
+    return options.findIndex( (opt) => opt.value == optionName );
+}
 const tag_modal = document.getElementById("tag_modal")
 const subject_modal = document.getElementById("subject_modal")
 
 function close_a_modal (the_modal) {
-    document.getElementById("subject_select").selectedIndex = 0;
-    document.getElementById("tag_select").selectedIndex = 0;
     the_modal.style.display = "none";
 }
 
@@ -119,7 +120,7 @@ function changeSelect(elem, elemId) {
     }
 }
 
-async function secondary_modal(event, post_link, modalElem, optgroup_id) {
+async function secondary_modal(event, post_link, modalElem, select_id) {
     event.preventDefault();  // Prevent the default form submission
 
     // Get elements
@@ -149,11 +150,13 @@ async function secondary_modal(event, post_link, modalElem, optgroup_id) {
     const response = await result.json();
     if (result.ok) {
         console.log(response["content"])
-        let optionGroup = document.getElementById(optgroup_id);
+        let selectElem = document.getElementById(select_id);
+        let optionGroup = selectElem.querySelector('optgroup');
         let option = document.createElement("option");
         option.value = response.id;
         option.innerHTML = response.content;
         optionGroup.appendChild(option);
+        findIndexfromOptionName(selectElem, option.value)
         close_a_modal(modalElem)
     } else if (result.status === 400) {
         alertText.innerHTML = response["message"];
