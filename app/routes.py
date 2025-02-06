@@ -74,13 +74,13 @@ def subjects():
         subjects = Subject.query.filter_by(user_id=current_user.id).all()
         return jsonify([s.to_json() for s in subjects])
     data = json.loads(request.data)
-    subject = Subject(
-        content=data.get("content"), 
-        bg_color=data.get("bg_color"),
-        user=current_user,
-        user_id=current_user.id
-    )
     if Subject.query.filter_by(content=subject.content, user_id=current_user.id).first() is None:
+        subject = Subject(
+            content=data.get("content"), 
+            bg_color=data.get("bg_color"),
+            user=current_user,
+            user_id=current_user.id
+        )
         db.session.add(subject)
         db.session.commit()
         return jsonify(subject.to_json()), 200
@@ -94,13 +94,13 @@ def tags():
         tags = Tag.query.filter_by(user_id=current_user.id).all()
         return jsonify([t.to_json() for t in tags])
     data = json.loads(request.data)
-    tag = Tag(
-        content=data.get("content"), 
-        bg_color=data.get("bg_color"),
-        user=current_user,
-        user_id=current_user.id
-    )
     if Tag.query.filter_by(content=tag.content, user_id=current_user.id).first() is None:
+        tag = Tag(
+            content=data.get("content"), 
+            bg_color=data.get("bg_color"),
+            user=current_user,
+            user_id=current_user.id
+        )
         db.session.add(tag)
         db.session.commit()
         return jsonify(tag.to_json()), 200
