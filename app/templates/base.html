@@ -275,5 +275,23 @@
    function closeNav2() {
      document.getElementById("mySecretSidenav").style.width = "0";
    }
+
+
+
+// function find_date_name
+function find_date_name(date){
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
+       return "Aujourd'hui"
+    }
+    else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
+       return "Demain"
+    }
+    else {
+       return date.toLocaleDateString('en-GB')
+    }
+}
 </script>
 </html>
