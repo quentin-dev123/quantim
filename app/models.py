@@ -7,7 +7,7 @@ R_CONTENT_MAX_SIZE=500
 class Subject(db.Model):
     __tablename__ = 'Subjects'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(30), unique=True, nullable=False)
+    content = db.Column(db.String(30), nullable=False)
     bg_color = db.Column(db.String(10), nullable=False)
     # --- Relationships --- 
     reminders = db.relationship("Reminder", backref="subject")
@@ -25,7 +25,7 @@ class Subject(db.Model):
 class Tag(db.Model):
     __tablename__ = 'Tags'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(30), unique=True, nullable=False)
+    content = db.Column(db.String(30), nullable=False)
     bg_color = db.Column(db.String(10), nullable=False)
     # --- Relationships --- 
     reminders = db.relationship("Reminder", backref="tag")
