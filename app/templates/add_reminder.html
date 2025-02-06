@@ -82,8 +82,10 @@ function findIndexfromOptionName( select, optionName ) {
 const tag_modal = document.getElementById("tag_modal")
 const subject_modal = document.getElementById("subject_modal")
 
-function close_a_modal (the_modal) {
+function close_a_modal (the_modal, selectId) {
     the_modal.style.display = "none";
+    const select = document.getElementById(selectId)
+    select.selectedIndex = "0";
 }
 
 const datePicker = document.getElementById("datePicker");
@@ -156,8 +158,9 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         option.value = response.id;
         option.innerHTML = response.content;
         optionGroup.appendChild(option);
-        findIndexfromOptionName(selectElem, option.value)
-        close_a_modal(modalElem)
+        close_a_modal(modalElem, select_id)
+        let created_index = findIndexfromOptionName(selectElem, option.value)
+        selectElem.selectedIndex = created_index;
     } else if (result.status === 400) {
         alertText.innerHTML = response["message"];
         if (response["link_display"]) {
