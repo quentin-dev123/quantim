@@ -52,7 +52,14 @@ async function fetchData () {
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = subject.bg_color; // Corrected typo
     reminder.id = `remDiv${index}`;
-    reminder.addEventListener('click', () => toggleDarkness(index));
+    reminder.addEventListener('click', (event) => {
+        // Close other overlays
+        removeDarknessAll(index); // Pass the current index to exclude it
+
+        // Toggle the current overlay
+        toggleDarkness(index);
+        event.stopPropagation();
+      });
     container.appendChild(reminder);
     
     let overlay = document.createElement("div");
@@ -68,7 +75,6 @@ async function fetchData () {
     let del = document.createElement("button");
     del.className = "del";
     del.innerHTML = "Effacer";
-    del.addEventListener('click', () => toggleDarkness(index));
     del.id = `del${index}`;
 
     overlay.appendChild(edit);
