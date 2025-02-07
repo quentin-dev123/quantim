@@ -47,7 +47,7 @@ async function fetchData () {
     
 	let reminder = document.createElement("div");
     reminder.className = "reminder-container"; // Renamed for clarity
-    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
+    reminder.style.backgroundColor = subject.bg_color; // Corrected typo
     reminder.id = `remDiv${index}`;
     reminder.addEventListener('click', () => toggleDarkness(index));
     container.appendChild(reminder);
