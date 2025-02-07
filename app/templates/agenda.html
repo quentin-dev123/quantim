@@ -5,7 +5,7 @@
 {% block menu_icon %}<span class="menu_icon" onclick="openNav()">&#9776;</span>{% endblock %}
 {% block content %}
 <a class="add-dev-button" href="/add_reminder">+</a>
-<div class="lds-ring" id="loading" style="display: none; text-align: middle;"><div></div><div></div><div></div><div></div></div>
+<div class="lds-ring" id="loading" style="text-align: middle;"><div></div><div></div><div></div><div></div></div>
 {% endblock %}
 {% block after_content %}{% endblock %}
 {% block script %}
@@ -28,8 +28,7 @@
             const ressource = await fetch(ressource_route);
             const response = await ressource.json();
             return response;
-    }
-loading.style.display = "none";  
+    } 
           
 async function fetchData () {
     const tagArr = await loadRessource("/api/tag");
@@ -38,56 +37,54 @@ async function fetchData () {
     const loading = document.getElementById("loading")
     
     if (Array.isArray(reminderArr)) {
-        if (reminderArr) {
-            loading.style.display = "block";
-            const remHTMLcontainers = []; // Array for all reminder Divs before being added
-        
-            reminderArr.forEach(function(element, index) {
-                let reminder = document.createElement("div");
-                let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
-                let tag = tagArr.find(myTag => myTag.id === element.tag_id);
-                element.date = new Date(element.date)
-                reminder.className = "reminder-container"; // Renamed for clarity
-                reminder.style.backgroundColor = subject.bg_color; // Corrected typo
-                reminder.id = `remDiv${index}`;
-                remHTMLcontainers.push(reminder);
-                const elem_attributes = {
-                    tagged: {
-                        htmlType: "a",
-                        elemContent: tag.content,
-                        elemBgColor: tag.bg_color
-                    },
-                    date: {
-                        htmlType: "nobr",
-                        elemContent: "Pour : " + find_date_name(element.date)
-                    },
-                    topic: {
-                        htmlType: "h2",
-                        elemContent: subject.content // Corrected to display subject name
-                    },
-                    text: {
-                        htmlType: "p",
-                        elemContent: element.content
-                    }
-                };
-                Object.keys(elem_attributes).forEach(function(attr){
-                    let elem = document.createElement(elem_attributes[attr].htmlType);
-                    elem.innerHTML = elem_attributes[attr].elemContent;
-                    elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
-                    elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
-                    if (elem_attributes[attr].htmlType === "a") {
-                        elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
-                    } else if (elem_attributes[attr].htmlType === "h2") {
-                        elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                    }
-                    reminder.appendChild(elem);
-                });
+        loading.style.display = "block";
+        const remHTMLcontainers = []; // Array for all reminder Divs before being added
+    
+        reminderArr.forEach(function(element, index) {
+            let reminder = document.createElement("div");
+            let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
+            element.date = new Date(element.date)
+            reminder.className = "reminder-container"; // Renamed for clarity
+            reminder.style.backgroundColor = subject.bg_color; // Corrected typo
+            reminder.id = `remDiv${index}`;
+            remHTMLcontainers.push(reminder);
+            const elem_attributes = {
+                tagged: {
+                    htmlType: "a",
+                    elemContent: tag.content,
+                    elemBgColor: tag.bg_color
+                },
+                date: {
+                    htmlType: "nobr",
+                    elemContent: "Pour : " + find_date_name(element.date)
+                },
+                topic: {
+                    htmlType: "h2",
+                    elemContent: subject.content // Corrected to display subject name
+                },
+                text: {
+                    htmlType: "p",
+                    elemContent: element.content
+                }
+            };
+            Object.keys(elem_attributes).forEach(function(attr){
+                let elem = document.createElement(elem_attributes[attr].htmlType);
+                elem.innerHTML = elem_attributes[attr].elemContent;
+                elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
+                elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+                if (elem_attributes[attr].htmlType === "a") {
+                    elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+                } else if (elem_attributes[attr].htmlType === "h2") {
+                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+                }
+                reminder.appendChild(elem);
             });
-            loading.style.display = "none";
-            remHTMLcontainers.forEach(function(div){
-                document.getElementById("main").appendChild(div);
-            });
-        }
+        });
+        remHTMLcontainers.forEach(function(div){
+            document.getElementById("main").appendChild(div);
+        });
+        loading.style.display = "none";
     } else {
         console.error("Data fetched is not an array");
     }
