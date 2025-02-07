@@ -46,6 +46,9 @@ async function fetchData () {
     container.id = `container${index}`;
     
 	let reminder = document.createElement("div");
+		let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
+            element.date = new Date(element.date)
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = subject.bg_color; // Corrected typo
     reminder.id = `remDiv${index}`;
