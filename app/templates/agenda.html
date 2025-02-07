@@ -54,40 +54,40 @@ async function fetchData () {
     reminder.id = `remDiv${index}`;
     reminder.addEventListener('click', (event) => {
         // Close other overlays
-        removeDarknessAll(index); // Pass the current index to exclude it
+        removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
 
         // Toggle the current overlay
         toggleDarkness(index);
         event.stopPropagation();
       });
-    container.appendChild(reminder);
-    
-    let overlay = document.createElement("div");
-    overlay.className = "overlay";
-    overlay.id = `overlay${index}`;
-    container.appendChild(overlay);
-    
-    let edit = document.createElement("button");
-    edit.className = "edit";
-    edit.innerHTML = "Modifier";
-    edit.id = `edit${index}`;
-    
-    let form = document.createElement("form");
-    form.method = "post"
-    
-    let del = document.createElement("button");
-    del.className = "del";
-    del.innerHTML = "Effacer";
-    del.addEventListener('click', () => toggleDarkness(index));
-    del.id = `del${index}`;
-    del.type = "submit"
-    
-    overlay.appendChild(edit);
-    overlay.appendChild(form);
-    form.appendChild(del);
-    
-    
-    remHTMLcontainers.push(container);
+	    container.appendChild(reminder);
+	    
+	    let overlay = document.createElement("div");
+	    overlay.className = "overlay";
+	    overlay.id = `overlay${index}`;
+	    container.appendChild(overlay);
+	    
+	    let edit = document.createElement("button");
+	    edit.className = "edit";
+	    edit.innerHTML = "Modifier";
+	    edit.id = `edit${index}`;
+	    
+	    let form = document.createElement("form");
+	    form.method = "post"
+	    
+	    let del = document.createElement("button");
+	    del.className = "del";
+	    del.innerHTML = "Effacer";
+	    del.addEventListener('click', () => toggleDarkness(index));
+	    del.id = `del${index}`;
+	    del.type = "submit"
+	    
+	    overlay.appendChild(edit);
+	    overlay.appendChild(form);
+	    form.appendChild(del);
+	    
+	    
+	    remHTMLcontainers.push(container);
     
             const elem_attributes = {
                 tagged: {
