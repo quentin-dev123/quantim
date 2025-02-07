@@ -392,8 +392,16 @@
    }
 
 
+	
+function toggleDarkness(index) {
+    const overlay = document.getElementById(`overlay${index}`);
+    const remDiv = document.getElementById(`remDiv${index}`);
+    
+    overlay.classList.toggle('active');
+    remDiv.classList.toggle('disable-content');
+    remDiv.classList.toggle('reminder-container-zoom');
+}
 
-// function find_date_name
 function find_date_name(date){
     const today = new Date();
     const tomorrow = new Date();
