@@ -44,44 +44,35 @@
 
 	.reminder-container {
         /* For mobile phones: */
-        width: 80vw;
-        margin-left: 2.5vw;
-        margin-right: 2.5vw;
-	vertical-align: middle;
+            width: 80vw;
 
-        @media only screen and (min-width: 400px) {
-          /* For tablets: */
-          width: 40vw;
-        }
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
 
-        @media only screen and (min-width: 730px) {
-          /* For computers: */
-          width: 28vw;
-          margin-left: 1.75vw;
-          margin-right: 1.75vw;
-        }
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
 
-        @media only screen and (min-width: 950px) {
-          /* For computers: */
-          width: 20vw;
-          margin-left: 1vw;
-          margin-right: 1vw;
-        }
-
-        margin-bottom: 15px;
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
         padding-top: 15px;
         border-radius: 15px;
-        display: inline-block;
-        height: 102px;
         overflow: auto;
         color: #fff;
-	cursor: pointer;
         transition: transform 1s;
     }
 
     /* Hover = Zoom */
     .reminder-container:hover,
-    .reminder-container:focus {
+    .reminder-container:focus,
+    .reminder-container-zoom{
       transform: scale(1.05);
     }
 
