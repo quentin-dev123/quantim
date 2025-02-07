@@ -28,7 +28,7 @@
 {% endblock %}
 {% block other_content %} 
 <div id="tag_modal" class="my_modal" style="display: none;">
-    <span onclick="close_a_modal(tag_modal)" class="my_close" title="my_close Modal">&times;</span>
+    <span onclick="close_a_modal(tag_modal, 'tag_select')" class="my_close" title="my_close Modal">&times;</span>
     <form class="my_modal-content my_animate" id="form">
       <div class="my_container">
         <h1>Nouveau Tag</h1>
@@ -42,7 +42,7 @@
               <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
             </div>
         <div class="my_clearfix">
-          <button type="button" onclick="close_a_modal(tag_modal)" class="my_cancelbtn">Annuler</button>
+          <button type="button" onclick="close_a_modal(tag_modal, 'tag_select')" class="my_cancelbtn">Annuler</button>
           <button type="submit" class="my_signupbtn">Valider</button>
         </div>
       </div>
@@ -50,7 +50,7 @@
   </div>
 
   <div id="subject_modal" class="my_modal" style="display: none;">
-    <span onclick="close_a_modal(subject_modal)" class="my_close" title="my_close Modal">&times;</span>
+    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="my_close" title="my_close Modal">&times;</span>
     <form class="my_modal-content my_animate" id="form">
       <div class="my_container">
         <h1>Nouvelle Matière</h1>
@@ -64,7 +64,7 @@
               <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
             </div>
         <div class="my_clearfix">
-          <button type="button" onclick="close_a_modal(subject_modal)" class="my_cancelbtn">Annuler</button>
+          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="my_cancelbtn">Annuler</button>
           <button type="submit" class="my_signupbtn">Valider</button>
         </div>
       </div>
