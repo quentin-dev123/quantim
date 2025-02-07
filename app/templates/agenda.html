@@ -72,13 +72,19 @@ async function fetchData () {
     edit.innerHTML = "Modifier";
     edit.id = `edit${index}`;
     
+    let form = document.createElement("form");
+    form.method = "post"
+    
     let del = document.createElement("button");
     del.className = "del";
     del.innerHTML = "Effacer";
+    del.addEventListener('click', () => toggleDarkness(index));
     del.id = `del${index}`;
-
+    del.type = "submit"
+    
     overlay.appendChild(edit);
-    overlay.appendChild(del);
+    overlay.appendChild(form);
+    form.appendChild(del);
     
     
     remHTMLcontainers.push(container);
