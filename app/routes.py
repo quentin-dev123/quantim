@@ -106,7 +106,15 @@ def tags():
         return jsonify(tag.to_json()), 200
     else:
         return jsonify({"message": "Un tag avec le même nom existe déjà"}), 400
-
+    
+@app.route("/api/reminder/delete/<int:reminderId>", methods=["POST"])
+@login_required
+def delete_reminder(reminderId):
+    reminder = Reminder.query.filter_by(reminder_id=reminderId)
+    if reminder.user_id == current_user.id: # Layer of security
+        db.session.delete(reminder)
+        db.commit()
+        
 #------------------------------------------------------
 # Auto deploy
 @app.route('/api/push_version', methods=['POST'])
