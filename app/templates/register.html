@@ -7,8 +7,38 @@
 {% block form_content %} 
 <label for="email"><b> Entrer votre adresse email </b></label>
 <input type="email" placeholder="Email" name="email" required>
-<label for="password1"><b> Choisissez un mot de passe </b></label>
+<label for="password1" pattern=".{4,}" title="Must be at least 4 or more characters"><b> Choisissez un mot de passe </b></label>
 <input type="password" placeholder="Mot de passe" name="password1" required>
 <label for="password2"><b> Confirmez votre mot de passe </b></label>
 <input type="password" placeholder="Mot de passe" name="password2" required>
+<div id="message">
+  <h3>Password must contain the following:</h3>
+  <p id="length" class="invalid">Minimum <b>4 characters</b></p>
+</div>
+{% endblock %}
+{% block script %}
+var myInput = document.getElementById("psw");
+var length = document.getElementById("length");
+
+// When the user clicks on the password field, show the message box
+myInput.onfocus = function() {
+  document.getElementById("message").style.display = "block";
+}
+
+// When the user clicks outside of the password field, hide the message box
+myInput.onblur = function() {
+  document.getElementById("message").style.display = "none";
+}
+
+// When the user starts to type something inside the password field
+myInput.onkeyup = function() {
+  // Validate length
+  if(myInput.value.length >= 4) {
+    length.classList.remove("invalid");
+    length.classList.add("valid");
+  } else {
+    length.classList.remove("valid");
+    length.classList.add("invalid");
+  }
+}
 {% endblock %}
