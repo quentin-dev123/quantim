@@ -444,7 +444,7 @@ function find_date_name(date){
 }
 
 	
-function removeDarknessAll(excludeIndex = -1) { // Parameter to exclude an index
+function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exclude an index
 	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
       if (i !== excludeIndex) { // Skip the excluded index
           const overlay = document.getElementById(`overlay${i}`);
