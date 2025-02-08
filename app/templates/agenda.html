@@ -73,8 +73,8 @@ async function fetchData () {
 	    edit.id = `edit${index}`;
 	    
 	    let form = document.createElement("form");
-	    form.method = "post"
-        form.action = "/api/reminder/delete/1"
+	    form.method = "DELETE"
+        form.action = "/api/reminder/1"
 	    
 	    let del = document.createElement("button");
 	    del.className = "del";
