@@ -48,24 +48,36 @@ def add_reminder():
     return render_template("add_reminder.html")
 #------------------------------------------------------
 # API
-@app.route("/api/reminder", methods=["GET", "POST"])
+@app.route("/api/reminder", defaults={'rem_id': None}, methods=["GET", "POST"])
+@app.route("/api/reminder/<int:rem_id>", methods=["GET", "DELETE"])
 @login_required
-def reminders():
+def reminders(rem_id):
     if request.method == "GET":
-        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        return jsonify([r.to_json() for r in reminders])
-    data = json.loads(request.data)
-    reminder = Reminder(
-        content=data.get("content"), 
-        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
-        user=current_user,
-        user_id=current_user.id,
-        tag_id=data.get("tag_id"),
-        subject_id=data.get("subject_id")
-    )
-    db.session.add(reminder)
-    db.session.commit()
-    return jsonify({"message": "Reminder created succesfully"}), 200
+        if rem_id:
+            reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
+            if reminders is not None:
+                if reminders.user_id == current_user.id:
+                    return jsonify(reminders.to_json()), 200
+                else:
+                    return jsonify({"message": "Not logged into the account of the reminder"}), 403
+            else:
+                return jsonify({"message": "Reminder not found"}), 404
+        else:
+            reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+            return jsonify([r.to_json() for r in reminders]), 200
+    elif request.method == "POST":
+        data = json.loads(request.data)
+        reminder = Reminder(
+            content=data.get("content"), 
+            date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+            user=current_user,
+            user_id=current_user.id,
+            tag_id=data.get("tag_id"),
+            subject_id=data.get("subject_id")
+        )
+        db.session.add(reminder)
+        db.session.commit()
+        return jsonify({"message": "Reminder created succesfully"}), 200
 
 @app.route("/api/subject", methods=["GET", "POST"])
 @login_required
