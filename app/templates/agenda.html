@@ -128,7 +128,7 @@ async function fetchData () {
 	loading.style.display = "none";
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
-	body.addEventListener('click', (event) => {removeDarknessAll(None, reminderArr);});
+	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
     } else {
         console.error("Data fetched is not an array");
     }
