@@ -75,10 +75,10 @@ async function fetchData () {
 	    let del = document.createElement("button");
 	    del.className = "del";
 	    del.innerHTML = "Effacer";
-	    del.addEventListener('click', () => 
+	    del.addEventListener('click', () => {
 		toggleDarkness(index);
-		close_modal();
-		);
+		open_modal();
+        });
 	    del.id = `del${index}`;
 	    
 	    overlay.appendChild(edit);

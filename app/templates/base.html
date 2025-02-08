@@ -483,7 +483,6 @@ hr {
     </div>
   </form>
 </div>
-</body>
 <script>
     {% block script %} {% endblock %}
 </script>
@@ -566,23 +565,21 @@ function toggleDarkness(index) {
 </script>
 <script>
 // Confirmation modal
-
+let modal = document.getElementById('id01');
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
   if (event.target == modal) {
-    let modal = document.getElementById('id01');
-    modal.style.display = "none";
+    close_modal();
   }
 }
 
 function close_modal() {
-    let modal = document.getElementById('id01');
 	modal.style.display = "none";
 }
 
 function open_modal() {
-    let modal = document.getElementById('id01');
 	modal.style.display = "block";
 }
 </script>
+</body>
 </html>
