@@ -111,12 +111,15 @@ def tags():
 @login_required
 def delete_reminder(reminderId):
     reminder = Reminder.query.filter_by(reminder_id=reminderId).first()
-    if reminder.user_id == current_user.id: # Layer of security
-        db.session.delete(reminder)
-        db.session.commit()
-        return jsonify({"message":"Reminder deleted succesfully"}), 200
+    if reminder:
+        if reminder.user_id == current_user.id: # Layer of security
+            db.session.delete(reminder)
+            db.session.commit()
+            return jsonify({"message":"Reminder deleted succesfully"}), 200
+        else:
+            return jsonify({"message": "Not logged in the right account"}), 403
     else:
-        return jsonify({"message": "Not logged in the right account"}), 403
+        return jsonify({"message": "Reminder not found"}), 404
         
 #------------------------------------------------------
 # Auto deploy
