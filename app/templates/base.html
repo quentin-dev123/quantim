@@ -285,6 +285,9 @@
            background-color: #f44336;
         }
 
+
+
+	  
  /* Loading ring */	  
 	 .lds-ring {
 	  /* change color here */
@@ -334,6 +337,111 @@
 
 
 
+	  
+	  
+	  
+	  
+	/* Confirmation modal */  
+/* Set a style for all buttons */
+.my_modal_button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.my_modal_button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.my_cancelbtn {
+  padding: 14px 20px;
+  background-color: #ccc;
+  color: black;
+}
+
+/* Extra styles for the signup button */
+.my_signupbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.my_cancelbtn, .my_signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.my_container {
+  padding: 16px;
+}
+
+/* The Modal (background) */
+.my_modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.34);
+  padding-top: 50px;
+  display: none;
+}
+
+/* Modal Content/Box */
+.my_modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: none;
+  width: 80%; /* Could be more or less, depending on screen size */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The my_close Button (x) */
+.my_close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.my_close:hover,
+.my_close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+
+/* Clear floats */
+.my_clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .my_my_cancelbtn, .my_signupbtn {
+     width: 100%;
+  }
+}
 </style>
 </head>
 <body id="body">
@@ -358,6 +466,22 @@
   <a href="/api/reminder">Rappels</a>
   <a href="/api/subject">Matières</a>
   <a href="/api/tag">Tags</a>
+</div>
+
+<!-- Confirmation modal -->
+<div id="id01" class="my_modal">
+  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content  my_animate" action="/action_page.php">
+    <div class="my_container">
+      <h1>Effacer le rappel</h1>
+      <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
+   
+      <div class="my_clearfix">
+        <button type="button" onclick="close_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
+        <button type="submit" class="my_signupbtn my_modal_button">Effacer</button>
+      </div>
+    </div>
+  </form>
 </div>
 </body>
 <script>
@@ -438,6 +562,27 @@ function toggleDarkness(index) {
     overlay.classList.toggle('active');
     remDiv.classList.toggle('disable-content');
     remDiv.classList.toggle('reminder-container-zoom');
+}
+</script>
+<script>
+// Confirmation modal
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    let modal = document.getElementById('id01');
+    modal.style.display = "none";
+  }
+}
+
+function close_modal() {
+    let modal = document.getElementById('id01');
+	modal.style.display = "none";
+}
+
+function open_modal() {
+    let modal = document.getElementById('id01');
+	modal.style.display = "block";
 }
 </script>
 </html>
