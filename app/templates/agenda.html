@@ -77,7 +77,7 @@ async function fetchData () {
 	    del.innerHTML = "Effacer";
 	    del.addEventListener('click', () => {
 		toggleDarkness(index);
-		open_modal();
+		open_modal(`/api/reminder/${element.id}`);
         });
 	    del.id = `del${index}`;
 	    

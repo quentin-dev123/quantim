@@ -471,7 +471,7 @@ hr {
 <!-- Confirmation modal -->
 <div id="id01" class="my_modal">
   <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
-  <form class="my_modal-content  my_animate" action="/action_page.php">
+  <form class="my_modal-content  my_animate">
     <div class="my_container">
       <h1>Effacer le rappel</h1>
       <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
@@ -564,6 +564,17 @@ function toggleDarkness(index) {
 }
 </script>
 <script>
+
+async function confirmAction(ressourceLink) {
+  let response = await fetch(ressourceLink, {method: 'DELETE'});
+  let result = await response.json();
+  if (response.ok) {
+    console.log(result.message);
+    close_modal();
+  }
+  // Implement error logic here
+}  
+
 // Confirmation modal
 let modal = document.getElementById('id01');
 // When the user clicks anywhere outside of the modal, close it
@@ -577,8 +588,13 @@ function close_modal() {
 	modal.style.display = "none";
 }
 
-function open_modal() {
+function open_modal(fetchRoute) {
 	modal.style.display = "block";
+  let confirm_form = modal.querySelector("form");
+  confirm_form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    confirmAction(fetchRoute);
+  })
 }
 </script>
 </body>
