@@ -336,7 +336,7 @@
 
 </style>
 </head>
-<body>
+<body id="body">
 <header>
   <h1>{% block header %} {% endblock %}</h1>
   {% block menu_icon %} {% endblock %}
@@ -420,6 +420,16 @@ function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exc
    }
 }
 
+function removeDarknessALL(reminderArr) {
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
 
 function toggleDarkness(index) {
     const overlay = document.getElementById(`overlay${index}`);
