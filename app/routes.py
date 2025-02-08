@@ -114,6 +114,9 @@ def delete_reminder(reminderId):
     if reminder.user_id == current_user.id: # Layer of security
         db.session.delete(reminder)
         db.session.commit()
+        return jsonify({"message":"Reminder deleted succesfully"}), 200
+    else:
+        return jsonify({"message": "Not logged in the right account"}), 403
         
 #------------------------------------------------------
 # Auto deploy
