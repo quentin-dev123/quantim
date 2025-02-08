@@ -110,10 +110,10 @@ def tags():
 @app.route("/api/reminder/delete/<int:reminderId>", methods=["POST"])
 @login_required
 def delete_reminder(reminderId):
-    reminder = Reminder.query.filter_by(reminder_id=reminderId)
+    reminder = Reminder.query.filter_by(reminder_id=reminderId).first()
     if reminder.user_id == current_user.id: # Layer of security
         db.session.delete(reminder)
-        db.commit()
+        db.session.commit()
         
 #------------------------------------------------------
 # Auto deploy
