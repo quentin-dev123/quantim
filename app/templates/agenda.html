@@ -72,21 +72,17 @@ async function fetchData () {
 	    edit.innerHTML = "Modifier";
 	    edit.id = `edit${index}`;
 	    
-	    let form = document.createElement("form");
-	    form.method = "post"
-        form.action = "/api/reminder/delete/1"
-	    
 	    let del = document.createElement("button");
 	    del.className = "del";
 	    del.innerHTML = "Effacer";
-	    del.addEventListener('click', () => toggleDarkness(index));
+	    del.addEventListener('click', () => 
+		toggleDarkness(index);
+		close_modal();
+		);
 	    del.id = `del${index}`;
-	    del.type = "submit"
 	    
 	    overlay.appendChild(edit);
-	    overlay.appendChild(form);
-	    form.appendChild(del);
-	    
+	    overlay.appendChild(del);
 	    
 	    remHTMLcontainers.push(container);
     
