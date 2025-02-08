@@ -125,7 +125,10 @@ async function fetchData () {
         remHTMLcontainers.forEach(function(div){
             document.getElementById("main").appendChild(div);
         });
-        loading.style.display = "none";
+	loading.style.display = "none";
+	// add removeDarknessAll onclick to the body
+	const body = document.getElementById("body");
+	body.addEventListener('click', (event) => {removeDarknessAll(None, reminderArr);});
     } else {
         console.error("Data fetched is not an array");
     }
