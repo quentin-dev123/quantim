@@ -565,12 +565,14 @@ function toggleDarkness(index) {
 </script>
 <script>
 
-async function confirmAction(ressourceLink) {
+async function confirmAction(ressourceLink, reminder) {
   let response = await fetch(ressourceLink, {method: 'DELETE'});
   let result = await response.json();
   if (response.ok) {
     console.log(result.message);
     close_modal();
+    const element = document.getElementById(reminder);
+    element.remove();
   }
   // Implement error logic here
 }  
@@ -588,12 +590,12 @@ function close_modal() {
 	modal.style.display = "none";
 }
 
-function open_modal(fetchRoute) {
+function open_modal(fetchRoute, reminder) {
 	modal.style.display = "block";
   let confirm_form = modal.querySelector("form");
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
-    confirmAction(fetchRoute);
+    confirmAction(fetchRoute, reminder);
   })
 }
 </script>
