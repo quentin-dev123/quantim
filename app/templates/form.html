@@ -162,6 +162,21 @@ input[type="color" i]::-moz-color-swatch {
 select {
   margin-bottom: 10px;
 }
+
+.select_icon_container {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Vertically center the items */
+  width: 100%;
+}
+
+.icon {
+  margin-left: 7px; /* Add some space between the select and the icon */
+  margin-right: -2px;
+  margin-bottom: 11px; /* Add some space between the select and the icon */
+  font-size: 24px; /* Adjust icon size as needed */
+  cursor: pointer;
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -252,6 +267,27 @@ form.addEventListener('submit',  async (event) => {
     }
 });
 
+
+
+
+
+
+
+
+// Show icons functions
+function show_icons_subject(){
+	let icons = document.getElementsByClassName("icon_subject");
+    for (let i = 0; i < icons.length; i++) {
+        icons[i].style.display = "block";
+    }
+}
+
+function show_icons_tag(){
+	let icons = document.getElementsByClassName("icon_tag");
+    for (let i = 0; i < icons.length; i++) {
+    	icons[i].style.display = "block";
+	}
+}
 </script>
 {% block script %} {% endblock %}
 </body>
