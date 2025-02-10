@@ -35,7 +35,10 @@ async function fetchData () {
     const subjectArr = await loadRessource("/api/subject"); 
     const reminderArr = await loadRessource("/api/reminder");
     const loading = document.getElementById("loading")
-    
+
+    // sort reminderArr by date
+    const reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+		
     if (Array.isArray(reminderArr)) {
         loading.style.display = "block";
         const remHTMLcontainers = []; // Array for all reminder Divs before being added
