@@ -43,6 +43,7 @@ async function fetchData () {
     // remove expired reminders
     const removeExpiredObjects = (array) => {
 	    const currentDate = new Date();
+	    currentDate.setDate(today.getDate() + 1);
 	    return array.filter(item => new Date(item.date) >= currentDate);
      };
     reminderArr = removeExpiredObjects(reminderArr);
