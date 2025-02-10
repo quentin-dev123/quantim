@@ -37,7 +37,7 @@ async function fetchData () {
     loading = document.getElementById("loading")
 
     // sort reminderArr by date
-    const reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+    reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
 		
     if (Array.isArray(reminderArr)) {
         loading.style.display = "block";
