@@ -24,6 +24,7 @@
         return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
     }
 
+
     async function loadRessource (ressource_route) {
             const ressource = await fetch(ressource_route);
             const response = await ressource.json();
@@ -35,9 +36,17 @@ async function fetchData () {
     const subjectArr = await loadRessource("/api/subject"); 
     let reminderArr = await loadRessource("/api/reminder");
     loading = document.getElementById("loading")
-
+    
     // sort reminderArr by date
     reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // remove expired reminders
+    const removeExpiredObjects = (array) => {
+	    const currentDate = new Date();
+	    return array.filter(item => new Date(item.date) >= currentDate);
+     };
+    reminderArr = removeExpiredObjects(reminderArr);
+
 		
     if (Array.isArray(reminderArr)) {
         loading.style.display = "block";
