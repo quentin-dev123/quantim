@@ -51,7 +51,7 @@ def add_reminder():
 @app.route("/api/reminder", defaults={'rem_id': None})
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
-def get_reminders(rem_id):
+def get_reminders(rem_id): # Read
     if rem_id:
         reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
         if reminders is not None:
@@ -67,7 +67,7 @@ def get_reminders(rem_id):
     
 @app.route("/api/reminder", methods=["POST"])
 @login_required
-def create_reminders():
+def create_reminders(): # Create
     data = json.loads(request.data)
     reminder = Reminder(
         content=data.get("content"), 
@@ -83,7 +83,7 @@ def create_reminders():
 
 @app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
 @login_required
-def delete_reminders(rem_id):
+def delete_reminders(rem_id): # Delete
     reminder = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminder:
         if reminder.user_id == current_user.id: # Layer of security
@@ -94,6 +94,22 @@ def delete_reminders(rem_id):
             return jsonify({"message": "Not logged in the right account"}), 403
     else:
         return jsonify({"message": "Reminder not found"}), 404
+        
+@app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
+@login_required
+def update_reminders(): # Update ~~ Not complete
+    data = json.loads(request.data)
+    reminder = Reminder(
+        content=data.get("content"), 
+        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+        user=current_user,
+        user_id=current_user.id,
+        tag_id=data.get("tag_id"),
+        subject_id=data.get("subject_id")
+    )
+    db.session.add(reminder)
+    db.session.commit()
+    return jsonify({"message": "Reminder created succesfully"}), 200
 
 @app.route("/api/subject", methods=["GET", "POST"])
 @login_required
