@@ -94,7 +94,8 @@ def delete_reminders(rem_id): # Delete
             return jsonify({"message": "Not logged in the right account"}), 403
     else:
         return jsonify({"message": "Reminder not found"}), 404
-        
+
+"""
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
 def update_reminders(rem_id): # Update ~~ Not complete
@@ -112,6 +113,7 @@ def update_reminders(rem_id): # Update ~~ Not complete
     db.session.add(reminder)
     db.session.commit()
     return jsonify({"message": "Reminder created succesfully"}), 200
+"""
 
 @app.route("/api/subject", methods=["GET", "POST"])
 @login_required
