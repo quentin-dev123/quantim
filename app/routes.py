@@ -97,7 +97,7 @@ def delete_reminders(rem_id): # Delete
         
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
-def update_reminders(): # Update ~~ Not complete
+def update_reminders(rem_id): # Update ~~ Not complete
     data = json.loads(request.data)
     reminder = Reminder(
         content=data.get("content"), 
@@ -107,6 +107,8 @@ def update_reminders(): # Update ~~ Not complete
         tag_id=data.get("tag_id"),
         subject_id=data.get("subject_id")
     )
+    Reminder.query.filter_by(reminder_id=rem_id).first() = reminder
+    
     db.session.add(reminder)
     db.session.commit()
     return jsonify({"message": "Reminder created succesfully"}), 200
