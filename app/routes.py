@@ -107,9 +107,12 @@ def update_reminders(rem_id): # Update ~~ Not complete
         tag_id=data.get("tag_id"),
         subject_id=data.get("subject_id")
     )
-    Reminder.query.get(rem_id).update(reminder)
-    db.session.commit()
-    return jsonify({"message": "Reminder updated succesfully"}), 200
+    db_reminder = Reminder.query.get(rem_id)
+    if db_reminder.user_id == current_user.id:
+        db_reminder.update(reminder)
+        db.session.commit()
+        return jsonify({"message": "Reminder updated succesfully"}), 200
+    return jsonify({"message": "Not loggedi in the account of the reminder"}), 403
 
 
 @app.route("/api/subject", methods=["GET", "POST"])
