@@ -51,7 +51,6 @@ async function fetchData () {
 		
     if (Array.isArray(reminderArr)) {
         loading.style.display = "block";
-        const remHTMLcontainers = []; // Array for all reminder Divs before being added
     
         reminderArr.forEach(function(element, index) {
             let container = document.createElement("div");
@@ -97,7 +96,7 @@ async function fetchData () {
 	    overlay.appendChild(edit);
 	    overlay.appendChild(del);
 	    
-	    remHTMLcontainers.push(container);
+	    document.getElementById("main").appendChild(container);
     
             const elem_attributes = {
                 tagged: {
@@ -130,9 +129,6 @@ async function fetchData () {
                 }
                 reminder.appendChild(elem);
             });
-        });
-        remHTMLcontainers.forEach(function(div){
-            document.getElementById("main").appendChild(div);
         });
 	loading.style.display = "none";
 	// add removeDarknessAll onclick to the body
