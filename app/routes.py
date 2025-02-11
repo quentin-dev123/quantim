@@ -95,7 +95,6 @@ def delete_reminders(rem_id): # Delete
     else:
         return jsonify({"message": "Reminder not found"}), 404
 
-"""
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
 def update_reminders(rem_id): # Update ~~ Not complete
@@ -108,12 +107,10 @@ def update_reminders(rem_id): # Update ~~ Not complete
         tag_id=data.get("tag_id"),
         subject_id=data.get("subject_id")
     )
-    Reminder.query.filter_by(reminder_id=rem_id).first() = reminder
-    
-    db.session.add(reminder)
+    Reminder.query.get(rem_id).update(reminder)
     db.session.commit()
-    return jsonify({"message": "Reminder created succesfully"}), 200
-"""
+    return jsonify({"message": "Reminder updated succesfully"}), 200
+
 
 @app.route("/api/subject", methods=["GET", "POST"])
 @login_required
