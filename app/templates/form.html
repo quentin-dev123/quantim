@@ -288,6 +288,19 @@ function show_icons_tag(){
     	icons[i].style.display = "block";
 	}
 }
+
+
+
+
+// function toggle passwords visibility
+function toggle_password_visibility(id){
+  var x = document.getElementById("id");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
 </script>
 {% block script %} {% endblock %}
 </body>
