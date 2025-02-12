@@ -8,6 +8,7 @@ from git import Repo
 from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db
 from datetime import datetime
+from operator import attrgetter
 
 from .models import Tag, Subject, Reminder, User
 
@@ -56,6 +57,7 @@ def get_reminders(rem_id): # Read
         reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
         if reminders is not None:
             if reminders.user_id == current_user.id:
+                sorted_rems = sorted(reminders, key=attrgetter('Reminder.date'))
                 return jsonify(reminders.to_json()), 200
             else:
                 return jsonify({"message": "Not logged into the account of the reminder"}), 403
