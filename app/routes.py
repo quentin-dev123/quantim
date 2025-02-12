@@ -64,7 +64,7 @@ def get_reminders(rem_id): # Read
             return jsonify({"message": "Reminder not found"}), 404
     else:
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        sorted_rems = sorted(reminders, key=attrgetter('Reminder.date'))
+        sorted_rems = sorted(reminders, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     
 @app.route("/api/reminder", methods=["POST"])
