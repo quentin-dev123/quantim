@@ -5,11 +5,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flasgger import Swagger
 
 from config import config
 
 # Create DB
 db = SQLAlchemy()
+swagger = Swagger(app)
 
 def create_app(config_name):
     app = Flask(__name__)
