@@ -58,7 +58,7 @@ def get_reminders(rem_id): # Read
         if reminders is not None:
             if reminders.user_id == current_user.id:
                 sorted_rems = sorted(reminders, key=attrgetter('Reminder.date'))
-                return jsonify(reminders.to_json()), 200
+                return jsonify(sorted_rems.to_json()), 200
             else:
                 return jsonify({"message": "Not logged into the account of the reminder"}), 403
         else:
