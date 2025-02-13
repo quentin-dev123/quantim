@@ -6,7 +6,7 @@ from flask import jsonify, json, abort, request, render_template, redirect, curr
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
 from flask_bcrypt import Bcrypt 
-from . import helpers, create_app, db. swagger
+from . import helpers, create_app, db, swagger
 from datetime import datetime
 from operator import attrgetter
 
