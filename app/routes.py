@@ -6,7 +6,7 @@ from flask import jsonify, json, abort, request, render_template, redirect, curr
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
 from flask_bcrypt import Bcrypt 
-from . import helpers, create_app, db
+from . import helpers, create_app, db. swagger
 from datetime import datetime
 from operator import attrgetter
 
@@ -53,6 +53,40 @@ def add_reminder():
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
 def get_reminders(rem_id): # Read
+    """
+        Get a/all reminders
+        ---
+        parameters:
+          - name: rem_id
+            in: path
+            type: integer
+            required: false
+            description: The ID of the reminder to retrieve (if none, returns all remidners)
+        responses:
+          200:
+            description: The reminder/s sorted chronologically
+            schema:
+              type: if many :
+                        array
+                        items: object
+                    else :
+                        object
+              properties:
+                id:
+                  type: integer
+                user_id:
+                  type: integer 
+                tag_id:
+                  type: integer
+                subject_id:
+                  type: integer
+                content:
+                  type: string
+          404:
+            description: Reminder with specified id not found
+          403:
+            description: Not logged in account of reminder
+        """
     if rem_id:
         reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
         if reminders is not None:
