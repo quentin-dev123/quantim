@@ -589,9 +589,9 @@ async function confirmAction(ressourceLink, reminder) {
 
 // Confirmation modal
 // When the user clicks anywhere outside of the modal, close it
+let confirmation_modal = document.getElementById('id01');
 window.onclick = function(event) {
-  let modal = document.getElementById('id01');
-  if (event.target == modal) {
+  if (event.target == confirmation_modal) {
     close_modal();
   }
 }
