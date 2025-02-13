@@ -49,57 +49,79 @@ def add_reminder():
     return render_template("add_reminder.html")
 #------------------------------------------------------
 # API ~~ CRUD functions
-@app.route("/api/reminder", defaults={'rem_id': None})
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
-def get_reminders(rem_id): # Read
+def get_reminder(rem_id): # Read
+    """Example endpoint returning a list of colors by palette
+    This is using docstrings for specifications.
+    ---
+    parameters:
+      - name: palette
+        in: path
+        type: string
+        enum: ['all', 'rgb', 'cmyk']
+        required: true
+        default: all
+    definitions:
+      Palette:
+        type: object
+        properties:
+          palette_name:
+            type: array
+            items:
+              $ref: '#/definitions/Color'
+      Color:
+        type: string
+    responses:
+      200:
+        description: A list of colors (may be filtered by palette)
+        schema:
+          $ref: '#/definitions/Palette'
+        examples:
+          rgb: ['red', 'green', 'blue']
     """
-        Get a/all reminders
-        ---
-        parameters:
-          - name: rem_id
-            in: path
-            type: integer
-            required: false
-            description: The ID of the reminder to retrieve (if none, returns all remidners)
-        responses:
-          200:
-            description: The reminder/s sorted chronologically
-            schema:
-              type: if many :
-                        array
-                        items: object
-                    else :
-                        object
-              properties:
-                id:
-                  type: integer
-                user_id:
-                  type: integer 
-                tag_id:
-                  type: integer
-                subject_id:
-                  type: integer
-                content:
-                  type: string
-          404:
-            description: Reminder with specified id not found
-          403:
-            description: Not logged in account of reminder
-        """
-    if rem_id:
-        reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
-        if reminders is not None:
-            if reminders.user_id == current_user.id:
-                return jsonify(reminders.to_json()), 200
-            else:
-                return jsonify({"message": "Not logged into the account of the reminder"}), 403
+    reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
+    if reminders is not None:
+        if reminders.user_id == current_user.id:
+            return jsonify(reminders.to_json()), 200
         else:
-            return jsonify({"message": "Reminder not found"}), 404
+            return jsonify({"message": "Not logged into the account of the reminder"}), 403
     else:
-        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        sorted_rems = sorted(reminders, key=attrgetter('date'))
-        return jsonify([r.to_json() for r in sorted_rems]), 200
+        return jsonify({"message": "Reminder not found"}), 404
+    
+@app.route("/api/reminder")
+@login_required
+def get_reminders(): # Read
+    """API returning all reminders linked to your account
+    ---
+    parameters:
+      - name: palette
+        in: path
+        type: string
+        enum: ['all', 'rgb', 'cmyk']
+        required: true
+        default: all
+    definitions:
+      Palette:
+        type: object
+        properties:
+          palette_name:
+            type: array
+            items:
+              $ref: '#/definitions/Color'
+      Color:
+        type: string
+    responses:
+      200:
+        description: A list of colors (may be filtered by palette)
+        schema:
+          $ref: '#/definitions/Palette'
+        examples:
+          rgb: ['red', 'green', 'blue']
+    """
+    reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+    sorted_rems = sorted(reminders, key=attrgetter('date'))
+    return jsonify([r.to_json() for r in sorted_rems]), 200
     
 @app.route("/api/reminder", methods=["POST"])
 @login_required
