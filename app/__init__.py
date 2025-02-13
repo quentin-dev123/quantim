@@ -5,6 +5,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flasgger import Swagger
 
 from config import config
 
@@ -18,5 +19,6 @@ def create_app(config_name):
     db.init_app(app)
     # Apply all modification in the DB Schema
     migrate = Migrate(app, db)
+    swagger = Swagger(app)
     
     return app
