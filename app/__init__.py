@@ -12,6 +12,9 @@ from config import config
 # Create DB
 db = SQLAlchemy()
 
+# Create Swagger
+swagger = Swagger()
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -19,6 +22,6 @@ def create_app(config_name):
     db.init_app(app)
     # Apply all modification in the DB Schema
     migrate = Migrate(app, db)
-    swagger = Swagger(app)
+    swagger.init_app(app)
     
     return app
