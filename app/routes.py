@@ -52,24 +52,32 @@ def add_reminder():
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
 def get_reminder(rem_id): # Read
-    """Example endpoint returning a list of colors by palette
-    This is using docstrings for specifications.
+    """Endpoint returning reminder with a specified id
     ---
     parameters:
-      - name: palette
+      - name: rem_id
         in: path
-        type: string
-        enum: ['all', 'rgb', 'cmyk']
+        type: integer
         required: true
         default: all
     definitions:
-      Palette:
+      Reminder:
         type: object
         properties:
-          palette_name:
-            type: array
-            items:
-              $ref: '#/definitions/Color'
+          id:
+            type: integer
+          user_id: 
+            type: integer
+          tag_id: 
+            type: integer
+          subject_id: 
+            type: integer
+          date: 
+            type: string
+          bg_color: 
+            type: string
+          content: 
+            type: string
       Color:
         type: string
     responses:
