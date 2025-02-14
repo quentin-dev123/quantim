@@ -659,7 +659,7 @@ hr {
 </div>
 
 <!-- Confirmation modal -->
-<div id="id01" class="my_modal">
+<div id="confirmation_modal" class="my_modal">
   <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
   <form class="my_modal-content  my_animate">
     <div class="my_container">
@@ -799,13 +799,6 @@ hr {
    }
 
 	
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  let modal = document.getElementById('mySidenav');
-  if (event.target == modal) {
-    close_modal();
-  }
-}
 
 	
 // Secret Sidenav menu
@@ -884,16 +877,11 @@ async function confirmAction(ressourceLink, reminder) {
   // Implement error logic here
 }  
 
-// Confirmation modal
-// When the user clicks anywhere outside of the modal, close it
-let confirmation_modal = document.getElementById('id01');
-window.onclick = function(event) {
-  if (event.target == confirmation_modal) {
-    close_modal();
-  }
-}
 
-function close_modal() {
+	
+// Confirmation modal
+
+function close_confirmation_modal() {
 	confirmation_modal.style.display = "none";
 }
 
@@ -904,6 +892,31 @@ function open_modal(fetchRoute, reminder) {
     event.preventDefault();
     confirmAction(fetchRoute, reminder);
   })
+}
+
+
+
+
+
+
+
+
+
+
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  let Sidenav = document.getElementById('mySidenav');
+  if (event.target == Sidenav) {
+    close_modal();
+  }
+  if (event.target == confirmation_modal) {
+    close_confirmation_modal();
+  }
+  var editmodal = document.getElementById('id01');
+  if (event.target == editmodal) {
+    open_close_modal();
+  }
 }
 </script>
 
@@ -933,17 +946,12 @@ function open_modal(fetchRoute, reminder) {
 // Get the modal
 var modal = document.getElementById('id01');
 
-function open_close_modal () {
+function open_close_modal() {
     modal.classList.toggle("hidden");
 }
 
 
 // When the user clicks anywhere outside of the modal2, close it, if clicked and modal 2 closed, redirect
-window.onclick = function(event) {
-  if (event.target == modal) {
-    close_modal();
-  }
-}
 
 const form = document.getElementById("form");
 form.addEventListener('submit',  async (event) => {
