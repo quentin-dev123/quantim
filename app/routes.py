@@ -84,7 +84,7 @@ def get_reminder(rem_id): # Read
       200:
         description: A reminder object
         schema:
-          type: Reminder
+          $ref: '#/definitions/Color'
         examples:
           rgb: ['red', 'green', 'blue']
     """
