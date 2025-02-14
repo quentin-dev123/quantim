@@ -78,15 +78,13 @@ def get_reminder(rem_id): # Read
             type: string
           content: 
             type: string
-      Color:
-        type: string
     responses:
       200:
         description: A reminder object
         schema:
           $ref: '#/definitions/Reminder'
         examples:
-          {
+          application/json: {
             "content": "An example content of a reminder",
             "date": "2027-02-24T00:00:00",
             "id": 54,
@@ -97,20 +95,21 @@ def get_reminder(rem_id): # Read
       403:
         description: The reminder with the specified id belongs to someone else
         schema:
-          type: string
-        examples:
-          {
-            "message": "Not logged into the account of the reminder"
-          }
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
+          type: object
           properties:
             message:
               type: string
         examples:
-          message: "Reminder not found"
+          application/json: {"message": "Not logged into the account of the reminder"}
+      404:
+        description: The reminder with the specified id was not found
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: {"message": "Reminder not found"}
     """
     reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminders is not None:
@@ -126,30 +125,30 @@ def get_reminder(rem_id): # Read
 def get_reminders(): # Read
     """API returning all reminders linked to your account
     ---
-    parameters:
-      - name: palette
-        in: path
-        type: string
-        enum: ['all', 'rgb', 'cmyk']
-        required: true
-        default: all
-    definitions:
-      Palette:
-        type: object
-        properties:
-          palette_name:
-            type: array
-            items:
-              $ref: '#/definitions/Color'
-      Color:
-        type: string
     responses:
       200:
-        description: A list of colors (may be filtered by palette)
+        description: A list of all reminders sorted chronologically by date property
         schema:
-          $ref: '#/definitions/Palette'
+        type: array
+        items:
+          $ref: '#/definitions/Reminder'
         examples:
-          rgb: ['red', 'green', 'blue']
+          application/json: [{
+            "content": "An example content of a reminder",
+            "date": "2027-02-24T00:00:00",
+            "id": 54,
+            "subject_id": 36,
+            "tag_id": 29,
+            "user_id": 167
+          },
+          {
+            "content": "An other example content of a reminder",
+            "date": "2028-02-24T00:00:00",
+            "id": 55,
+            "subject_id": 78,
+            "tag_id": 5,
+            "user_id": 167
+          }]
     """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
