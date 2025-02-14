@@ -869,7 +869,7 @@ async function confirmAction(ressourceLink, reminder) {
   let result = await response.json();
   if (response.ok) {
     console.log(result.message);
-    close_modal();
+    close_confirmation_modal();
     const element = document.getElementById(reminder);
     element.remove();
   }
