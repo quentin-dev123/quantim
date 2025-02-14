@@ -84,7 +84,7 @@ def get_reminder(rem_id): # Read
       200:
         description: A reminder object
         schema:
-          $ref: '#/definitions/Color'
+          $ref: '#/definitions/Reminder'
         examples:
           {
             "content": "An example content of a reminder",
