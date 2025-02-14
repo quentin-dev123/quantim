@@ -106,6 +106,9 @@ def get_reminder(rem_id): # Read
         description: The reminder with the specified id was not found
         schema:
           type: string
+          properties:
+            message:
+              type: string
         examples:
           response: {"message": "Reminder not found"}
     """
