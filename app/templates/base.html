@@ -597,11 +597,11 @@ window.onclick = function(event) {
 }
 
 function close_modal() {
-	modal.style.display = "none";
+	confirmation_modal.style.display = "none";
 }
 
 function open_modal(fetchRoute, reminder) {
-	modal.style.display = "block";
+	confirmation_modal.style.display = "block";
   let confirm_form = modal.querySelector("form");
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
