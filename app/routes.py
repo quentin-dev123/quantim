@@ -86,7 +86,30 @@ def get_reminder(rem_id): # Read
         schema:
           $ref: '#/definitions/Color'
         examples:
-          rgb: ['red', 'green', 'blue']
+          {
+            "content": "An example content of a reminder",
+            "date": "2027-02-24T00:00:00",
+            "id": 54,
+            "subject_id": 36,
+            "tag_id": 29,
+            "user_id": 167
+          }
+      403:
+        description: The reminder with the specified id belongs to someone else
+        schema:
+          type: string
+        examples:
+          {
+            "message": "Not logged into the account of the reminder"
+          }
+      404:
+        description: The reminder with the specified id was not found
+        schema:
+          type: string
+        examples:
+          {
+            "message": "Reminder not found"
+          }
     """
     reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminders is not None:
