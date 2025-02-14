@@ -82,9 +82,9 @@ def get_reminder(rem_id): # Read
         type: string
     responses:
       200:
-        description: A list of colors (may be filtered by palette)
+        description: A reminder object
         schema:
-          $ref: '#/definitions/Palette'
+          type: Reminder
         examples:
           rgb: ['red', 'green', 'blue']
     """
