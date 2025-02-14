@@ -110,7 +110,7 @@ def get_reminder(rem_id): # Read
             message:
               type: string
         examples:
-          response: {"message": "Reminder not found"}
+          message: "Reminder not found"
     """
     reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminders is not None:
