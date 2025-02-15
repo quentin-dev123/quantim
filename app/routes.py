@@ -52,7 +52,7 @@ def add_reminder():
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
 def get_reminder(rem_id): # Read
-    """Endpoint returning reminder with a specified id
+    """Endpoint returning reminder with a specified id (must be logged in)
     ---
     parameters:
       - name: rem_id
@@ -66,18 +66,22 @@ def get_reminder(rem_id): # Read
         properties:
           id:
             type: integer
+            example: 1478
           user_id: 
             type: integer
+            example: 3927
           tag_id: 
             type: integer
+            example: 8370
           subject_id: 
             type: integer
+            example: 9239
           date: 
             type: string
-          bg_color: 
-            type: string
+            example: 2026-12-31T00:00:00
           content: 
             type: string
+            example: Create an account on quantix.pythonanywhere.com
     responses:
       200:
         description: A reminder object
@@ -123,7 +127,7 @@ def get_reminder(rem_id): # Read
 @app.route("/api/reminder")
 @login_required
 def get_reminders(): # Read
-    """API returning all reminders linked to your account
+    """API returning all reminders linked to your account (must be logged in)
     ---
     responses:
       200:
@@ -157,6 +161,53 @@ def get_reminders(): # Read
 @app.route("/api/reminder", methods=["POST"])
 @login_required
 def create_reminders(): # Create
+    """Endpoint to create reminders
+    ---
+    description: Endpoint to create new reminders linked to your account (must be logged in)
+    parameters:
+      - name: body
+        in: body
+        required: True
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              example: Have a good day :)
+            date:
+              type: string
+              example: 2027-01-01T00:00:00
+            subject_id:
+              type: integer
+              example: 8888
+            tag_id:
+              type: integer
+              example: 1234
+    responses:
+      200:
+        description: A list of all reminders sorted chronologically by date property
+        schema:
+        type: array
+        items:
+          $ref: '#/definitions/Reminder'
+        examples:
+          application/json: [{
+            "content": "An example content of a reminder",
+            "date": "2027-02-24T00:00:00",
+            "id": 54,
+            "subject_id": 36,
+            "tag_id": 29,
+            "user_id": 167
+          },
+          {
+            "content": "An other example content of a reminder",
+            "date": "2028-02-24T00:00:00",
+            "id": 55,
+            "subject_id": 78,
+            "tag_id": 5,
+            "user_id": 167
+          }]
+    """
     data = json.loads(request.data)
     reminder = Reminder(
         content=data.get("content"), 
