@@ -52,8 +52,9 @@ def add_reminder():
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
 def get_reminder(rem_id): # Read
-    """Endpoint returning reminder with a specified id (must be logged in)
+    """Endpoint to read a reminder
     ---
+    description: Endpoint returning reminder with a specified id (must be logged in)
     parameters:
       - name: rem_id
         in: path
@@ -114,6 +115,8 @@ def get_reminder(rem_id): # Read
               type: string
         examples:
           application/json: {"message": "Reminder not found"}
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
     """
     reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminders is not None:
@@ -127,8 +130,9 @@ def get_reminder(rem_id): # Read
 @app.route("/api/reminder")
 @login_required
 def get_reminders(): # Read
-    """API returning all reminders linked to your account (must be logged in)
+    """Endpoint to read reminders
     ---
+    description: Endpoint returning all reminders linked to your account (must be logged in)
     responses:
       200:
         description: A list of all reminders sorted chronologically by date property
@@ -153,6 +157,8 @@ def get_reminders(): # Read
             "tag_id": 5,
             "user_id": 167
           }]
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
     """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
@@ -185,45 +191,113 @@ def create_reminders(): # Create
               example: 1234
     responses:
       200:
-        description: A list of all reminders sorted chronologically by date property
+        description: A validation message along with the id of the newly created reminder
         schema:
-        type: array
-        items:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Reminder created succesfully
+            rem_id:
+              type: integer
+              example: 12345
+        examples:
+          application/json: {"message": "Reminder was created succesfully", "rem_id": 54321}
+      404:
+        description: Meaning one of the params of the request was not found in the database 
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Tag requested not found
+        examples:
+          application/json: {"message": "Subject requested not found"}
+      403:
+        description: Meaning one of the params of the request was found but doesnt belong to your account
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Tag requested not linked to your account
+        examples:
+          application/json: {"message": "Subject requested not linked to your account"}
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    data = json.loads(request.data)
+    tag_id=data.get("tag_id")
+    subject_id=data.get("subject_id")
+    tag=Tag.query.get(tag_id)
+    subject=Subject.query.get(subject_id)
+    if tag:
+        if subject:
+            if tag.user_id == current_user.id:
+                if subject.user_id == current_user.id:
+                    reminder = Reminder(
+                        content=data.get("content"), 
+                        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+                        user=current_user,
+                        user_id=current_user.id,
+                        tag_id=tag_id,
+                        subject_id=subject_id
+                    )
+                    db.session.add(reminder)
+                    db.session.commit()
+                    return jsonify({"message": "Reminder created succesfully", "rem_id": reminder.reminder_id}), 200
+                return jsonify({"message": "Subject requested not linked to your account"}), 403
+            return jsonify({"message": "Tag requested not linked to your account"}), 403
+        return jsonify({"message": "Subject requested not found"}), 404
+    return jsonify({"message": "Tag requested not found"}), 404
+        
+
+@app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
+@login_required
+def delete_reminders(rem_id): # Delete
+    """Endpoint to delete a reminder
+    ---
+    description: Endpoint to delete a reminder with a specified id (must be logged in)
+    parameters:
+      - name: rem_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: A reminder object
+        schema:
           $ref: '#/definitions/Reminder'
         examples:
-          application/json: [{
+          application/json: {
             "content": "An example content of a reminder",
             "date": "2027-02-24T00:00:00",
             "id": 54,
             "subject_id": 36,
             "tag_id": 29,
             "user_id": 167
-          },
-          {
-            "content": "An other example content of a reminder",
-            "date": "2028-02-24T00:00:00",
-            "id": 55,
-            "subject_id": 78,
-            "tag_id": 5,
-            "user_id": 167
-          }]
+          }
+      403:
+        description: The reminder with the specified id belongs to someone else
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: {"message": "Not logged into the account of the reminder"}
+      404:
+        description: The reminder with the specified id was not found
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: {"message": "Reminder not found"}
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
     """
-    data = json.loads(request.data)
-    reminder = Reminder(
-        content=data.get("content"), 
-        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
-        user=current_user,
-        user_id=current_user.id,
-        tag_id=data.get("tag_id"),
-        subject_id=data.get("subject_id")
-    )
-    db.session.add(reminder)
-    db.session.commit()
-    return jsonify({"message": "Reminder created succesfully"}), 200
-
-@app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
-@login_required
-def delete_reminders(rem_id): # Delete
     reminder = Reminder.query.filter_by(reminder_id=rem_id).first()
     if reminder:
         if reminder.user_id == current_user.id: # Layer of security
