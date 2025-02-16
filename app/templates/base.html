@@ -866,9 +866,8 @@ function toggleDarkness(index) {
 
 async function confirmAction(ressourceLink, reminder) {
   let response = await fetch(ressourceLink, {method: 'DELETE'});
-  let result = await response.json();
   if (response.ok) {
-    console.log(result.message);
+    console.log(response);
     close_confirmation_modal();
     const element = document.getElementById(reminder);
     element.remove();

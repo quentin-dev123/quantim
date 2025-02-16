@@ -60,7 +60,6 @@ def get_reminder(rem_id): # Read
         in: path
         type: integer
         required: true
-        default: all
     definitions:
       Reminder:
         type: object
@@ -191,18 +190,18 @@ def create_reminders(): # Create
               example: 1234
     responses:
       200:
-        description: A validation message along with the id of the newly created reminder
+        description: Returns the newly created reminder
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Reminder created succesfully
-            rem_id:
-              type: integer
-              example: 12345
+          $ref: '#/definitions/Reminder'
         examples:
-          application/json: {"message": "Reminder was created succesfully", "rem_id": 54321}
+          application/json: {
+            "content": "Don't forget to smile :)",
+            "date": "2025-05-25T00:00:00",
+            "id": 1234,
+            "subject_id": 5678,
+            "tag_id": 8765,
+            "user_id": 4321
+          }
       404:
         description: Meaning one of the params of the request was not found in the database 
         schema:
@@ -211,8 +210,6 @@ def create_reminders(): # Create
             message:
               type: string
               example: Tag requested not found
-        examples:
-          application/json: {"message": "Subject requested not found"}
       403:
         description: Meaning one of the params of the request was found but doesnt belong to your account
         schema:
@@ -221,10 +218,8 @@ def create_reminders(): # Create
             message:
               type: string
               example: Tag requested not linked to your account
-        examples:
-          application/json: {"message": "Subject requested not linked to your account"}
       500:
-        description: An error ocurred internally. This isn't planned and can have many causes
+        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
     """
     data = json.loads(request.data)
     tag_id=data.get("tag_id")
@@ -245,7 +240,7 @@ def create_reminders(): # Create
                     )
                     db.session.add(reminder)
                     db.session.commit()
-                    return jsonify({"message": "Reminder created succesfully", "rem_id": reminder.reminder_id}), 200
+                    return jsonify(reminder.to_json()), 200
                 return jsonify({"message": "Subject requested not linked to your account"}), 403
             return jsonify({"message": "Tag requested not linked to your account"}), 403
         return jsonify({"message": "Subject requested not found"}), 404
@@ -265,36 +260,20 @@ def delete_reminders(rem_id): # Delete
         required: true
     responses:
       200:
-        description: A reminder object
+        description: A validation message
         schema:
-          $ref: '#/definitions/Reminder'
-        examples:
-          application/json: {
-            "content": "An example content of a reminder",
-            "date": "2027-02-24T00:00:00",
-            "id": 54,
-            "subject_id": 36,
-            "tag_id": 29,
-            "user_id": 167
-          }
+          type: string
+          example: Reminder deleted succesfully
       403:
-        description: The reminder with the specified id belongs to someone else
+        description: The reminder you're trying to delete doesn't belong to you
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-        examples:
-          application/json: {"message": "Not logged into the account of the reminder"}
+          type: string
+          example: Not logged into the account of the reminder
       404:
         description: The reminder with the specified id was not found
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-        examples:
-          application/json: {"message": "Reminder not found"}
+          type: string
+          example: Reminder not found
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
@@ -303,30 +282,74 @@ def delete_reminders(rem_id): # Delete
         if reminder.user_id == current_user.id: # Layer of security
             db.session.delete(reminder)
             db.session.commit()
-            return jsonify({"message":"Reminder deleted succesfully"}), 200
+            return "Reminder deleted succesfully", 200
         else:
-            return jsonify({"message": "Not logged in the right account"}), 403
+            return "Not logged in the right account", 403
     else:
-        return jsonify({"message": "Reminder not found"}), 404
+        return "Reminder not found", 404
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
 def update_reminders(rem_id): # Update ~~ Not complete
+    """Endpoint to update a reminder
+    ---
+    description: Endpoint to update a reminder with a specified id (must be logged in)
+    parameters:
+      - name: rem_id
+        in: path
+        type: integer
+        required: true
+      - name: body
+        in: body
+        required: True
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              example: Don't worry, be happy
+            date:
+              type: string
+              example: 2027-01-01
+            subject_id:
+              type: integer
+              example: 4321
+            tag_id:
+              type: integer
+              example: 1234
+    responses:
+      200:
+        description: A validation message
+        schema:
+          type: string
+          example: Reminder updated succesfully
+      403:
+        description: The reminder you're trying to update doesn't belong to you
+        schema:
+          type: string
+          example: Not logged into the account of the reminder
+      404:
+        description: The reminder with the specified id was not found
+        schema:
+          type: string
+          example: Reminder not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
+    """
     data = json.loads(request.data)
-    reminder = Reminder(
-        content=data.get("content"), 
-        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
-        user=current_user,
-        user_id=current_user.id,
-        tag_id=data.get("tag_id"),
-        subject_id=data.get("subject_id")
-    )
     db_reminder = Reminder.query.get(rem_id)
-    if db_reminder.user_id == current_user.id:
-        db_reminder.update(reminder)
-        db.session.commit()
-        return jsonify({"message": "Reminder updated succesfully"}), 200
-    return jsonify({"message": "Not loggedi in the account of the reminder"}), 403
+    if db_reminder:
+      if db_reminder.user_id == current_user.id:
+          db_reminder.content = data.get("content")
+          db_reminder.date = datetime.strptime(data.get("date"), "%Y-%m-%d")
+          db_reminder.user = current_user
+          db_reminder.user_id = current_user.id
+          db_reminder.tag_id = data.get("tag_id")
+          db_reminder.subject_id = data.get("subject_id")
+          db.session.commit()
+          return "Reminder updated succesfully", 200
+      return "Not logged in the account of the reminder", 403
+    return "Reminder not found", 404
 
 
 @app.route("/api/subject", methods=["GET", "POST"])
