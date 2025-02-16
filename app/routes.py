@@ -51,9 +51,11 @@ def add_reminder():
 # API ~~ CRUD functions
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
-def get_reminder(rem_id): # Read
+def get_reminder(rem_id): # Read one
     """Endpoint to read a reminder
     ---
+    tags:
+      - Reminder CRUD operations
     description: Endpoint returning reminder with a specified id (must be logged in)
     parameters:
       - name: rem_id
@@ -99,21 +101,13 @@ def get_reminder(rem_id): # Read
       403:
         description: The reminder with the specified id belongs to someone else
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-        examples:
-          application/json: {"message": "Not logged into the account of the reminder"}
+          type: string
+          example: Not logged into the account of the reminder
       404:
         description: The reminder with the specified id was not found
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-        examples:
-          application/json: {"message": "Reminder not found"}
+          type: string
+          example: Reminder not found
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
@@ -122,15 +116,17 @@ def get_reminder(rem_id): # Read
         if reminders.user_id == current_user.id:
             return jsonify(reminders.to_json()), 200
         else:
-            return jsonify({"message": "Not logged into the account of the reminder"}), 403
+            return "Not logged into the account of the reminder", 403
     else:
-        return jsonify({"message": "Reminder not found"}), 404
+        return "Reminder not found", 404
     
 @app.route("/api/reminder")
 @login_required
-def get_reminders(): # Read
+def get_reminders(): # Read all
     """Endpoint to read reminders
     ---
+    tags:
+      - Reminder CRUD operations
     description: Endpoint returning all reminders linked to your account (must be logged in)
     responses:
       200:
@@ -168,6 +164,8 @@ def get_reminders(): # Read
 def create_reminders(): # Create
     """Endpoint to create reminders
     ---
+    tags:
+      - Reminder CRUD operations
     description: Endpoint to create new reminders linked to your account (must be logged in)
     parameters:
       - name: body
@@ -252,6 +250,8 @@ def create_reminders(): # Create
 def delete_reminders(rem_id): # Delete
     """Endpoint to delete a reminder
     ---
+    tags:
+      - Reminder CRUD operations
     description: Endpoint to delete a reminder with a specified id (must be logged in)
     parameters:
       - name: rem_id
@@ -290,9 +290,11 @@ def delete_reminders(rem_id): # Delete
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
-def update_reminders(rem_id): # Update ~~ Not complete
+def update_reminders(rem_id): # Update
     """Endpoint to update a reminder
     ---
+    tags:
+      - Reminder CRUD operations
     description: Endpoint to update a reminder with a specified id (must be logged in)
     parameters:
       - name: rem_id
@@ -339,25 +341,38 @@ def update_reminders(rem_id): # Update ~~ Not complete
     data = json.loads(request.data)
     db_reminder = Reminder.query.get(rem_id)
     if db_reminder:
-      if db_reminder.user_id == current_user.id:
-          db_reminder.content = data.get("content")
-          db_reminder.date = datetime.strptime(data.get("date"), "%Y-%m-%d")
-          db_reminder.user = current_user
-          db_reminder.user_id = current_user.id
-          db_reminder.tag_id = data.get("tag_id")
-          db_reminder.subject_id = data.get("subject_id")
-          db.session.commit()
-          return "Reminder updated succesfully", 200
-      return "Not logged in the account of the reminder", 403
+        if db_reminder.user_id == current_user.id:
+            db_reminder.content = data.get("content")
+            db_reminder.date = datetime.strptime(data.get("date"), "%Y-%m-%d")
+            db_reminder.user = current_user
+            db_reminder.user_id = current_user.id
+            db_reminder.tag_id = data.get("tag_id")
+            db_reminder.subject_id = data.get("subject_id")
+            db.session.commit()
+            return "Reminder updated succesfully", 200
+        return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
 
 
-@app.route("/api/subject", methods=["GET", "POST"])
+@app.route("/api/subject")
 @login_required
-def subjects():
-    if request.method == "GET":
-        subjects = Subject.query.filter_by(user_id=current_user.id).all()
-        return jsonify([s.to_json() for s in subjects])
+def get_subjects(): # Read all
+    subjects = Subject.query.filter_by(user_id=current_user.id).all()
+    return jsonify([s.to_json() for s in subjects])
+
+@app.route("/api/subject/<int:subject_id>")
+@login_required
+def get_subject(subject_id): # Read one
+    subject = Subject.query.get(subject_id)
+    if subject:
+        if subject.user_id == current_user.id:
+            return jsonify(subject.to_json())
+        return "Not logged in the account of the subject", 403
+    return "Subject not found", 404
+
+@app.route("/api/subject", methods=["POST"])
+@login_required
+def create_subjects(): # Create 
     data = json.loads(request.data)
     if Subject.query.filter_by(content=data.get("content"), user_id=current_user.id).first() is None:
         subject = Subject(
@@ -370,7 +385,7 @@ def subjects():
         db.session.commit()
         return jsonify(subject.to_json()), 200
     else:
-        return jsonify({"message": "Une matière avec le même nom existe déjà"}), 400
+        return "Une matière avec le même nom existe déjà", 400
         
 @app.route("/api/tag", methods=["GET", "POST"]) 
 @login_required

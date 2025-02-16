@@ -157,9 +157,8 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         },
         body: JSON.stringify(userAnswers)
     });
-    const response = await result.json();
     if (result.ok) {
-        console.log(response["content"])
+        const response = await result.json();
         let selectElem = document.getElementById(select_id);
         let optionGroup = selectElem.querySelector('optgroup');
         let option = document.createElement("option");
@@ -170,13 +169,7 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         let created_index = findIndexfromOptionName(selectElem, option.value)
         selectElem.selectedIndex = created_index;
     } else if (result.status === 400) {
-        alertText.innerHTML = response["message"];
-        if (response["link_display"]) {
-            alertLink.innerHTML = response["link_display"];
-            alertLink.href = response["link_href"];
-        } else {
-            alertLink.innerHTML = "";
-        }
+        alertText.innerHTML = result;
         alertDiv.style.display = "block";
     }
 }
