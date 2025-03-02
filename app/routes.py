@@ -1,7 +1,7 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os
+import os, pronotepy
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
@@ -492,3 +492,26 @@ def logout():
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect(url_for('login'))
+
+@app.route("/login_pronote")
+@login_required
+def get_login_pronote():
+    return render_template("login_pronote.html")
+
+@app.route("/login_pronote", methods=["POST"])
+@login_required
+def login_pronote():
+    if request.data:
+        data = json.loads(request.data)
+        try:
+            client = pronotepy.Client(
+                'https://pronote.fis.edu.hk/eleve.html',
+                username=data.get('username'),
+                password=data.get('password'),
+            )
+            current_user.pronote_username = client.username
+            current_user.pronote_username = client.password
+            db.session.commit()
+            return "", 200
+        except pronotepy.CryptoError:
+            return "Le mot de passe ou l'identifiant est incorrect", 400  # the client has failed to log in
