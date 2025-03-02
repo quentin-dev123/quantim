@@ -501,6 +501,41 @@ def get_login_pronote():
 @app.route("/login_pronote", methods=["POST"])
 @login_required
 def login_pronote():
+    """Endpoint to add your PRONOTE credentials
+    ---
+    tags:
+      - User Verification
+    description: Endpoint to link your PRONOTE account to get reminders from PRONOTE homeworks. This can also be used to update your credentials. (This function is currently only available for students of FIS Hong Kong)
+    parameters:
+      - name: body
+        in: body
+        required: True
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              example: AmbitiousDevelopper5498
+            password:
+              type: string
+              example: MySecretPassword
+    responses:
+      200:
+        description: A validation message
+        schema:
+          type: string
+          example: Succesfully logged into PRONOTE
+      400:
+        description: The credentials you provided are incorrect. Throws an error message (in french)
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Le mot de passe ou l'identifiant est incorrect
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes.
+    """
     if request.data:
         data = json.loads(request.data)
         try:
@@ -512,6 +547,6 @@ def login_pronote():
             current_user.pronote_username = client.username
             current_user.pronote_username = client.password
             db.session.commit()
-            return "", 200
+            return "Succesfully logged into PRONOTE", 200
         except pronotepy.CryptoError:
-            return "Le mot de passe ou l'identifiant est incorrect", 400  # the client has failed to log in
+            return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
