@@ -8,7 +8,9 @@ certifi==2025.1.31
 charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
+colorist==1.8.3
 flasgger==0.9.7b2
+PyYAML==6.0.2
 Flask==3.1.0
 Flask-Bcrypt==1.0.1
 Flask-Login==0.6.3
