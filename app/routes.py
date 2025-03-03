@@ -7,7 +7,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from git import Repo
 from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db, swagger
-from datetime import datetime
+from datetime import datetime, date
 from operator import attrgetter
 
 from .models import Tag, Subject, Reminder, User
@@ -155,16 +155,16 @@ def get_reminders(): # Read all
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    if current_user.pronote_username:
+    if current_user.pronote_username is not None:
         client = pronotepy.Client(
                 'https://pronote.fis.edu.hk/eleve.html',
                 username=current_user.pronote_username,
                 password=current_user.pronote_password,
             )
-        homeworks = client.homework(date_from=datetime.date.today())
+        homeworks = client.homework(date_from=date.today())
         for homework in homeworks:
             subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-            if not subject:
+            if subject is None:
                 subject = Subject(
                     content=homework.subject.name, 
                     bg_color=homework.background_color,
@@ -172,6 +172,8 @@ def get_reminders(): # Read all
                     user_id=current_user.id
                 )
                 db.session.add(subject)
+                db.session.commit()
+            tag =  Tag.query.filter_by(id=current_user.pronote_tag_id).first()
             reminder = Reminder(
                 content=homework.description, 
                 date=homework.date,
@@ -577,9 +579,10 @@ def login_pronote():
                 user=current_user,
                 user_id=current_user.id
             )
-            current_user.pronote_username = client.username
-            current_user.pronote_username = client.password
             db.session.add(tag)
+            db.session.commit()
+            current_user.pronote_username = client.username
+            current_user.pronote_password = client.password
             current_user.pronote_tag_id = tag.id
             db.session.commit()
             return "Succesfully logged into PRONOTE", 200

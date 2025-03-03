@@ -45,6 +45,7 @@ class Reminder(db.Model):
     reminder_id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
     date = db.Column(db.DateTime, nullable=True)
+    pronote_id = db.Column(db.Integer, nullable=True)
     # --- Relationships --- 
     tag_id = db.Column(db.Integer, db.ForeignKey('Tags.id'))
     subject_id = db.Column(db.Integer, db.ForeignKey('Subjects.id'))
