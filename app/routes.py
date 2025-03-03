@@ -155,6 +155,33 @@ def get_reminders(): # Read all
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
+    if current_user.pronote_username:
+        client = pronotepy.Client(
+                'https://pronote.fis.edu.hk/eleve.html',
+                username=current_user.pronote_username,
+                password=current_user.pronote_password,
+            )
+        homeworks = client.homework(date_from=datetime.date.today())
+        for homework in homeworks:
+            subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+            if not subject:
+                subject = Subject(
+                    content=homework.subject.name, 
+                    bg_color=homework.background_color,
+                    user=current_user,
+                    user_id=current_user.id
+                )
+                db.session.add(subject)
+            reminder = Reminder(
+                content=homework.description, 
+                date=homework.date,
+                user=current_user,
+                user_id=current_user.id,
+                tag_id=current_user.pronote_tag_id,
+                subject_id=subject.id
+            )
+            db.session.add(reminder)
+            db.session.commit()
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -544,8 +571,16 @@ def login_pronote():
                 username=data.get('username'),
                 password=data.get('password'),
             )
+            tag = Tag(
+                content="de PRONOTE", 
+                bg_color="#009853",
+                user=current_user,
+                user_id=current_user.id
+            )
             current_user.pronote_username = client.username
             current_user.pronote_username = client.password
+            db.session.add(tag)
+            current_user.pronote_tag_id = tag.id
             db.session.commit()
             return "Succesfully logged into PRONOTE", 200
         except pronotepy.CryptoError:

@@ -66,8 +66,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
+    # --- PRONOTE --- 
     pronote_username = db.Column(db.String(250), nullable=True)
     pronote_password = db.Column(db.String(250), nullable=True)
+    pronote_tag_id = db.Column(db.Integer, nullable=True)
     # --- Relationships --- 
     reminders = db.relationship("Reminder", backref="user")
     tags = db.relationship("Tag", backref="user")
