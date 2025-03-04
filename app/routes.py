@@ -162,14 +162,29 @@ def get_reminders(): # Read all
                 password=current_user.pronote_password,
             )
         homeworks = client.homework(date_from=date.today())
+        def adjust_color_brightness(color, percent):
+            num = int(color[1:], 16)
+            amt = round(2.55 * percent)
+            r = (num >> 16) + amt
+            g = ((num >> 8) & 0x00FF) + amt
+            b = (num & 0x0000FF) + amt
+        
+            # Clamp the values to the range [0, 255]
+            r = max(0, min(255, r))
+            g = max(0, min(255, g))
+            b = max(0, min(255, b))
+        
+            # Format the result as a hexadecimal color
+            return f"#{(r << 16 | g << 8 | b):06x}"
         for homework in homeworks:
             reminder = Subject.query.filter_by(pronote_id=homework.id, user_id=current_user.id).first()
             if reminder is None:
                 subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
                 if subject is None:
+                    bgColor = adjust_color_brightness(homework.background_color, -20)
                     subject = Subject(
                         content=homework.subject.name, 
-                        bg_color=homework.background_color,
+                        bg_color=bgColor,
                         user=current_user,
                         user_id=current_user.id
                     )
