@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from . import helpers, create_app, db, swagger
 from datetime import datetime, date
 from operator import attrgetter
+from types import NoneType
 
 from .models import Tag, Subject, Reminder, User
 
@@ -177,11 +178,16 @@ def get_reminders(): # Read all
             # Format the result as a hexadecimal color
             return f"#{(r << 16 | g << 8 | b):06x}"
         for homework in homeworks:
-            reminder = Subject.query.filter_by(pronote_id=homework.id, user_id=current_user.id).first()
+            reminder = Reminder.query.filter_by(
+                content=homework.description, 
+                #date=homework.date,
+                user_id=current_user.id,
+                tag_id=current_user.pronote_tag_id
+            ).first()
             if reminder is None:
                 subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
                 if subject is None:
-                    bgColor = adjust_color_brightness(homework.background_color, -20)
+                    bgColor = adjust_color_brightness(homework.background_color, -35)
                     subject = Subject(
                         content=homework.subject.name, 
                         bg_color=bgColor,
@@ -194,7 +200,6 @@ def get_reminders(): # Read all
                 reminder = Reminder(
                     content=homework.description, 
                     date=homework.date,
-                    pronote_id=homework.id,
                     user=current_user,
                     user_id=current_user.id,
                     tag_id=current_user.pronote_tag_id,

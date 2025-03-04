@@ -32,9 +32,9 @@
     } 
           
 async function fetchData () {
-    const tagArr = await loadRessource("/api/tag");
-    const subjectArr = await loadRessource("/api/subject"); 
     let reminderArr = await loadRessource("/api/reminder");
+    let tagArr = await loadRessource("/api/tag");
+    let subjectArr = await loadRessource("/api/subject"); 
     loading = document.getElementById("loading")
     
     // sort reminderArr by date
