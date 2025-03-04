@@ -163,27 +163,30 @@ def get_reminders(): # Read all
             )
         homeworks = client.homework(date_from=date.today())
         for homework in homeworks:
-            subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-            if subject is None:
-                subject = Subject(
-                    content=homework.subject.name, 
-                    bg_color=homework.background_color,
+            reminder = Subject.query.filter_by(pronote_id=homework.id, user_id=current_user.id).first()
+            if reminder is None:
+                subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+                if subject is None:
+                    subject = Subject(
+                        content=homework.subject.name, 
+                        bg_color=homework.background_color,
+                        user=current_user,
+                        user_id=current_user.id
+                    )
+                    db.session.add(subject)
+                    db.session.commit()
+                tag =  Tag.query.filter_by(id=current_user.pronote_tag_id).first()
+                reminder = Reminder(
+                    content=homework.description, 
+                    date=homework.date,
+                    pronote_id=homework.id,
                     user=current_user,
-                    user_id=current_user.id
+                    user_id=current_user.id,
+                    tag_id=current_user.pronote_tag_id,
+                    subject_id=subject.id
                 )
-                db.session.add(subject)
+                db.session.add(reminder)
                 db.session.commit()
-            tag =  Tag.query.filter_by(id=current_user.pronote_tag_id).first()
-            reminder = Reminder(
-                content=homework.description, 
-                date=homework.date,
-                user=current_user,
-                user_id=current_user.id,
-                tag_id=current_user.pronote_tag_id,
-                subject_id=subject.id
-            )
-            db.session.add(reminder)
-            db.session.commit()
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
