@@ -415,10 +415,61 @@ def get_subjects(): # Read all
 @app.route("/api/subject/<int:subject_id>")
 @login_required
 def get_subject(subject_id): # Read one
+    """Endpoint to read a subject
+    ---
+    tags:
+      - Subject CRUD operations
+    description: Endpoint returning a subject with a specified id (must be logged in)
+    parameters:
+      - name: rem_id
+        in: path
+        type: integer
+        required: true
+    definitions:
+      Subject:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 1234
+          content: 
+            type: string
+            example: a good subject
+          bg_color: 
+            type: string
+            example: #ff0000
+          user_id: 
+            type: integer
+            example: 4321
+    responses:
+      200:
+        description: A subject object
+        schema:
+          $ref: '#/definitions/Subject'
+        examples:
+          application/json: {
+            "id": 54,
+            "content": "Coding",
+            "bg_color": "#ff0000",
+            "user_id": 167
+          }
+      403:
+        description: The subject with the specified id belongs to someone else
+        schema:
+          type: string
+          example: Not logged into the account of the subject
+      404:
+        description: The subject with the specified id was not found
+        schema:
+          type: string
+          example: Subject not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
     subject = Subject.query.get(subject_id)
     if subject:
         if subject.user_id == current_user.id:
-            return jsonify(subject.to_json())
+            return jsonify(subject.to_json()), 200
         return "Not logged in the account of the subject", 403
     return "Subject not found", 404
 
