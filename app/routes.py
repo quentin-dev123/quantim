@@ -405,13 +405,6 @@ def update_reminders(rem_id): # Update
         return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
 
-
-@app.route("/api/subject")
-@login_required
-def get_subjects(): # Read all
-    subjects = Subject.query.filter_by(user_id=current_user.id).all()
-    return jsonify([s.to_json() for s in subjects])
-
 @app.route("/api/subject/<int:subject_id>")
 @login_required
 def get_subject(subject_id): # Read one
@@ -473,6 +466,40 @@ def get_subject(subject_id): # Read one
         return "Not logged in the account of the subject", 403
     return "Subject not found", 404
 
+@app.route("/api/subject")
+@login_required
+def get_subjects(): # Read all
+    """Endpoint to read subjects
+    ---
+    tags:
+      - Subject CRUD operations
+    description: Endpoint returning all subjects linked to your account (must be logged in)
+    responses:
+      200:
+        description: A list of all subjects 
+        schema:
+        type: array
+        items:
+          $ref: '#/definitions/Subject'
+        examples:
+          application/json: [{
+              'id': 1234,
+              'content': 'Coding',
+              'bg_color': '#00000',
+              'user_id': '5678'
+          },
+          application/json: [{
+              'id': 1235,
+              'content': 'Coding2',
+              'bg_color': '#00001',
+              'user_id': '5678'
+          },]
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    subjects = Subject.query.filter_by(user_id=current_user.id).all()
+    return jsonify([s.to_json() for s in subjects])
+
 @app.route("/api/subject", methods=["POST"])
 @login_required
 def create_subjects(): # Create 
@@ -509,20 +536,6 @@ def tags():
         return jsonify(tag.to_json()), 200
     else:
         return jsonify({"message": "Un tag avec le même nom existe déjà"}), 400
-    
-@app.route("/api/reminder/delete/<int:reminderId>", methods=["POST"])
-@login_required
-def delete_reminder(reminderId):
-    reminder = Reminder.query.filter_by(reminder_id=reminderId).first()
-    if reminder:
-        if reminder.user_id == current_user.id: # Layer of security
-            db.session.delete(reminder)
-            db.session.commit()
-            return jsonify({"message":"Reminder deleted succesfully"}), 200
-        else:
-            return jsonify({"message": "Not logged in the right account"}), 403
-    else:
-        return jsonify({"message": "Reminder not found"}), 404
         
 #------------------------------------------------------
 # Auto deploy
