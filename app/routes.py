@@ -488,7 +488,7 @@ def get_subjects(): # Read all
               'bg_color': '#00000',
               'user_id': '5678'
           },
-          application/json: [{
+          {
               'id': 1235,
               'content': 'Coding2',
               'bg_color': '#00001',
