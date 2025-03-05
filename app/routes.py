@@ -299,7 +299,7 @@ def create_reminders(): # Create
 
 @app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
 @login_required
-def delete_reminders(rem_id): # Delete
+def delete_reminder(rem_id): # Delete one
     """Endpoint to delete a reminder
     ---
     tags:
@@ -339,6 +339,29 @@ def delete_reminders(rem_id): # Delete
             return "Not logged in the right account", 403
     else:
         return "Reminder not found", 404
+    
+@app.route("/api/reminder", methods=["DELETE"])
+@login_required
+def delete_reminders(): # Delete all
+    """Endpoint to delete reminders
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint deleting all reminders linked to your account (must be logged in)
+    responses:
+      200:
+        description: A confirmation message
+        schema:
+          type: string
+          example: Reminders deleted succesfully
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+    for reminder in reminders:
+        db.session.delete(reminder)
+    db.session.commit()
+    return "Reminders deleted succesfully", 200
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
