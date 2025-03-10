@@ -872,6 +872,8 @@ async function confirmAction(ressourceLink, reminder) {
     close_confirmation_modal();
     const element = document.getElementById(reminder);
     element.remove();
+  } else {
+    console.log(response);
   }
   // Implement error logic here
 }  
@@ -943,7 +945,7 @@ window.onclick = function(event) {
 
 <script>
 // Get the modal
-var modal = document.getElementById('id01');
+var modal = document.getElementById('confirmation_modal');
 
 function open_close_modal() {
     modal.classList.toggle("hidden");
