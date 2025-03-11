@@ -11,7 +11,7 @@ from datetime import datetime, date
 from operator import attrgetter
 from types import NoneType
 
-from .models import Tag, Subject, Reminder, User
+from .models import Tag, Subject, Reminder, Pronote_homework, User
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -41,8 +41,7 @@ def home():
 @app.route('/agenda')
 @login_required
 def agenda():
-    reminders = Reminder.query.all()
-    return render_template('agenda.html', title="Agenda Personnel", user="test", reminders=reminders)
+    return render_template('agenda.html', title="Agenda Personnel", user="test")
 
 @app.route('/add_reminder')
 @login_required
@@ -50,6 +49,54 @@ def add_reminder():
     return render_template("add_reminder.html")
 #------------------------------------------------------
 # API ~~ CRUD functions
+
+@app.route("/api/reminder/recover_pronote")
+@login_required
+def recover_homeworks(): # Recover all PRONOTE
+    """Endpoint to recover PRONOTE homeworks
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint recovering all deleted PRONOTE homeworks linked to your account (must be logged in and have a linked PRONOTE account)
+    responses:
+      200:
+        description: A list of all thee recovered reminders sorted chronologically by date property
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Reminder'
+      401:
+        description: You are unauthenticated (you haven't linked your account to a PRONOTE account)
+        schema:
+          type: string
+          example: No PRONOTE account linked to your account
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    if current_user.pronote_username is not None:
+        homeworks = Pronote_homework.query.filter_by(hidden=True, user_id=current_user.id)
+        reminders = []
+        for homework in homeworks:
+            subject = Subject.query.get(homework.subject_id)
+            reminder = Reminder(
+                content=homework.content, 
+                date=homework.date,
+                user=current_user,
+                user_id=current_user.id,
+                tag_id=current_user.pronote_tag_id,
+                subject_id=subject.id
+            )
+            db.session.add(reminder)
+            db.session.commit()
+            homework.hidden = False
+            homework.reminder = reminder
+            reminder.pronote = homework
+            db.session.commit()
+            reminders.append(reminder)
+        sorted_rems = sorted(reminders, key=attrgetter('date'))
+        return jsonify([r.to_json() for r in sorted_rems]), 200
+    return "No PRONOTE account linked to your account", 401
+
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
 def get_reminder(rem_id): # Read one
@@ -90,15 +137,6 @@ def get_reminder(rem_id): # Read one
         description: A reminder object
         schema:
           $ref: '#/definitions/Reminder'
-        examples:
-          application/json: {
-            "content": "An example content of a reminder",
-            "date": "2027-02-24T00:00:00",
-            "id": 54,
-            "subject_id": 36,
-            "tag_id": 29,
-            "user_id": 167
-          }
       403:
         description: The reminder with the specified id belongs to someone else
         schema:
@@ -112,7 +150,7 @@ def get_reminder(rem_id): # Read one
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    reminders = Reminder.query.filter_by(reminder_id=rem_id).first()
+    reminders = Reminder.query.get(rem_id)
     if reminders is not None:
         if reminders.user_id == current_user.id:
             return jsonify(reminders.to_json()), 200
@@ -133,61 +171,28 @@ def get_reminders(): # Read all
       200:
         description: A list of all reminders sorted chronologically by date property
         schema:
-        type: array
-        items:
-          $ref: '#/definitions/Reminder'
-        examples:
-          application/json: [{
-            "content": "An example content of a reminder",
-            "date": "2027-02-24T00:00:00",
-            "id": 54,
-            "subject_id": 36,
-            "tag_id": 29,
-            "user_id": 167
-          },
-          {
-            "content": "An other example content of a reminder",
-            "date": "2028-02-24T00:00:00",
-            "id": 55,
-            "subject_id": 78,
-            "tag_id": 5,
-            "user_id": 167
-          }]
+          type: array
+          items:
+            $ref: '#/definitions/Reminder'
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if current_user.pronote_username is not None:
         client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=current_user.pronote_username,
-                password=current_user.pronote_password,
-            )
+            'https://pronote.fis.edu.hk/eleve.html',
+            username=current_user.pronote_username,
+            password=current_user.pronote_password,
+        )
         homeworks = client.homework(date_from=date.today())
-        def adjust_color_brightness(color, percent):
-            num = int(color[1:], 16)
-            amt = round(2.55 * percent)
-            r = (num >> 16) + amt
-            g = ((num >> 8) & 0x00FF) + amt
-            b = (num & 0x0000FF) + amt
-        
-            # Clamp the values to the range [0, 255]
-            r = max(0, min(255, r))
-            g = max(0, min(255, g))
-            b = max(0, min(255, b))
-        
-            # Format the result as a hexadecimal color
-            return f"#{(r << 16 | g << 8 | b):06x}"
         for homework in homeworks:
-            reminder = Reminder.query.filter_by(
+            my_homework = Pronote_homework.query.filter_by(
                 content=homework.description, 
-                #date=homework.date,
                 user_id=current_user.id,
-                tag_id=current_user.pronote_tag_id
             ).first()
-            if reminder is None:
+            if my_homework is None:
                 subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
                 if subject is None:
-                    bgColor = adjust_color_brightness(homework.background_color, -35)
+                    bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
                     subject = Subject(
                         content=homework.subject.name, 
                         bg_color=bgColor,
@@ -196,7 +201,6 @@ def get_reminders(): # Read all
                     )
                     db.session.add(subject)
                     db.session.commit()
-                tag =  Tag.query.filter_by(id=current_user.pronote_tag_id).first()
                 reminder = Reminder(
                     content=homework.description, 
                     date=homework.date,
@@ -206,6 +210,18 @@ def get_reminders(): # Read all
                     subject_id=subject.id
                 )
                 db.session.add(reminder)
+                db.session.commit()
+                my_homework = Pronote_homework(
+                    content=homework.description, 
+                    date=homework.date,
+                    hidden=False,
+                    reminder=reminder,
+                    user_id=current_user.id,
+                    tag_id=current_user.pronote_tag_id,
+                    subject_id=subject.id
+                )
+                db.session.add(my_homework)
+                reminder.pronote = my_homework
                 db.session.commit()
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
@@ -329,9 +345,13 @@ def delete_reminder(rem_id): # Delete one
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    reminder = Reminder.query.filter_by(reminder_id=rem_id).first()
+    reminder = Reminder.query.get(rem_id)
     if reminder:
         if reminder.user_id == current_user.id: # Layer of security
+            if reminder.pronote_id is not None:
+                pronote = reminder.pronote
+                pronote.hidden = True
+                pronote.reminder = None
             db.session.delete(reminder)
             db.session.commit()
             return "Reminder deleted succesfully", 200
@@ -359,6 +379,10 @@ def delete_reminders(): # Delete all
     """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     for reminder in reminders:
+        if reminder.pronote_id is not None:
+            pronote = reminder.pronote
+            pronote.hidden = True
+            pronote.reminder = None
         db.session.delete(reminder)
     db.session.commit()
     return "Reminders deleted succesfully", 200
@@ -462,13 +486,6 @@ def get_subject(subject_id): # Read one
         description: A subject object
         schema:
           $ref: '#/definitions/Subject'
-        examples:
-          application/json: {
-            "id": 54,
-            "content": "Coding",
-            "bg_color": "#ff0000",
-            "user_id": 167
-          }
       403:
         description: The subject with the specified id belongs to someone else
         schema:
@@ -501,22 +518,9 @@ def get_subjects(): # Read all
       200:
         description: A list of all subjects 
         schema:
-        type: array
-        items:
-          $ref: '#/definitions/Subject'
-        examples:
-          application/json: [{
-              'id': 1234,
-              'content': 'Coding',
-              'bg_color': '#00000',
-              'user_id': '5678'
-          },
-          {
-              'id': 1235,
-              'content': 'Coding2',
-              'bg_color': '#00001',
-              'user_id': '5678'
-          },]
+          type: array
+          items:
+            $ref: '#/definitions/Subject'
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """

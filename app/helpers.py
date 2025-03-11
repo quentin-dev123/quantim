@@ -25,3 +25,18 @@ def verify_signature(payload_body, secret_token, signature_header):
     mac = hmac.new(encoded_key, msg=payload_body, digestmod=algorithm)
     if not mac:
         raise Forbidden("Request signatures didn't match!")
+    
+def adjust_color_brightness(color, percent):
+    num = int(color[1:], 16)
+    amt = round(2.55 * percent)
+    r = (num >> 16) + amt
+    g = ((num >> 8) & 0x00FF) + amt
+    b = (num & 0x0000FF) + amt
+
+    # Clamp the values to the range [0, 255]
+    r = max(0, min(255, r))
+    g = max(0, min(255, g))
+    b = max(0, min(255, b))
+
+    # Format the result as a hexadecimal color
+    return f"#{(r << 16 | g << 8 | b):06x}"

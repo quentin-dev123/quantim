@@ -42,22 +42,48 @@ class Tag(db.Model):
 
 class Reminder(db.Model):
     __tablename__ = 'Reminders'
-    reminder_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
     date = db.Column(db.DateTime, nullable=True)
     # --- Relationships --- 
+    pronote_id = db.mapped_column(db.ForeignKey("Pronote_homework.id"))
+    pronote = db.relationship("Pronote_homework", back_populates="reminder")
     tag_id = db.Column(db.Integer, db.ForeignKey('Tags.id'))
     subject_id = db.Column(db.Integer, db.ForeignKey('Subjects.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     
     def to_json(self):
         js = {
-            'id': self.reminder_id,
+            'id': self.id,
             'content': self.content,
             'date': self.date.isoformat(),
             'tag_id': self.tag_id,
             'user_id': self.user_id,
-            'subject_id': self.subject_id
+            'subject_id': self.subject_id,
+            'pronote_id': self.pronote_id
+        }
+        return js 
+    
+class Pronote_homework(db.Model):
+    __tablename__ = 'Pronote_homework'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
+    date = db.Column(db.DateTime, nullable=True)
+    hidden = db.Column(db.Boolean)
+    # --- Relationships --- 
+    reminder = db.relationship("Reminder", uselist=False, back_populates="pronote")
+    tag_id = db.Column(db.Integer, db.ForeignKey('Tags.id'))
+    subject_id = db.Column(db.Integer, db.ForeignKey('Subjects.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    def to_json(self):
+        js = {
+            'id': self.id,
+            'content': self.content,
+            'date': self.date.isoformat(),
+            'tag_id': self.tag_id,
+            'user_id': self.user_id,
+            'subject_id': self.subject_id,
+            'reminder': self.reminder.to_json()
         }
         return js 
 
