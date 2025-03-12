@@ -17,6 +17,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DEV_DATABASE_URL")
     SECRET_KEY = os.getenv("DEV_SECRET_KEY")
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 class TestingConfig(Config):
     TESTING = True

@@ -10,6 +10,8 @@ from . import helpers, create_app, db, swagger
 from datetime import datetime, date
 from operator import attrgetter
 from types import NoneType
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User
 
@@ -47,6 +49,20 @@ def agenda():
 @login_required
 def add_reminder():
     return render_template("add_reminder.html")
+
+@app.route('/sendgrid')
+def sendgrid():
+    message = Mail(
+        from_email='quentinbardes.perso@gmail.com',
+        to_emails='quentinbardes.perso@gmail.com',
+        subject='Sending with Twilio SendGrid is Fun',
+        html_content="")
+    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+    response = sg.send(message)
+    print(response.status_code)
+    print("body:", response.body)
+    print(response.headers)
+    return "success", 200
 #------------------------------------------------------
 # API ~~ CRUD functions
 
