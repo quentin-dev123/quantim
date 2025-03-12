@@ -49,7 +49,7 @@ python -m venv .venv
 or if it is already created make sure to activate the virtual environment
 ```
 [windows]>.venv\Script\activate
-[linux]>.venev/bin/activate
+[linux]>.venv/bin/activate
 ```
 
 ### Install or update python modules ###

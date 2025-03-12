@@ -10,7 +10,6 @@ click==8.1.8
 colorama==0.4.6
 colorist==1.8.3
 flasgger==0.9.7b2
-PyYAML==6.0.2
 Flask==3.1.0
 Flask-Bcrypt==1.0.1
 Flask-Login==0.6.3
@@ -31,14 +30,17 @@ packaging==24.2
 pronotepy==2.14.3
 pycryptodome==3.21.0
 python-dotenv==1.0.1
+python-http-client==3.3.7
 PyYAML==6.0.2
 referencing==0.36.2
 requests==2.32.3
 rpds-py==0.22.3
+sendgrid==6.11.0
 six==1.17.0
 smmap==5.0.2
 soupsieve==2.6
 SQLAlchemy==2.0.37
+starkbank-ecdsa==2.2.0
 typing_extensions==4.12.2
 urllib3==2.3.0
 Werkzeug==3.1.3
