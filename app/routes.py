@@ -54,9 +54,10 @@ def add_reminder():
 def sendgrid():
     message = Mail(
         from_email='quentinbardes.perso@gmail.com',
-        to_emails='quentinbardes.perso@gmail.com',
+        to_emails='aipcnfouanisfubdksjfoaifubasldfic73436uewbo@gmail.com',
         subject='Sending with Twilio SendGrid is Fun',
-        html_content="")
+        html_content=render_template("verify_email.html")
+    )
     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
     response = sg.send(message)
     print(response.status_code)
@@ -606,22 +607,28 @@ def register():
     if request.method == "POST":
         data = json.loads(request.data)
         email = data.get('email')
-        if User.query.filter_by(username=email).first() is None:
-            if data.get("password1") == data.get("password2"):
-                user = User(username=email,
-                            password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8'))
-                db.session.add(user)
-                db.session.commit()
-                return jsonify({"message": "Account created successfully"}), 200 # Error here ~Probably~
-            else:
-                return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
+        username = data.get("username")
+        if User.query.filter_by(email=email).first() is None:
+            if User.query.filter_by(username=username).first() is None:
+                if data.get("password1") == data.get("password2"):
+                    user = User(username=username,
+                                email=email,
+                                password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8')
+                    )
+                    db.session.add(user)
+                    db.session.commit()
+                    return jsonify({"message": "Account created successfully"}), 200 # Error here ~Probably~
+                else:
+                    return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
+            end_of_sentence = "ce username."
         else:
-            response = {
-                "message": "Un compte existe déjà avec cette adresse email. ",
-                "link_href": "/login",
-                "link_display":"Se connecter"
-            }
-            return jsonify(response), 400
+            end_of_sentence = "cette adresse email."
+        response = {
+            "message": f"Un compte existe déjà avec {end_of_sentence}",
+            "link_href": "/login",
+            "link_display":"Se connecter"
+        }
+        return jsonify(response), 400
     return render_template("register.html")
  
  
@@ -629,10 +636,10 @@ def register():
 def login():
     if request.method == "POST":
         data = json.loads(request.data)
-        email = data.get('email')
+        username = data.get('username')
         try:
             user = User.query.filter_by(
-                username=email).first()
+                username=username).first()
             if bcrypt.check_password_hash(user.password, data.get('password')):
                 login_user(user)
                 return jsonify({"message": "Logged in successfully"}), 200

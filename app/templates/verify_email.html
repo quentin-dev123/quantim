@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #333;
+      background-color: #fff;
+    }
+
+    .container {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 600px;
+      padding: 0 0px;
+      padding-bottom: 10px;
+      border-radius: 5px;
+      line-height: 1.8;
+    }
+
+    .header {
+      border-bottom: 1px solid #eee;
+    }
+
+    .header a {
+      font-size: 1.4em;
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .content {
+      min-width: 700px;
+      overflow: auto;
+      line-height: 2;
+    }
+
+    .otp {
+      background: linear-gradient(to right, #00bc69 0, #00bc88 50%, #00bca8 100%);
+      margin: 0 auto;
+      width: max-content;
+      padding: 0 10px;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    .footer {
+      color: #aaa;
+      font-size: 0.8em;
+      line-height: 1;
+      font-weight: 300;
+    }
+
+    .email-info {
+      color: #666666;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 18px;
+      padding-bottom: 6px;
+    }
+
+    .email-info a {
+      text-decoration: none;
+      color: #00bc69;
+    }
+  </style>
+</head>
+
+<body>
+  <!--Subject: Login Verification Required for Your [App Name] Account-->
+  <div class="container">
+    <div class="header">
+      <a>Verifier votre compte Quantix</a>
+    </div>
+    <br />
+    <strong>Cher {{ username }},</strong>
+    <p>
+      Nous avons reçu une requête d'inscription. Pour des raisons de sécurité, veuillez verifier votre identité à l'aide du code suivant.
+      <br />
+      <b>Votre code de vérification est :</b>
+    </p>
+    <h2 class="otp">{{OTP}}</h2>
+    <p style="font-size: 0.9em">
+      <strong>Votre code de vérification est valide pour 3 minutes.</strong>
+      <br />
+      <br />
+       Si vous n'êtes pas à l'origine de cette requête d'inscription, merci d'ignorer cet e-mail. <br />
+      <strong>Ne partagez ce code à personne.</strong>
+      <br />
+      Sincèrement,
+      <br />
+      <strong>Quantix</strong>
+    </p>
+
+    <hr style="border: none; border-top: 0.5px solid #131111" />
+    <div class="footer">
+      <p>Ceci est un e-mail automatique, merci de ne pas y répondre.</p>
+      <!--p>
+        For more information about [App Name] and your account, visit
+        <strong>[Name]</strong>
+      </p-->
+    </div>
+  </div>
+  <div style="text-align: center">
+    <div class="email-info">
+      <span>
+        Cette email à été envoyé à 
+        <a href="mailto:{{email}}">{{email}}</a>
+      </span>
+    </div>
+    <!--div class="email-info">
+      <a href="/">[Company Name]</a> | [Address]
+      | [Address] - [Zip Code/Pin Code], [Country Name]
+    </div-->
+    <div class="email-info">
+      &copy; 2025 Quantix. Tous droits réservés.
+    </div>
+  </div>
+</body>
+<!--    This template is made Redwan one from Ocoxe. -->
+<!-- https://www.ocoxe.com -->
+</html>

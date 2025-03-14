@@ -91,6 +91,7 @@ class User(UserMixin, db.Model):
     __tablename__ = 'Users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(250), unique=True, nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     # --- PRONOTE --- 
     pronote_username = db.Column(db.String(250), nullable=True)
