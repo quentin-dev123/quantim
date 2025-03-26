@@ -54,7 +54,7 @@ def add_reminder():
 def sendgrid():
     message = Mail(
         from_email='quentinbardes.perso@gmail.com',
-        to_emails='quentin16666@gmail.com',
+        to_emails='quentin16666@g.lfis.edu.hk',
         subject='Sending with Twilio SendGrid is Fun',
         html_content=render_template("verify_email.html")
     )

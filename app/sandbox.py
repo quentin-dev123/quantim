@@ -4,7 +4,7 @@ import pronotepy, datetime, colorist
 from flask import current_app
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from routes import app
+# from routes import app
 from colorist import hex
 
 """client = pronotepy.Client(
@@ -22,7 +22,7 @@ for i in homeworks:
 pdf_link = client.generate_timetable_pdf(datetime.date(2025, 3, 2))
 print(pdf_link)"""
 
-with app.app_context():
+"""with app.app_context():
     message = Mail(
         from_email='from_email@example.com',
         to_emails='to@example.com',
@@ -32,4 +32,21 @@ with app.app_context():
     response = sg.send(message)
     print(response.status_code)
     print(response.body)
-    print(response.headers)
+    print(response.headers)"""
+
+import smtplib, ssl
+
+port = 465  # For SSL
+smtp_server = "quantix.pythonanywhere.com"
+sender_email = "quentin16666@gmail.com"  # Enter your address
+receiver_email = "quentinbardes.perso@gmail.com"  # Enter receiver address
+password = input("Type your password and press enter: ")
+message = """\
+Subject: Hi there
+
+This message is sent from Python."""
+
+context = ssl.create_default_context()
+with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+    server.login(sender_email, password)
+    server.sendmail(sender_email, receiver_email, message)
