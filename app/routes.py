@@ -1,7 +1,7 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy
+import os, pronotepy, random
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
@@ -51,12 +51,14 @@ def add_reminder():
     return render_template("add_reminder.html")
 
 @app.route('/sendgrid')
+@login_required
 def sendgrid():
+    otp=random.randrange(100000, 1000000)
     message = Mail(
         from_email='quentinbardes.perso@gmail.com',
         to_emails='quentin16666@g.lfis.edu.hk',
         subject='Sending with Twilio SendGrid is Fun',
-        html_content=render_template("verify_email.html")
+        html_content=render_template("verify_email.html", username=current_user.username, email=current_user.email, otp=otp)
     )
     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
     response = sg.send(message)
@@ -615,9 +617,18 @@ def register():
                                 email=email,
                                 password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8')
                     )
-                    db.session.add(user)
-                    db.session.commit()
-                    return jsonify({"message": "Account created successfully"}), 200 # Error here ~Probably~
+                    otp=random.randrange(100000, 1000000)
+                    message = Mail(
+                        from_email='quantix.agenda@gmail.com',
+                        to_emails=user.email,
+                        subject="Requête d'inscription sur Quantix",
+                        html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp)
+                    )
+                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+                    response = sg.send(message)
+                    """db.session.add(user)
+                    db.session.commit()"""
+                    return jsonify({"message": "Verification message sent succesfully"}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
             end_of_sentence = "ce username."
