@@ -2,8 +2,7 @@
 # Miscellanous functions to help in various usages
 #----------------------------------------------------
 
-import hashlib
-import hmac
+import hashlib, hmac, datetime
 from werkzeug.exceptions import Forbidden
 
 # Ref: https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries
@@ -40,3 +39,9 @@ def adjust_color_brightness(color, percent):
 
     # Format the result as a hexadecimal color
     return f"#{(r << 16 | g << 8 | b):06x}"
+
+def add_seconds(date:datetime.datetime, sec:int):
+    # date = datetime.datetime(date)
+    sec = int(sec)
+    output = date + datetime.timedelta(0, sec)
+    return output

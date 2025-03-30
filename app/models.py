@@ -93,6 +93,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(250), unique=True, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
+    active = db.Column(db.Boolean)
     # --- PRONOTE --- 
     pronote_username = db.Column(db.String(250), nullable=True)
     pronote_password = db.Column(db.String(250), nullable=True)
@@ -101,4 +102,12 @@ class User(UserMixin, db.Model):
     reminders = db.relationship("Reminder", backref="user")
     tags = db.relationship("Tag", backref="user")
     subjects = db.relationship("Subject", backref="user")
+    otp = db.relationship("Otp", backref="user")
 
+class Otp(db.Model):
+    __tablename__ = 'Otp'
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.Integer, nullable=False)
+    expiry = db.Column(db.DateTime, nullable=False)
+    # --- Relationships --- 
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))

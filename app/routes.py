@@ -1,7 +1,7 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy, random
+import os, pronotepy, random, datetime
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
@@ -13,7 +13,7 @@ from types import NoneType
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-from .models import Tag, Subject, Reminder, Pronote_homework, User
+from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -615,20 +615,27 @@ def register():
                 if data.get("password1") == data.get("password2"):
                     user = User(username=username,
                                 email=email,
-                                password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8')
+                                password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8'),
+                                active=False
                     )
-                    otp=random.randrange(100000, 1000000)
+                    db.session.add(user)
+                    db.session.commit()
+                    otp=Otp(
+                        value=random.randrange(100000, 1000000),
+                        expiry=helpers.add_seconds(datetime.datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
+                        user_id=user.id
+                    )
+                    db.session.add(otp)
+                    db.session.commit()
                     message = Mail(
                         from_email='quantix.agenda@gmail.com',
                         to_emails=user.email,
                         subject="Requête d'inscription sur Quantix",
-                        html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp)
+                        html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
                     response = sg.send(message)
-                    """db.session.add(user)
-                    db.session.commit()"""
-                    return jsonify({"message": "Verification message sent succesfully"}), 200 # Error here ~Probably~
+                    return jsonify({"message": "Verification message sent succesfully", "otp_id": otp.id}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
             end_of_sentence = "ce username."
@@ -642,6 +649,9 @@ def register():
         return jsonify(response), 400
     return render_template("register.html")
  
+@app.route('/validate_otp', methods=["POST"])
+def register():
+    data = json.loads(request.data)
  
 @app.route("/login", methods=["GET", "POST"])
 def login():
