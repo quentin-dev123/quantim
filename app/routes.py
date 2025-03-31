@@ -650,7 +650,7 @@ def register():
     return render_template("register.html")
  
 @app.route('/validate_otp', methods=["POST"])
-def register():
+def validate_otp():
     data = json.loads(request.data)
  
 @app.route("/login", methods=["GET", "POST"])
