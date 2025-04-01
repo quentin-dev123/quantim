@@ -40,7 +40,7 @@ def adjust_color_brightness(color, percent):
     # Format the result as a hexadecimal color
     return f"#{(r << 16 | g << 8 | b):06x}"
 
-def add_seconds(date:datetime.datetime, sec:int):
+def add_seconds(date, sec:int):
     # date = datetime.datetime(date)
     sec = int(sec)
     output = date + datetime.timedelta(0, sec)
