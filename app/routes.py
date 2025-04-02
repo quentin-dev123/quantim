@@ -648,6 +648,16 @@ def register():
         }
         return jsonify(response), 400
     return render_template("register.html")
+
+@app.route('/otp')
+def otp():
+    args = request.args
+    if args:
+        user_id = args.get("ui")
+        user = User.query.get(user_id)
+        if not user.active:
+            
+    return "Invalid arguments to request", 401
  
 @app.route('/validate_otp', methods=["POST"])
 def validate_otp():
