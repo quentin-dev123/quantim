@@ -635,7 +635,7 @@ def register():
     return render_template("register.html")
 
 @app.route('/otp')
-def otp():
+def create_otp():
     args = request.args
     if args and args.get("ui"):
         user_id = args.get("ui")
@@ -660,13 +660,24 @@ def otp():
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
             response = sg.send(message)
-            return render_template("otp.html"), 200
+            return render_template("otp.html", otp_id=otp.id), 200
         return "<h1>403</h1>Account already activated", 403
     return "<h1>401</h1>Invalid arguments to request", 401
  
-@app.route('/validate_otp', methods=["POST"])
+@app.route('/otp', methods=["POST"])
 def validate_otp():
     data = json.loads(request.data)
+    otp_id = data.get("otp_id")
+    otp_value = data.get("otp")
+    otp = Otp.query.get_or_404(otp_id)
+    if otp.expiry < datetime.now():
+        if otp.value == otp_value:
+            user = User.query.get_or_404(otp.user_id)
+            user.active = True
+            db.session.commit()
+            return "Sucessfully activated account", 200
+        return "Wrong OTP", 400
+    return "OTP sent too late", 403
  
 @app.route("/login", methods=["GET", "POST"])
 def login():
