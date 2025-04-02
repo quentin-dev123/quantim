@@ -218,11 +218,11 @@ function close_modal () {
 
 {% block modal_close_func %}
 // When the user clicks anywhere outside of the modal2, close it, if clicked and modal 2 closed, redirect
-window.onclick = function(event) {
+/*window.onclick = function(event) {
   if (event.target == modal) {
     close_modal();
   }
-}
+}*/
 {% endblock %}
 const form = document.getElementById("form");
 form.addEventListener('submit',  async (event) => {

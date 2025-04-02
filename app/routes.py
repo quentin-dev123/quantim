@@ -620,21 +620,6 @@ def register():
                     )
                     db.session.add(user)
                     db.session.commit()
-                    otp=Otp(
-                        value=random.randrange(100000, 1000000),
-                        expiry=helpers.add_seconds(datetime.datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
-                        user_id=user.id
-                    )
-                    db.session.add(otp)
-                    db.session.commit()
-                    message = Mail(
-                        from_email='quantix.agenda@gmail.com',
-                        to_emails=user.email,
-                        subject="Requête d'inscription sur Quantix",
-                        html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
-                    )
-                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-                    response = sg.send(message)
                     return jsonify({"message": "Verification message sent succesfully", "otp_id": otp.id}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
@@ -652,12 +637,32 @@ def register():
 @app.route('/otp')
 def otp():
     args = request.args
-    if args:
+    if args and args.get("ui"):
         user_id = args.get("ui")
-        user = User.query.get(user_id)
+        user = User.query.get_or_404(user_id)
         if not user.active:
-            
-    return "Invalid arguments to request", 401
+            otp = Otp.query.filter_by(user_id=user.id).first()
+            if otp is not None:
+                db.session.delete(otp)
+                db.session.commit()
+            otp=Otp(
+                value=random.randrange(100000, 1000000),
+                expiry=helpers.add_seconds(datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
+                user_id=user.id
+            )
+            db.session.add(otp)
+            db.session.commit()
+            message = Mail(
+                from_email='quantix.agenda@gmail.com',
+                to_emails=user.email,
+                subject="Requête d'inscription sur Quantix",
+                html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
+            )
+            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+            response = sg.send(message)
+            return render_template("otp.html"), 200
+        return "<h1>403</h1>Account already activated", 403
+    return "<h1>401</h1>Invalid arguments to request", 401
  
 @app.route('/validate_otp', methods=["POST"])
 def validate_otp():
@@ -756,3 +761,12 @@ def login_pronote():
             return "Succesfully logged into PRONOTE", 200
         except pronotepy.CryptoError:
             return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
+
+
+#------------------------------------------------------
+# User Verification
+@app.cli.command('drop-tables')
+def drop_tables():
+    """Drop all tables in the database."""
+    db.drop_all()
+    print("All tables dropped.")

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c151b26d16e1
+Revision ID: 5ea0f9ab06c7
 Revises: 
-Create Date: 2025-03-13 13:33:42.318069
+Create Date: 2025-04-02 20:06:28.316229
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c151b26d16e1'
+revision = '5ea0f9ab06c7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,12 +23,21 @@ def upgrade():
     sa.Column('username', sa.String(length=250), nullable=False),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('pronote_username', sa.String(length=250), nullable=True),
     sa.Column('pronote_password', sa.String(length=250), nullable=True),
     sa.Column('pronote_tag_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
+    )
+    op.create_table('Otp',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('value', sa.Integer(), nullable=False),
+    sa.Column('expiry', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('Subjects',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -82,5 +91,6 @@ def downgrade():
     op.drop_table('Pronote_homework')
     op.drop_table('Tags')
     op.drop_table('Subjects')
+    op.drop_table('Otp')
     op.drop_table('Users')
     # ### end Alembic commands ###
