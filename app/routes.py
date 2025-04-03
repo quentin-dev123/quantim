@@ -620,7 +620,7 @@ def register():
                     )
                     db.session.add(user)
                     db.session.commit()
-                    return jsonify({"message": "Verification message sent succesfully", "otp_id": otp.id}), 200 # Error here ~Probably~
+                    return jsonify({"message": "Verification message sent succesfully"}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
             end_of_sentence = "ce username."
@@ -775,7 +775,7 @@ def login_pronote():
 
 
 #------------------------------------------------------
-# User Verification
+# Other
 @app.cli.command('drop-tables')
 def drop_tables():
     """Drop all tables in the database."""
