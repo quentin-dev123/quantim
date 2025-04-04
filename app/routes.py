@@ -620,7 +620,7 @@ def register():
                     )
                     db.session.add(user)
                     db.session.commit()
-                    return jsonify({"message": "Verification message sent succesfully"}), 200 # Error here ~Probably~
+                    return jsonify({"message": "Registering done succesfully", "user_id": user.id}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
             end_of_sentence = "ce username."
@@ -662,15 +662,17 @@ def create_otp():
             response = sg.send(message)
             return render_template("otp.html", otp_id=otp.id), 200
         return "<h1>403</h1>Account already activated", 403
-    return "<h1>401</h1>Invalid arguments to request", 401
+    return "<h1>400</h1>Invalid arguments to request", 400
  
 @app.route('/otp', methods=["POST"])
 def validate_otp():
     data = json.loads(request.data)
     otp_id = data.get("otp_id")
-    otp_value = data.get("otp")
+    otp_value = int(data.get("otp"))
+    print(otp_value)
     otp = Otp.query.get_or_404(otp_id)
-    if otp.expiry < datetime.now():
+    print(otp.value)
+    if otp.expiry > datetime.now():
         if otp.value == otp_value:
             user = User.query.get_or_404(otp.user_id)
             user.active = True
@@ -687,10 +689,17 @@ def login():
         try:
             user = User.query.filter_by(
                 username=username).first()
-            if bcrypt.check_password_hash(user.password, data.get('password')):
-                login_user(user)
-                return jsonify({"message": "Logged in successfully"}), 200
-            raise AttributeError
+            if user.active:
+                if bcrypt.check_password_hash(user.password, data.get('password')):
+                    login_user(user)
+                    return jsonify({"message": "Logged in successfully"}), 200
+                raise AttributeError
+            response = {
+                "message": "Votre compte n'est pas activé.",
+                "link_href": f"/otp?ui={user.id}",
+                "link_display":"L'activer"
+            }
+            return jsonify(response), 400
         except AttributeError:
             response = {"message": "L'adresse email ou le mot de passe est incorrect."}
             return jsonify(response), 400
@@ -776,8 +785,10 @@ def login_pronote():
 
 #------------------------------------------------------
 # Other
-@app.cli.command('drop-tables')
+@app.cli.command('clear')
 def drop_tables():
-    """Drop all tables in the database."""
-    db.drop_all()
-    print("All tables dropped.")
+    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp]
+    for table in tables:
+        db.session.query(table).delete()
+    db.session.commit()
+    print("Tables cleared succesfully")

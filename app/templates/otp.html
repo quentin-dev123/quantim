@@ -92,15 +92,29 @@ form button:hover {
   background: #0e4bf1;
 }
 
+.button {
+  margin-top: 25px;
+  width: 100%;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  padding: 9px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  pointer-events: none;
+  background: #6e93f7;
+  transition: all 0.2s ease;
+}
+
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="validate">
       <header>
         <i class="bx bxs-check-shield"></i>
       </header>
       <h4>Entrez le code reçu par mail</h4>
-      <form action="/validate_otp">
+      <form id="form">
         <div class="input-field">
           <input type="number" />
           <input type="number" disabled />
@@ -109,9 +123,18 @@ form button:hover {
           <input type="number" disabled />
           <input type="number" disabled />
         </div>
-        <button>Verifiez le code</button>
+        
+        <div class=" alert alert-danger" id="alert" style="display: none;">
+          <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
+        </div>
+        <button type="submit">Verifiez le code</button>
       </form>
-      <a href="otp">Renvoyer le code par mail</a>
+      <a href="#">Renvoyer le code par mail</a>
+    </div>
+    <div class="container" style="display: none;" id="sucess">
+      <h1>Compte validé avec succès</h1>
+      <p>Vous pouvez maintenant vous connectez à votre compte</p>
+      <button onclick="window.location.reload();" class="button">Se connecter</button>
     </div>
     <script>
     const inputs = document.querySelectorAll("input"),
@@ -164,6 +187,48 @@ inputs.forEach((input, index1) => {
 
 //focus the first input which index is 0 on window load
 window.addEventListener("load", () => inputs[0].focus());
+
+// Function to do when form submitted
+const form = document.getElementById("form");
+form.addEventListener('submit',  async (event) => {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Get elements
+    const validateDiv = document.getElementById("validate");
+    const sucessDiv = document.getElementById("sucess");
+    const formChildren = form.elements;
+    const alertDiv = document.getElementById("alert");
+    const alertText = document.getElementById("alert_text");
+    const alertLink = document.getElementById("alert_link");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    userAnswers.otp = inputs[0].value + inputs[1].value + inputs[2].value + inputs[3].value + inputs[4].value + inputs[5].value;
+    userAnswers.otp_id = {{otp_id}}
+    // Make a POST request to the server
+    let result = await fetch("/otp", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    if (result.ok) {
+        // Here implement second modal appearance
+        validateDiv.style.display = "none";
+        sucessDiv.style.display = "block";
+    } else {
+    if (result.status === 400) {
+      alertText.innerHTML = "Code incorrect";
+    } else if (result.status === 403) {
+      alertText.innerHTML = "Code validé trop tard";
+    } else {
+      alertText.innerHTML = "Veuillez reessayez plus tard";
+    }
+    alertDiv.style.display = "block";
+  }
+});
 
 </script>
   </body>
