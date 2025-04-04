@@ -129,12 +129,12 @@ form button:hover {
         </div>
         <button type="submit">Verifiez le code</button>
       </form>
-      <a href="#">Renvoyer le code par mail</a>
+      <a href="#" onclick="window.location.reload();">Renvoyer le code par mail</a>
     </div>
     <div class="container" style="display: none;" id="sucess">
       <h1>Compte validé avec succès</h1>
       <p>Vous pouvez maintenant vous connectez à votre compte</p>
-      <button onclick="window.location.reload();" class="button">Se connecter</button>
+      <a href="/login" class="button">Se connecter</a>
     </div>
     <script>
     const inputs = document.querySelectorAll("input"),
