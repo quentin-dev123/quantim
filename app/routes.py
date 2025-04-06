@@ -20,14 +20,12 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 """
 To-do list :
-    - Bcrypt scurity
-    - * Relationship between user and reminder --- Done in models.py, need to apply to routes.py
-    - * Create add reminder functionnality 
-    - * Change approach for frontend to get reminders (need to use fetch)
-    - Send email verification 
-    - Ask for username and email rather than just email
-
-* Priority/important
+    - Possibility to edit reminder
+    - Possibility to sort reminder
+    - Possibility to filter reminder
+    - Delete account functionality
+    - Send emails when reminders are due soon
+    - Mark reminders as done rather than just deleting
 """
 
 #------------------------------------------------------
@@ -245,6 +243,64 @@ def get_reminders(): # Read all
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
+
+@app.route("/api/reminder/sort/<property>")
+@login_required
+def get_sorted_reminders(property): # Read all (sorted)
+    """Endpoint to read reminders sorted with a certain property
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint returning all reminders  linked to your account (must be logged in)
+    responses:
+      200:
+        description: A list of all reminders sorted by a property
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Reminder'
+      404:
+        description: The specified property was not found
+        schema:
+          type: string
+          example: Property not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    if property in ["tag_id", "subject_id"]:
+        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+        sorted_rems = sorted(reminders, key=attrgetter('property'))
+        return jsonify([r.to_json() for r in sorted_rems]), 200
+    return "Property not found", 404
+
+@app.route("/api/reminder/filter/<property>/<int:property_id>")
+@login_required
+def get_sorted_reminders(property, property_id): # Read all (filtered)
+    """Endpoint to read reminders filtered with a certain property
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint returning all reminders  linked to your account (must be logged in)
+    responses:
+      200:
+        description: A list of all reminders filtered by a property
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Reminder'
+      404:
+        description: The specified property/property_id was not found
+        schema:
+          type: string
+          example: Property not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    if property in ["tag_id", "subject_id"]:
+        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+        sorted_rems = sorted(reminders, key=attrgetter('property'))
+        return jsonify([r.to_json() for r in sorted_rems]), 200
+    return "Property not found", 404
     
 @app.route("/api/reminder", methods=["POST"])
 @login_required
