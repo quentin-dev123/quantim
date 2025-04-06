@@ -269,13 +269,13 @@ def get_sorted_reminders(property): # Read all (sorted)
     """
     if property in ["tag_id", "subject_id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        sorted_rems = sorted(reminders, key=attrgetter('property'))
+        sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
 
 @app.route("/api/reminder/filter/<property>/<int:property_id>")
 @login_required
-def get_sorted_reminders(property, property_id): # Read all (filtered)
+def get_filtered_reminders(property, property_id): # Read all (filtered)
     """Endpoint to read reminders filtered with a certain property
     ---
     tags:
@@ -296,9 +296,11 @@ def get_sorted_reminders(property, property_id): # Read all (filtered)
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
+    property_id = int(property_id)
     if property in ["tag_id", "subject_id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        sorted_rems = sorted(reminders, key=attrgetter('property'))
+        filtered_rems = filter(lambda rem: rem[property] == property_id, reminders)
+        sorted_rems = sorted(filtered_rems, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
     
