@@ -4,14 +4,14 @@
 {% set fetch_destination = "/register" %}
 
 {% block form_content %} 
-<label for="username"><b> Choisissez un username </b></label>
+<label for="username"><b> Choisissez un username</b></label>
 <input type="text" placeholder="Username" name="username" required>
 <label for="email"><b> Entrer votre adresse email </b></label>
 <input type="email" placeholder="Email" name="email" required>
 <label for="password1"><b> Choisissez un mot de passe </b></label>
-<input type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" required>
+<input type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
 <label for="password2"><b> Confirmez votre mot de passe </b></label>
-<input type="password" placeholder="Mot de passe" name="password2" required>
+<input type="password" placeholder="Mot de passe" name="password2" id="password2" required><i class="fa fa-eye view_icon" id="view_icon2" onclick="toggle_password_visibility('2')"></i>
 {% endblock %}
 {% block sucess %}
 const response = await result.json();

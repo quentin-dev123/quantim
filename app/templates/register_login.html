@@ -142,7 +142,7 @@ span.psw {
       <input type="email" placeholder="Email" name="email" required>
         {% for i in range (passwords["number"]) %}
       <label for="psw"><b>{{ passwords["label"][i] }}</b></label>
-      <input type="password" placeholder="{{ passwords['placeholder'][i] }}" name="psw{{i}}" required>
+      <input type="password" placeholder="{{ passwords['placeholder'][i] }}" name="psw{{i}}" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
         {% endfor %}
         <div class=" alert alert-danger" id="alert" style="display: none;">
             <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
