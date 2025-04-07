@@ -765,8 +765,16 @@ def login():
  
  
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
+    return redirect(url_for("home"))
+
+@app.route("/delete_account")
+@login_required
+def delete_account():
+    tags = Tag.query.filter_by(user_id=current_user.id)
+    db.session.delete
     return redirect(url_for("home"))
 
 @login_manager.unauthorized_handler
