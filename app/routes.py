@@ -20,12 +20,10 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 """
 To-do list :
-    - Possibility to edit reminder
-    - Possibility to sort reminder
-    - Possibility to filter reminder
-    - Delete account functionality
     - Send emails when reminders are due soon
     - Mark reminders as done rather than just deleting
+    - Finish swagger
+    - Make tag and subject editable
 """
 
 #------------------------------------------------------
@@ -221,6 +219,7 @@ def get_reminders(): # Read all
                 reminder = Reminder(
                     content=homework.description, 
                     date=homework.date,
+                    done = False,
                     user=current_user,
                     user_id=current_user.id,
                     tag_id=current_user.pronote_tag_id,
@@ -376,6 +375,7 @@ def create_reminders(): # Create
                     reminder = Reminder(
                         content=data.get("content"), 
                         date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+                        done=False,
                         user=current_user,
                         user_id=current_user.id,
                         tag_id=tag_id,
@@ -528,6 +528,56 @@ def update_reminders(rem_id): # Update
             return "Reminder updated succesfully", 200
         return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
+
+@app.route("/api/reminder/done/<int:rem_id>")
+@login_required
+def delete_reminder(rem_id): # Mark one as done
+    """Endpoint to mark as done a reminder
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint to mark as done a reminder with a specified id (must be logged in)
+    parameters:
+      - name: rem_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: A validation message
+        schema:
+          type: string
+          example: Reminder marked as done
+      403:
+        description: The reminder you're trying to access doesn't belong to you
+        schema:
+          type: string
+          example: Not logged into the account of the reminder
+      404:
+        description: The reminder with the specified id was not found
+        schema:
+          type: string
+          example: Reminder not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes
+    """
+    reminder = Reminder.query.get(rem_id)
+    if reminder is not None:
+        if reminder.user_id == current_user.id: # Layer of security
+            if reminder.pronote_id is not None:
+                client = pronotepy.Client(
+                    'https://pronote.fis.edu.hk/eleve.html',
+                    username=current_user.pronote_username,
+                    password=current_user.pronote_password,
+                )
+                homeworks = client.homework(date_from=reminder.date)
+            reminder.done = True
+            db.session.commit()
+            return "Reminder marked as done succesfully", 200
+        else:
+            return "Not logged in the right account", 403
+    else:
+        return "Reminder not found", 404
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required

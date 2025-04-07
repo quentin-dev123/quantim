@@ -45,6 +45,7 @@ class Reminder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
     date = db.Column(db.DateTime, nullable=True)
+    done = db.Column(db.Boolean)
     # --- Relationships --- 
     pronote_id = db.mapped_column(db.ForeignKey("Pronote_homework.id"))
     pronote = db.relationship("Pronote_homework", back_populates="reminder")
