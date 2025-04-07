@@ -773,8 +773,11 @@ def logout():
 @app.route("/delete_account")
 @login_required
 def delete_account():
-    tags = Tag.query.filter_by(user_id=current_user.id)
-    db.session.delete
+    tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
+    for table in tables:
+        table.query.filter_by(user_id=current_user.id).delete()
+    db.session.delete(User.query.get(current_user.id))
+    db.session.commit()
     return redirect(url_for("home"))
 
 @login_manager.unauthorized_handler
