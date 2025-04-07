@@ -299,7 +299,7 @@ def get_filtered_reminders(property, property_id): # Read all (filtered)
     property_id = int(property_id)
     if property in ["tag_id", "subject_id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-        filtered_rems = filter(lambda rem: rem[property] == property_id, reminders)
+        filtered_rems = filter(lambda rem: getattr(rem, property) == property_id, reminders)
         sorted_rems = sorted(filtered_rems, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
