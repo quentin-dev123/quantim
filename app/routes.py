@@ -571,6 +571,7 @@ def mark_rem_as_done(rem_id): # Mark one as done
                     password=current_user.pronote_password,
                 )
                 homeworks = client.homework(date_from=reminder.date)
+                homework = homeworks.filter()
             reminder.done = True
             db.session.commit()
             return "Reminder marked as done succesfully", 200
