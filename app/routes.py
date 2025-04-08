@@ -239,7 +239,7 @@ def get_reminders(): # Read all
                 db.session.add(my_homework)
                 reminder.pronote = my_homework
                 db.session.commit()
-    reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+    reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
@@ -267,7 +267,7 @@ def get_sorted_reminders(property): # Read all (sorted)
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if property in ["tag_id", "subject_id"]:
-        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+        reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
@@ -297,7 +297,7 @@ def get_filtered_reminders(property, property_id): # Read all (filtered)
     """
     property_id = int(property_id)
     if property in ["tag_id", "subject_id"]:
-        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
+        reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
         filtered_rems = filter(lambda rem: getattr(rem, property) == property_id, reminders)
         sorted_rems = sorted(filtered_rems, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -570,8 +570,12 @@ def mark_rem_as_done(rem_id): # Mark one as done
                     username=current_user.pronote_username,
                     password=current_user.pronote_password,
                 )
-                homeworks = client.homework(date_from=reminder.date)
-                homework = homeworks.filter()
+                homeworks = client.homework(date_from=reminder.date.date())
+                homeworks = list(filter(lambda hw: hw.description == reminder.content and hw.date == reminder.date.date(), homeworks))
+                print(homeworks)
+                homework = homeworks[0]
+                homework.set_done(True)
+                print(homework.done)
             reminder.done = True
             db.session.commit()
             return "Reminder marked as done succesfully", 200
@@ -908,6 +912,14 @@ def login_pronote():
 @app.cli.command('clear')
 def drop_tables():
     tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp]
+    for table in tables:
+        db.session.query(table).delete()
+    db.session.commit()
+    print("Tables cleared succesfully")
+
+@app.cli.command('clear_not_user')
+def drop_tables():
+    tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()
