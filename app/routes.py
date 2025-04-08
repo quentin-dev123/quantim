@@ -531,7 +531,7 @@ def update_reminders(rem_id): # Update
 
 @app.route("/api/reminder/done/<int:rem_id>")
 @login_required
-def delete_reminder(rem_id): # Mark one as done
+def mark_rem_as_done(rem_id): # Mark one as done
     """Endpoint to mark as done a reminder
     ---
     tags:
