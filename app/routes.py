@@ -726,10 +726,12 @@ def register():
         if User.query.filter_by(email=email).first() is None:
             if User.query.filter_by(username=username).first() is None:
                 if data.get("password1") == data.get("password2"):
-                    user = User(username=username,
-                                email=email,
-                                password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8'),
-                                active=False
+                    user = User(
+                        username=username,
+                        email=email,
+                        password=bcrypt.generate_password_hash(data.get("password1")).decode('utf-8'),
+                        active=False,
+                        accept_mail = data.get("accept_notif")
                     )
                     db.session.add(user)
                     db.session.commit()

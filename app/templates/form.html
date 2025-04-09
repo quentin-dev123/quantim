@@ -246,7 +246,11 @@ form.addEventListener('submit',  async (event) => {
     const userAnswers = {};
     for (let i = 0; i < formChildren.length; i++) {
         if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+          if (formChildren[i].type === "checkbox") {
+            userAnswers[formChildren[i].name] = formChildren[i].checked;
+          } else {
             	userAnswers[formChildren[i].name] = formChildren[i].value;
+          }
         }
     }
 

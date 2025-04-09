@@ -95,6 +95,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     active = db.Column(db.Boolean)
+    accept_mail = db.Column(db.Boolean)
     # --- PRONOTE --- 
     pronote_username = db.Column(db.String(250), nullable=True)
     pronote_password = db.Column(db.String(250), nullable=True)
