@@ -10,9 +10,9 @@
 <div class="select_icon_container">
   <select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
       <option value="" hidden disabled selected>Choisissez une matière</option>
-      <optgroup id="optionGroup" style="display: none;" label="Matières">
+      <optgroup id="optionGroup" style="display: none;" label="Matières" style="background-color: white; color: black">
       </optgroup>
-      <option value="new">+ Plus</option>
+      <option value="new" style="background-color: white; color: black">+ Plus</option>
   </select>
   <span class="material-icons icon icon_subject" onclick="">&#xe254;</span>
   <span class="material-icons icon icon_subject">&#xe872;</span>
@@ -21,9 +21,9 @@
 <div class="select_icon_container">
 <select class="form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')" required>
     <option value="" hidden disabled selected>Choisissez un tag</option>
-    <optgroup id="optionGroup2" style="display: none;" label="Tags">
+    <optgroup id="optionGroup2" style="display: none;" label="Tags" style="background-color: white; color: black">
     </optgroup>
-    <option value="new">+ Plus</option>
+    <option value="new" style="background-color: white; color: black">+ Plus</option>
 </select>
   <span class="material-icons icon icon_tag" onclick="">&#xe254;</span>
   <span class="material-icons icon icon_tag">&#xe872;</span>
@@ -169,6 +169,10 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         let option = document.createElement("option");
         option.value = response.id;
         option.innerHTML = response.content;
+        option.style.backgroundColor = element.bg_color;
+        option.style.color = 'white';
+        modalElem.style.color = element.bg_color;
+        modalElem.style.color = 'white';
         optionGroup.appendChild(option);
         close_a_modal(modalElem, select_id)
         let created_index = findIndexfromOptionName(selectElem, option.value)
