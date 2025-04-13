@@ -169,9 +169,9 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         let option = document.createElement("option");
         option.value = response.id;
         option.innerHTML = response.content;
-        option.style.backgroundColor = element.bg_color;
+        option.style.backgroundColor = response.bg_color;
         option.style.color = 'white';
-        modalElem.style.color = element.bg_color;
+        modalElem.style.color = response.bg_color;
         modalElem.style.color = 'white';
         optionGroup.appendChild(option);
         close_a_modal(modalElem, select_id)
