@@ -109,6 +109,7 @@ async function dynamic_options(fetch_route, optgroup_id){
             option.value = element.id;
             option.innerHTML = element.content;
             option.style.backgroundColor = element.bg_color;
+            option.style.color = 'white';
             optionGroup.appendChild(option);
         });
         optionGroup.style.display = "block";
