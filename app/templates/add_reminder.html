@@ -108,6 +108,7 @@ async function dynamic_options(fetch_route, optgroup_id){
             let option = document.createElement("option");
             option.value = element.id;
             option.innerHTML = element.content;
+            option.style.backgroundColor = element.bg_color;
             optionGroup.appendChild(option);
         });
         optionGroup.style.display = "block";
@@ -128,6 +129,9 @@ function changeSelect(elem, elemId) {
                 break;
         }
     }
+    const selectElement = document.getElementById(elemId)
+    const selectedOption = selectElement.options[selectElement.selectedIndex]
+    selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
 }
 
 async function secondary_modal(event, post_link, modalElem, select_id) {
