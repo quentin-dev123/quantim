@@ -133,6 +133,7 @@ function changeSelect(elem, elemId) {
     const selectElement = document.getElementById(elemId)
     const selectedOption = selectElement.options[selectElement.selectedIndex]
     selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
+    selectElement.style.color = "white";
 }
 
 async function secondary_modal(event, post_link, modalElem, select_id) {
@@ -171,8 +172,8 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         option.innerHTML = response.content;
         option.style.backgroundColor = response.bg_color;
         option.style.color = 'white';
-        modalElem.style.color = response.bg_color;
-        modalElem.style.color = 'white';
+        selectElem.style.color = response.bg_color;
+        selectElem.style.color = 'white';
         optionGroup.appendChild(option);
         close_a_modal(modalElem, select_id)
         let created_index = findIndexfromOptionName(selectElem, option.value)
