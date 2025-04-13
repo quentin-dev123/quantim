@@ -113,3 +113,8 @@ class Otp(db.Model):
     expiry = db.Column(db.DateTime, nullable=False)
     # --- Relationships --- 
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+
+class Pat(db.Model):
+    __tablename__ = 'Pat'
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.String(250), nullable=False)

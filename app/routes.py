@@ -13,7 +13,7 @@ from types import NoneType
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp
+from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -21,7 +21,6 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 """
 To-do list :
     - Send emails when reminders are due soon
-    - Mark reminders as done rather than just deleting
     - Finish swagger
     - Make tag and subject editable
 """
@@ -584,6 +583,11 @@ def mark_rem_as_done(rem_id): # Mark one as done
     else:
         return "Reminder not found", 404
 
+@app.route("/send_reminders")
+@login_required
+def send_reminders():
+    Pat.query.filter_by(name="")
+
 @app.route("/api/subject/<int:subject_id>")
 @login_required
 def get_subject(subject_id): # Read one
@@ -919,10 +923,8 @@ def drop_tables():
     db.session.commit()
     print("Tables cleared succesfully")
 
-@app.cli.command('clear_not_user')
-def drop_tables():
-    tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
-    for table in tables:
-        db.session.query(table).delete()
-    db.session.commit()
-    print("Tables cleared succesfully")
+@app.cli.command('sandbox')
+def sandbox():
+    print(bcrypt.generate_password_hash("hello").decode('utf-8'))
+
+
