@@ -172,7 +172,7 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         option.innerHTML = response.content;
         option.style.backgroundColor = response.bg_color;
         option.style.color = 'white';
-        selectElem.style.color = response.bg_color;
+        selectElem.style.backgroundColor = response.bg_color;
         selectElem.style.color = 'white';
         optionGroup.appendChild(option);
         close_a_modal(modalElem, select_id)
