@@ -929,13 +929,13 @@ async function confirmAction2() {
 }  
 
 
-function open_modal2(fetchRoute, reminder) {
+function open_modal2() {
 	closeNav()
   confirmation_modal2.style.display = "block";
   let confirm_form = document.getElementById("delete_all_reminders")
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
-    confirmAction(fetchRoute, reminder);
+    confirmAction2();
   })
 }
 
