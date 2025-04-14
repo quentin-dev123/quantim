@@ -45,22 +45,6 @@ def agenda():
 def add_reminder():
     return render_template("add_reminder.html")
 
-@app.route('/sendgrid')
-@login_required
-def sendgrid():
-    otp=random.randrange(100000, 1000000)
-    message = Mail(
-        from_email='quentinbardes.perso@gmail.com',
-        to_emails='quentin16666@g.lfis.edu.hk',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content=render_template("verify_email.html", username=current_user.username, email=current_user.email, otp=otp)
-    )
-    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-    response = sg.send(message)
-    print(response.status_code)
-    print("body:", response.body)
-    print(response.headers)
-    return "success", 200
 #------------------------------------------------------
 # API ~~ CRUD functions
 
@@ -586,7 +570,41 @@ def mark_rem_as_done(rem_id): # Mark one as done
 @app.route("/send_reminders")
 @login_required
 def send_reminders():
-    Pat.query.filter_by(name="")
+    args = request.args
+    if args and args.get("pat"):
+        pat = Pat.query.filter_by(name="send_reminders")
+        request_pat = args.get("pat")
+        if pat.value == request_pat:
+            today = datetime.date.today()
+            tomorrow = today + datetime.timedelta(days=1) 
+            for user in User.query.filter_by(active=True, accept_mail=True).all():
+                reminders = Reminder.query.filter(lambda r: r.user_id==user.id and r.date.date() == tomorrow)
+                if reminders is not None:
+                    message = f"""
+<h1>Bonjour {user.username},</h1>
+<2>Vous avez un ou plusieurs devoir à faire pour demain.<br>
+Le(s) voici :<h2>
+"""
+                    for reminder in reminders:
+                        subject = Subject.query.get(reminder.subject_id)
+                        tag = Tag.query.get(reminder.tag_id)
+                        message += f"""
+<h3>{subject.content}:    ({tag.content})</h3>
+<p>{reminder.content}<p>
+"""
+                    message += """
+<h2>Merci Beaucoup d'utiliser notre site !</h2>
+<p>Mon équipe et moi (nous sommes 2) travaillons d'arrache pied pour vous apporter le meilleur service possible</p>
+"""
+                    mail = Mail(
+                        from_email='quantix.agenda@gmail.com',
+                        to_emails=user.email,
+                        subject="Devoir(s) à faire pour peu",
+                        html_content=mail
+                    )
+                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+                    response = sg.send(message)
+        return "Invalid PAT (Personnal Authorisation Token)", 403
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required
@@ -925,6 +943,6 @@ def drop_tables():
 
 @app.cli.command('sandbox')
 def sandbox():
-    print(bcrypt.generate_password_hash("hello").decode('utf-8'))
+    print(type(Reminder.query.get(1).date))
 
 

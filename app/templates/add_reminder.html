@@ -179,7 +179,7 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         let created_index = findIndexfromOptionName(selectElem, option.value)
         selectElem.selectedIndex = created_index;
     } else if (result.status === 400) {
-        alertText.innerHTML = result;
+        alertText.innerHTML = await result.text();
         alertDiv.style.display = "block";
     }
 }
