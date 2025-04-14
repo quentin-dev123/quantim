@@ -169,6 +169,7 @@
   display: block;
   font-family: "Lato", sans-serif;
   transition: 0.3s;
+	cursor: pointer;
 }
 
 .sidenav a:hover {
@@ -650,6 +651,7 @@ hr {
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
+  <a onclick="open_modal2()">Effacer tous les rappels</a>
 </div>
 <div id="mySecretSidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav2()">&times;</a>
@@ -669,6 +671,22 @@ hr {
       <div class="my_clearfix">
         <button type="button" onclick="close_confirmation_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
         <button type="submit" class="my_signupbtn my_modal_button">Effacer</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Confirmation modal to delete all reminders -->
+<div id="confirmation_modal2" class="my_modal">
+  <span onclick="close_confirmation_modal2()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content  my_animate" id="delete_all_reminders">
+    <div class="my_container">
+      <h1>Effacer TOUS les rappels</h1>
+      <p>Êtes-vous sûr de vouloir effacer TOUS vos rappels ? Vous ne pouvez pas revenir en arrière.</p>
+   
+      <div class="my_clearfix">
+        <button type="button" onclick="close_confirmation_modal2()" class="my_cancelbtn my_modal_button">Annuler</button>
+        <button type="submit" class="my_signupbtn my_modal_button">Tout effacer</button>
       </div>
     </div>
   </form>
@@ -899,6 +917,34 @@ function open_modal(fetchRoute, reminder) {
 
 
 
+async function confirmAction2() {
+  let response = await fetch(); // fix this line to mnake all the reminders be deleted
+  if (response.ok) {
+    console.log(response);
+    close_confirmation_modal2();
+    // remove all the reminders
+  } else {
+    console.log(response);
+  }
+}  
+
+
+function open_modal2(fetchRoute, reminder) {
+	closeNav()
+  confirmation_modal2.style.display = "block";
+  let confirm_form = document.getElementById("delete_all_reminders")
+  confirm_form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    confirmAction(fetchRoute, reminder);
+  })
+}
+
+function close_confirmation_modal2() {
+	confirmation_modal2.style.display = "none";
+}
+
+
+
 
 
 
@@ -913,6 +959,9 @@ window.onclick = function(event) {
   }
   if (event.target == confirmation_modal) {
     close_confirmation_modal();
+  }
+  if (event.target == confirmation_modal2) {
+    close_confirmation_modal2();
   }
   var editmodal = document.getElementById('id01');
   if (event.target == editmodal) {
