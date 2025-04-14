@@ -574,7 +574,7 @@ def send_reminders():
     if args and args.get("pat"):
         pat = Pat.query.filter_by(name="send_reminders")
         request_pat = args.get("pat")
-        if pat.value == request_pat:
+        if bcrypt.check_password_hash(pat.value, request_pat):
             today = datetime.date.today()
             tomorrow = today + datetime.timedelta(days=1) 
             for user in User.query.filter_by(active=True, accept_mail=True).all():
@@ -943,6 +943,4 @@ def drop_tables():
 
 @app.cli.command('sandbox')
 def sandbox():
-    print(type(Reminder.query.get(1).date))
-
-
+    pass

@@ -4,3 +4,4 @@ env.*.sh
 .env
 *.sqlite
 set_env.cmd
+daily.py
