@@ -955,7 +955,7 @@ def create_pat(value):
     pat = Pat(name="send_reminders", val=pat_value)
     db.session.add(pat)
     db.session.commit()
-    print(Pat.query.get(pat.id).name)
-    print("Added succesfully")
+    click.echo(Pat.query.get(pat.id).name)
+    return "Added succesfully"
 
 
