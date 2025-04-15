@@ -1,13 +1,13 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy, random, datetime
+import os, pronotepy, random, datetime, click
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
 from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db, swagger
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from operator import attrgetter
 from types import NoneType
 from sendgrid import SendGridAPIClient
@@ -568,43 +568,44 @@ def mark_rem_as_done(rem_id): # Mark one as done
         return "Reminder not found", 404
 
 @app.route("/send_reminders")
-@login_required
-def send_reminders():
+def send_reminders(): # Send email when due soon
     args = request.args
     if args and args.get("pat"):
-        pat = Pat.query.filter_by(name="send_reminders")
+        pat = Pat.query.filter_by(name="send_reminders").first()
         request_pat = args.get("pat")
-        if bcrypt.check_password_hash(pat.value, request_pat):
-            today = datetime.date.today()
-            tomorrow = today + datetime.timedelta(days=1) 
+        if bcrypt.check_password_hash(pat.val, request_pat):
+            today = date.today()
+            tomorrow = today + timedelta(days=1) 
             for user in User.query.filter_by(active=True, accept_mail=True).all():
-                reminders = Reminder.query.filter(lambda r: r.user_id==user.id and r.date.date() == tomorrow)
+                reminders = Reminder.query.filter(Reminder.user_id==user.id and Reminder.date.date() == tomorrow)
                 if reminders is not None:
                     message = f"""
-<h1>Bonjour {user.username},</h1>
-<2>Vous avez un ou plusieurs devoir à faire pour demain.<br>
-Le(s) voici :<h2>
+<h1>Bonjour {user.username},<br>
+Vous avez un ou plusieurs devoir à faire pour demain.</h1>
+<h2>Le(s) voici :</h2>
 """
                     for reminder in reminders:
                         subject = Subject.query.get(reminder.subject_id)
                         tag = Tag.query.get(reminder.tag_id)
                         message += f"""
-<h3>{subject.content}:    ({tag.content})</h3>
+<h2 style="color:{subject.bg_color}">{subject.content}: </h2> <span style="color:{tag.bg_color}">({tag.content})</span>
 <p>{reminder.content}<p>
 """
                     message += """
-<h2>Merci Beaucoup d'utiliser notre site !</h2>
-<p>Mon équipe et moi (nous sommes 2) travaillons d'arrache pied pour vous apporter le meilleur service possible</p>
+<h4>Merci Beaucoup d'utiliser notre site !<br>Sincèrement, <br>Quentin de chez Quantix.</h4>
+<p>P.S. : Mon équipe et moi (nous sommes 2) travaillons d'arrache pied pour vous apporter le meilleur service possible</p>
 """
                     mail = Mail(
                         from_email='quantix.agenda@gmail.com',
                         to_emails=user.email,
                         subject="Devoir(s) à faire pour peu",
-                        html_content=mail
+                        html_content=message
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-                    response = sg.send(message)
+                    response = sg.send(mail)
+            return "Sucesfully sent an email to everyone", 200
         return "Invalid PAT (Personnal Authorisation Token)", 403
+    return "Invalid args to request, no PAT", 401
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required
@@ -935,12 +936,26 @@ def login_pronote():
 # Other
 @app.cli.command('clear')
 def drop_tables():
-    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp]
+    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat]
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()
     print("Tables cleared succesfully")
 
+
 @app.cli.command('sandbox')
 def sandbox():
-    pass
+    print(Pat.query.get(1).name)
+    print('Success')
+
+@app.cli.command("create_pat")
+@click.option('--value')
+def create_pat(value):
+    pat_value = bcrypt.generate_password_hash(value).decode('utf-8')
+    pat = Pat(name="send_reminders", val=pat_value)
+    db.session.add(pat)
+    db.session.commit()
+    print(Pat.query.get(pat.id).name)
+    print("Added succesfully")
+
+
