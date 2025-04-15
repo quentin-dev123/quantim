@@ -2,7 +2,16 @@
 {% block title %} {{ title }} {% endblock %}
 {% block header %} {{ title }} {% endblock %}
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
-{% block menu_icon %}<span class="menu_icon" onclick="openNav()">&#9776;</span>{% endblock %}
+{% block menu_icon %}
+<div class="tooltip_container">
+    <span class="menu_icon" onclick="openNav()">&#9776;</span>
+    <label class="tooltip">Menu</label>
+</div>
+<div class="tooltip_container_left">
+    <span class="material-icons sort_icon">&#xe053;</span>
+    <label class="tooltip">Sort</label>
+</div>
+{% endblock %}
 {% block content %}
 <a class="add-dev-button" href="/add_reminder">+</a>
 <div class="lds-ring" id="loading" style="text-align: middle;"><div></div><div></div><div></div><div></div></div>
