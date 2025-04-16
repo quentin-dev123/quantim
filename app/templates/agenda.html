@@ -124,6 +124,11 @@ async function fetchData () {
                 text: {
                     htmlType: "p",
                     elemContent: element.content
+                },
+                checkbox: {
+                    htmlType: "input",
+                    elemContent: "",
+                    type: "checkbox"
                 }
             };
             Object.keys(elem_attributes).forEach(function(attr){
@@ -135,6 +140,8 @@ async function fetchData () {
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+                } else if (elem_attributes[attr].htmlType === "input"){
+                    elem.type = elem_attributes[attr].type;
                 }
                 reminder.appendChild(elem);
             });
