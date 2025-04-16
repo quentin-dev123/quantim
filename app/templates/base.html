@@ -504,7 +504,7 @@ async function confirmAction2() {
   if (response.ok) {
     console.log(response);
     close_confirmation_modal2();
-    // remove all the reminders
+    history.go(0); // reload the page
   } else {
     console.log(response);
   }
