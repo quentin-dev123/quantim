@@ -91,6 +91,9 @@ async function fetchData () {
 	    let edit = document.createElement("button");
 	    edit.className = "edit";
 	    edit.innerHTML = "Modifier";
+        edit.addEventListener('click', () => {
+            open_close_modal();
+        });
 	    edit.id = `edit${index}`;
 	    
 	    let del = document.createElement("button");

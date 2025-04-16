@@ -11,9 +11,9 @@
   <script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 
   <!-- Import reminder css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
+  <link rel="preload" href="https://quantix.pythonanywhere.com/static/style/reminder.css"  as="style">
   <!-- Import loading ring css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
+  <link rel="preload" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css"  as="style">
 	
   <!-- Edit modal styling -->
 <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/edit_modal.css"> <!-- import styling-->
@@ -290,34 +290,34 @@ hr {
 
 
 
-<div id="id01" class="editmodal my_modal">
-  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
-  <form class="my_modal-content my_animate" id="form">
-    <div class="my_container">
+<div id="id01" class="editmodal edit_my_modal hidden">
+  <span onclick="close_modal()" class="edit_my_close" title="my_close Modal">&times;</span>
+  <form class="edit_my_modal-content edit_my_animate" id="form">
+    <div class="edit_my_container">
       <h1>Créer un rappel</h1>
       <hr>
        
 <label for="subject_id"><b>Matière</b></label>
-<div class="select_icon_container">
-  <select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
+<div class="edit_select_icon_container">
+  <select class="edit_form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
       <option value="" hidden disabled selected>Choisissez une matière</option>
       <optgroup id="optionGroup" style="display: none;" label="Matières">
       </optgroup>
       <option value="new">+ Plus</option>
   </select>
-  <span class="material-icons icon icon_subject" onclick="">&#xe254;</span>
-  <span class="material-icons icon icon_subject">&#xe872;</span>
+  <span class="material-icons edit_icon edit_icon_subject" onclick="">&#xe254;</span>
+  <span class="material-icons edit_icon edit_icon_subject">&#xe872;</span>
 </div>
 <label for="tag_id"><b>Tag</b></label>
-<div class="select_icon_container">
-<select class="form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')" required>
+<div class="edit_select_icon_container">
+<select class="edit_form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')" required>
     <option value="" hidden disabled selected>Choisissez un tag</option>
     <optgroup id="optionGroup2" style="display: none;" label="Tags">
     </optgroup>
     <option value="new">+ Plus</option>
 </select>
-  <span class="material-icons icon icon_tag" onclick="">&#xe254;</span>
-  <span class="material-icons icon icon_tag">&#xe872;</span>
+  <span class="material-icons edit_icon edit_icon_tag" onclick="">&#xe254;</span>
+  <span class="material-icons edit_icon edit_icon_tag">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
 <input type="date" name="date" id="datePicker" required>
@@ -325,29 +325,22 @@ hr {
 <label for="content"><b>Contenu du rappel</b></label>
 <input type="text" placeholder="Contenu" name="content" id="Contenu" required>
 
-        <div class=" alert alert-danger" id="alert" style="display: none;">
-            <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
+        <div class="edit_alert edit_alert-danger" id="alert" style="display: none;">
+            <strong>Erreur! </strong> <span id="alert_text"></span> <a class="edit_alert-link" id="alert_link"></a>
           </div>
-	<div style="display:none">
-      <label>
-        <!--input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"--> Se souvenir de moi
-      </label>
-		<span class="psw"><a href="#">Mot de pass oublié ?</a></span>
-        
-        </div>
-      <div class="my_clearfix">
-        <button type="button" onclick="close_modal()" class="my_cancelbtn">Annuler</button>
-        <button type="submit" class="my_signupbtn">Valider</button>
+      <div class="edit_my_clearfix">
+        <button type="button" onclick="close_modal()" class="edit_my_cancelbtn">Annuler</button>
+        <button type="submit" class="edit_my_signupbtn">Valider</button>
       </div>
     </div>
   </form>
 </div>
 
  
-<div id="tag_modal" class="editmodal my_modal hidden">
-    <span onclick="close_a_modal(tag_modal, 'tag_select')" class="my_close" title="my_close Modal">&times;</span>
-    <form class="my_modal-content my_animate" id="form">
-      <div class="my_container">
+<div id="tag_modal" class="editmodal edit_my_modal hidden">
+    <span onclick="close_a_modal(tag_modal, 'tag_select')" class="edit_my_close" title="edit_my_close">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="form">
+      <div class="edit_my_container">
         <h1>Nouveau Tag</h1>
         <hr>
         <label for="content"><b>Nom du tag</b></label>
@@ -355,21 +348,21 @@ hr {
         <br>
         <label for="bg_color"><b>Couleur</b></label>
         <input type="color" name="bg_color" required>
-          <div class=" alert alert-danger" style="display: none;">
-              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+          <div class="edit_alert edit_alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
             </div>
-        <div class="my_clearfix">
-          <button type="button" onclick="close_a_modal(tag_modal, 'tag_select')" class="my_cancelbtn">Annuler</button>
-          <button type="submit" class="my_signupbtn">Valider</button>
+        <div class="edit_my_clearfix">
+          <button type="button" onclick="close_a_modal(tag_modal, 'tag_select')" class="edit_my_cancelbtn">Annuler</button>
+          <button type="submit" class="edit_my_signupbtn">Valider</button>
         </div>
       </div>
     </form>
   </div>
 
-  <div id="subject_modal" class="editmodal my_modal hidden">
-    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="my_close" title="my_close Modal">&times;</span>
-    <form class="my_modal-content my_animate" id="form">
-      <div class="my_container">
+  <div id="subject_modal" class="editmodal edit_my_modal hidden">
+    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="edit_my_close" title="my_close Modal">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="form">
+      <div class="edit_my_container">
         <h1>Nouvelle Matière</h1>
         <hr>
         <label for="content"><b>Matière</b></label>
@@ -377,12 +370,12 @@ hr {
         <br>
         <label for="bg_color"><b>Couleur</b></label>
         <input type="color" name="bg_color" required>
-          <div class=" alert alert-danger" style="display: none;">
-              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+          <div class="edit_alert edit_alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
             </div>
-        <div class="my_clearfix">
-          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="my_cancelbtn">Annuler</button>
-          <button type="submit" class="my_signupbtn">Valider</button>
+        <div class="edit_my_clearfix">
+          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="edit_my_cancelbtn">Annuler</button>
+          <button type="submit" class="edit_my_signupbtn">Valider</button>
         </div>
       </div>
     </form>
@@ -583,10 +576,11 @@ window.onclick = function(event) {
 
 <script>
 // Get the modal
-var modal = document.getElementById('confirmation_modal');
+var modal = document.getElementById('id01');
 
 function open_close_modal() {
     modal.classList.toggle("hidden");
+    console.log(modal)
 }
 
 

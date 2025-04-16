@@ -55,7 +55,7 @@
 }
 
 /* The Modal (background) */
-.editmodal .my_modal {
+.edit_my_modal {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
@@ -68,7 +68,7 @@
 }
 
 /* Modal Content/Box */
-.editmodal .my_modal-content {
+.edit_my_modal-content {
   background-color: #fefefe;
   margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
@@ -82,7 +82,7 @@
 }
 
 /* The my_close Button (x) */
-.editmodal .my_close {
+.edit_my_close {
   position: absolute;
   right: 35px;
   top: 15px;
@@ -91,8 +91,8 @@
   color: #f1f1f1;
 }
 
-.editmodal .my_close:hover,
-.editmodal .my_close:focus {
+.edit_my_close:hover,
+.edit_my_close:focus {
   color: #f44336;
   cursor: pointer;
 }
@@ -102,21 +102,21 @@
 }
 
 /* Clear floats */
-.editmodal .my_clearfix::after {
+.edit_my_clearfix::after {
   content: "";
   clear: both;
   display: table;
 }
 
 /* Add Zoom Animation */
-.editmodal .my_animate {
+.edit_my_animate {
   -webkit-animation: my_animatezoom 0.6s;
   animation: my_animatezoom 0.6s
 }
 
 /* Change styles for cancel button and signup button on extra small screens */
 @media screen and (max-width: 300px) {
-  .editmodal .my_my_cancelbtn, .editmodal .my_signupbtn {
+  .edit_my_my_cancelbtn, .edit_my_signupbtn {
      width: 100%;
   }
 }
@@ -147,13 +147,13 @@
   margin-bottom: 10px;
 }
 
-.editmodal .select_icon_container {
+.edit_select_icon_container {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.editmodal .icon {
+.edit_icon {
   margin-left: 7px;
   margin-right: -2px;
   margin-bottom: 11px;
