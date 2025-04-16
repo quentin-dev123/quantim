@@ -233,7 +233,13 @@ def get_sorted_reminders(property): # Read all (sorted)
     ---
     tags:
       - Reminder CRUD operations
-    description: Endpoint returning all reminders  linked to your account (must be logged in)
+    description: Endpoint returning all reminders linked to your account with a certain property (by default is sorted by date) (must be logged in)
+    parameters:
+      - name: property
+        in: path
+        type: string
+        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
+        required: true
     responses:
       200:
         description: A list of all reminders sorted by a property
@@ -249,20 +255,30 @@ def get_sorted_reminders(property): # Read all (sorted)
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    if property in ["tag_id", "subject_id"]:
+    if property in ["tag_id", "subject_id", "date", "content", "id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
 
-@app.route("/api/reminder/filter/<property>/<int:property_id>")
+@app.route("/api/reminder/filter/<property>/<property_value>")
 @login_required
-def get_filtered_reminders(property, property_id): # Read all (filtered)
-    """Endpoint to read reminders filtered with a certain property
+def get_filtered_reminders(property, property_value): # Read all (filtered)
+    """Endpoint to read reminders filtered 
     ---
     tags:
       - Reminder CRUD operations
-    description: Endpoint returning all reminders  linked to your account (must be logged in)
+    description: Endpoint returning all reminders  linked to your account filtered with a certain property (must be logged in)
+    parameters:
+      - name: property
+        in: path
+        type: string
+        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
+        required: true
+      - name: property_value
+        in: path
+        type: string
+        required: true
     responses:
       200:
         description: A list of all reminders filtered by a property
@@ -278,10 +294,9 @@ def get_filtered_reminders(property, property_id): # Read all (filtered)
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    property_id = int(property_id)
-    if property in ["tag_id", "subject_id"]:
+    if property in ["tag_id", "subject_id", "date", "content", "id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
-        filtered_rems = filter(lambda rem: getattr(rem, property) == property_id, reminders)
+        filtered_rems = filter(lambda rem: getattr(rem, property) == type(getattr(rem, property))(property_value), reminders)
         sorted_rems = sorted(filtered_rems, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
