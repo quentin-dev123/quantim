@@ -11,10 +11,16 @@
   <script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 
   <!-- Import reminder css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/reminder.css">
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
   <!-- Import loading ring css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/loading_ring.css">
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
 	
+  <!-- Edit modal styling -->
+<link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/edit_modal.css"> <!-- import styling-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
+	<!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
+
   <style>
     body {
       margin: 0;
@@ -214,194 +220,6 @@ hr {
   .my_my_cancelbtn, .my_signupbtn {
      width: 100%;
   }
-}
-</style>
-
-
-
-
-
-
-
-
-
-
-<!-- Edit modal styling -->
-
-
-
-
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
-	<!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
-<style>
-.editmodal body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-.editmodal * {
-  box-sizing: border-box;
-}
-
-/* Full-width input fields */
-.editmodal input[type=email], .editmodal input[type=password], .editmodal input[type=text], .editmodal input[type=date]{
-  width: 100%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  display: inline-block;
-  border: none;
-  background: #f1f1f1;
-}
-
-/* Add a background color when the inputs get focus */
-.editmodal input[type=email]:focus, .editmodal input[type=password]:focus, .editmodal input[type=text]:focus, .editmodal input[type=date]:focus{
-  background-color: #ddd;
-  outline: none;
-}
-
-/* Set a style for all buttons */
-.editmodal button {
-  background-color: #04AA6D;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
-
-.editmodal button:hover {
-  opacity:1;
-}
-
-/* Extra styles for the cancel button */
-.editmodal .my_cancelbtn {
-  padding: 14px 20px;
-  background-color: #f44336;
-}
-
-/* Float cancel and signup buttons and add an equal width */
-.editmodal .my_cancelbtn, .editmodal .my_signupbtn {
-  float: left;
-  width: 50%;
-}
-
-/* Add padding to container elements */
-.editmodal .my_container {
-  padding: 16px;
-}
-
-/* The Modal (background) */
-.editmodal .my_modal {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: #474e5d;
-  padding-top: 50px;
-}
-
-/* Modal Content/Box */
-.editmodal .my_modal-content {
-  background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* Style the horizontal ruler */
-.editmodal hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
-
-/* The my_close Button (x) */
-.editmodal .my_close {
-  position: absolute;
-  right: 35px;
-  top: 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #f1f1f1;
-}
-
-.editmodal .my_close:hover,
-.editmodal .my_close:focus {
-  color: #f44336;
-  cursor: pointer;
-}
-
-.editmodal span.psw {
-  float: right;
-}
-
-/* Clear floats */
-.editmodal .my_clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-/* Add Zoom Animation */
-.editmodal .my_animate {
-  -webkit-animation: my_animatezoom 0.6s;
-  animation: my_animatezoom 0.6s
-}
-
-/* Change styles for cancel button and signup button on extra small screens */
-@media screen and (max-width: 300px) {
-  .editmodal .my_my_cancelbtn, .editmodal .my_signupbtn {
-     width: 100%;
-  }
-}
-
-.editmodal input[type="color" i] {
-  border-radius: 50%;
-  inline-size: 30px;
-  block-size: 30px;
-  padding: 3px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(153, 153, 153);
-}
-
-.editmodal input[type="color" i]::-webkit-color-swatch-wrapper {
-  padding: 1px;
-}
-
-.editmodal input[type="color" i]::-webkit-color-swatch {
-  border-radius: 50%;
-}
-
-.editmodal input[type="color" i]::-moz-color-swatch {
-  border-radius: 50%;
-}
-
-.editmodal select {
-  margin-bottom: 10px;
-}
-
-.editmodal .select_icon_container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.editmodal .icon {
-  margin-left: 7px;
-  margin-right: -2px;
-  margin-bottom: 11px;
-  font-size: 24px;
-  cursor: pointer;
-  display: none;
-}
-
-.hidden {
-	display: none;
 }
 </style>
 </head>
