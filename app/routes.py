@@ -854,7 +854,7 @@ def login():
             }
             return jsonify(response), 400
         except AttributeError:
-            response = {"message": "L'adresse email ou le mot de passe est incorrect."}
+            response = {"message": "Le username ou le mot de passe est incorrect."}
             return jsonify(response), 400
     return render_template("login.html")
  
