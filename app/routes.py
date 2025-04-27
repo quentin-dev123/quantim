@@ -1,17 +1,18 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy, random, datetime, click
+import os, pronotepy, random, click
+import datetime as d
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from git import Repo
 from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db, swagger
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from operator import attrgetter
-from types import NoneType
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from sqlalchemy import func
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat
 
@@ -181,7 +182,7 @@ def get_reminders(): # Read all
             username=current_user.pronote_username,
             password=current_user.pronote_password,
         )
-        homeworks = client.homework(date_from=date.today())
+        homeworks = client.homework(date_from=d.date.today())
         for homework in homeworks:
             my_homework = Pronote_homework.query.filter_by(
                 content=homework.description, 
@@ -589,11 +590,14 @@ def send_reminders(): # Send email when due soon
         pat = Pat.query.filter_by(name="send_reminders").first()
         request_pat = args.get("pat")
         if bcrypt.check_password_hash(pat.val, request_pat):
-            today = date.today()
-            tomorrow = today + timedelta(days=1) 
+            today = d.date.today()
+            tomorrow = today + timedelta(days=1)
+            emails_sent = 0
             for user in User.query.filter_by(active=True, accept_mail=True).all():
-                reminders = Reminder.query.filter(Reminder.user_id==user.id and Reminder.date.date() == tomorrow)
-                if reminders is not None:
+                reminders = Reminder.query.filter(Reminder.user_id==user.id, func.DATE(Reminder.date) == tomorrow).all()
+                print(Reminder.query.get(1).date.date())
+                print(tomorrow)
+                if reminders:
                     message = f"""
 <h1>Bonjour {user.username},<br>
 Vous avez un ou plusieurs devoir à faire pour demain.</h1>
@@ -618,7 +622,8 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
                     response = sg.send(mail)
-            return "Sucesfully sent an email to everyone", 200
+                    emails_sent += 1
+            return f"Sucesfully sent {emails_sent} email(s)!", 200
         return "Invalid PAT (Personnal Authorisation Token)", 403
     return "Invalid args to request, no PAT", 401
 
@@ -960,7 +965,7 @@ def drop_tables():
 
 @app.cli.command('sandbox')
 def sandbox():
-    print(Pat.query.get(1).name)
+    print(type(Reminder.query.get(1).date))
     print('Success')
 
 @app.cli.command("create_pat")
