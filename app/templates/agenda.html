@@ -5,6 +5,8 @@
   <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
   <!-- Import loading ring css -->
   <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
+  <!-- Import sort icon css -->
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/agenda_icons.css">
 {% endblock %}
 {% block header %} {{ title }} {% endblock %}
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
@@ -13,10 +15,17 @@
     <span class="menu_icon" onclick="openNav()">&#9776;</span>
     <label class="tooltip">Menu</label>
 </div>
-<div class="tooltip_container_left">
-    <span class="material-icons sort_icon">&#xe053;</span>
-    <label class="tooltip">Sort</label>
-</div>
+<div>
+    <div>
+      <span class="material-icons sort_icon"  onclick="sort_icon_dropdown_content()">&#xe053;</span>
+      <label class="tooltip">Trier</label>
+    </div>
+    <div class="sort_icon-dropdown_content" id="sort_icon-dropdown_content">
+    <a>Date</a>
+    <a>Matière</a>
+    <a>Tag</a>
+    </div>
+  </div>
 {% endblock %}
 {% block content %}
 <a class="add-dev-button" href="/add_reminder">+</a>
@@ -24,6 +33,10 @@
 {% endblock %}
 {% block after_content %}{% endblock %}
 {% block script %}
+    function sort_icon_dropdown_content(){
+        const dropdown_content = document.getElementById('sort_icon-dropdown_content');
+        dropdown_content.classList.toggle('show');
+    }
 
     function adjustColorBrightness(color, percent) {
         let num = parseInt(color.slice(1), 16);
