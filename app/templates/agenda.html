@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block title %} {{ title }} {% endblock %}
+{% block stylesheets %}
+  <!-- Import reminder css -->
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
+  <!-- Import loading ring css -->
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
+{% endblock %}
 {% block header %} {{ title }} {% endblock %}
 {% block header_bg_image %} https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  {% endblock %}
 {% block menu_icon %}
