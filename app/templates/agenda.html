@@ -81,8 +81,8 @@
             return response;
     } 
           
-async function fetchData () {
-    let reminderArr = await loadRessource("/api/reminder");
+async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
+    let reminderArr = await loadRessource("/api/reminder/sort/" + type);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject"); 
     loading = document.getElementById("loading")
@@ -200,6 +200,6 @@ async function fetchData () {
 }
 
 
-fetchData();
+fetchData(date);
     
     {% endblock %}
