@@ -89,8 +89,16 @@
             const response = await ressource.json();
             return response;
     } 
-          
+
+function remove_reminders(){
+    const containerElements = document.querySelectorAll('.container');
+    containerElements.forEach(element => {
+      element.remove();
+    });
+}
+		
 async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
+    remove_reminders()
     let reminderArr = await loadRessource("/api/reminder/sort/" + type);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject"); 
