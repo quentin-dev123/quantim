@@ -32,3 +32,11 @@
 .show {
   display: block;
 }
+
+.check {
+  color: green;
+}
+
+.sort_icon-dropdown_content a i.hide {
+  display: none;
+}
