@@ -34,10 +34,16 @@
 {% endblock %}
 {% block after_content %}{% endblock %}
 {% block script %}
+    const dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
-        const dropdown_content = document.getElementById('sort_icon-dropdown_content');
+        event.stopPropagation()
         dropdown_content.classList.toggle('show');
     }
+
+    // when the document is pressed
+    document.addEventListener('click', function(event) {
+        dropdown_content.classList.remove('show');
+    });
 
   function sort(type){
     const date = document.getElementById('sort_date_check')
