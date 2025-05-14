@@ -118,7 +118,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 
 		
     if (Array.isArray(reminderArr)) {
-        loading.style.display = "block";
+        loading.classList.remove('hide');
     
         reminderArr.forEach(function(element, index) {
             let container = document.createElement("div");
@@ -208,7 +208,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                 reminder.appendChild(elem);
             });
         });
-	loading.style.display = "none";
+	loading.classList.add('hide');
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
 	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
