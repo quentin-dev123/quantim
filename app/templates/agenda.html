@@ -99,7 +99,7 @@ function remove_reminders(){
 		
 async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
     remove_reminders()
-    loading.style.display = "block";
+    loading.classList.remove('hide');
     let reminderArr = await loadRessource("/api/reminder/sort/" + type);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject"); 
@@ -118,7 +118,6 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 
 		
     if (Array.isArray(reminderArr)) {
-        loading.classList.remove('hide');
     
         reminderArr.forEach(function(element, index) {
             let container = document.createElement("div");
