@@ -22,9 +22,9 @@
       <label class="tooltip">Trier</label>
     </div>
     <div class="sort_icon-dropdown_content" id="sort_icon-dropdown_content">
-    <a onclick="sort('date')">Date <i class="fa-regular check" id="sort_date_check">&#xf058;</i></a>
-    <a onclick="sort('matière')">Matière <i class="fa-regular check hide" id="sort_matière_check">&#xf058;</i></a>
-    <a onclick="sort('tag')">Tag <i class="fa-regular check hide" id="sort_tag_check">&#xf058;</i></a>
+    <a onclick="sort('date', event)">Date <i class="fa-regular check" id="sort_date_check">&#xf058;</i></a>
+    <a onclick="sort('matière', event)">Matière <i class="fa-regular check hide" id="sort_matière_check">&#xf058;</i></a>
+    <a onclick="sort('tag', event)">Tag <i class="fa-regular check hide" id="sort_tag_check">&#xf058;</i></a>
     </div>
   </div>
 {% endblock %}
@@ -45,7 +45,8 @@
         dropdown_content.classList.remove('show');
     });
 
-  function sort(type){
+  function sort(type, event){
+    event.stopPropagation();
     const date = document.getElementById('sort_date_check')
     const matière = document.getElementById('sort_matière_check')
     const tag = document.getElementById('sort_tag_check')
@@ -98,7 +99,6 @@ function remove_reminders(){
 }
 		
 async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
-    event.stopPropagation()
     remove_reminders()
     loading.classList.remove('hide');
     console.log("reminderArr = /api/reminder/sort/" + type)
