@@ -318,7 +318,6 @@ async function confirmAction(ressourceLink, reminder) {
   } else {
     console.log(response);
   }
-  // Implement error logic here
 }  
 
 
@@ -343,7 +342,7 @@ function open_modal(fetchRoute, reminder) {
 
 
 async function confirmAction2() {
-  let response = await fetch("/api/reminder", {method: 'DELETE'}); // fix this line to mnake all the reminders be deleted
+  let response = await fetch("/api/reminder", {method: 'DELETE'});
   if (response.ok) {
     console.log(response);
     close_confirmation_modal2();
