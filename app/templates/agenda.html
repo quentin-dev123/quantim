@@ -102,16 +102,10 @@ function remove_reminders(){
 async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
     remove_reminders()
     loading.classList.remove('hide');
-    console.log("reminderArr = /api/reminder/sort/" + type)
     let reminderArr = await loadRessource("/api/reminder/sort/" + type);
-    let reminder_test = reminderArr
-    console.log(reminder_test)
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject"); 
     loading = document.getElementById("loading")
-    
-    // sort reminderArr by date
-    // reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     // remove expired reminders
     const removeExpiredObjects = (array) => {
