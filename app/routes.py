@@ -39,7 +39,11 @@ def home():
 @app.route('/agenda')
 @login_required
 def agenda():
-    return render_template('agenda.html', title="Agenda Personnel", user="test")
+    return render_template('agenda.html', title="Agenda Personnel")
+
+@app.route('/debug')
+def debug():
+    return render_template("debug.html")
 
 @app.route('/add_reminder')
 @login_required
