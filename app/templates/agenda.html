@@ -111,7 +111,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
     loading = document.getElementById("loading")
     
     // sort reminderArr by date
-    reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     // remove expired reminders
     const removeExpiredObjects = (array) => {
