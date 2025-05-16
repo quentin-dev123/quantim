@@ -10,16 +10,19 @@
   <link rel="stylesheet" href="https://timothee123456.github.io/library/tooltip/style.css">
   <script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 
-  <!-- Import reminder css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
-  <!-- Import loading ring css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
+  <!-- Import confirmation modal css -->
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/confirmation_modal.css">
+  
+  <!-- Import sidenav menu css -->
+  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/sidenav.css">
+  {% block stylesheets %}{% endblock %}
+
 	
   <!-- Edit modal styling -->
 <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/edit_modal.css"> <!-- import styling-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
-	<!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
     body {
@@ -56,171 +59,11 @@
       font-size: 14px;
     }
 
-
-	
-
-
-
-
-
-      /* Sidenav menu */
-    .menu_icon {
-    	font-size: 30px;
-        color: #fff;
-        cursor: pointer;
-        
-        position: absolute;
-        top: 30px;
-        left: 20px;
+    .hide,
+    .hidden  {
+	display: none;
     }
 
-.sidenav {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  font-family: "Lato", sans-serif;
-  transition: 0.3s;
-	cursor: pointer;
-}
-
-.sidenav a:hover {
-  color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
-}
-
-
-	  
-	  
-	  
-	  
-	/* Confirmation modal */  
-/* Set a style for all buttons */
-.my_modal_button {
-  background-color: #04AA6D;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
-
-.my_modal_button:hover {
-  opacity:1;
-}
-
-/* Extra styles for the cancel button */
-.my_cancelbtn {
-  padding: 14px 20px;
-  background-color: #ccc;
-  color: black;
-}
-
-/* Extra styles for the signup button */
-.my_signupbtn {
-  padding: 14px 20px;
-  background-color: #f44336;
-}
-
-/* Float cancel and signup buttons and add an equal width */
-.my_cancelbtn, .my_signupbtn {
-  float: left;
-  width: 50%;
-}
-
-/* Add padding to container elements */
-.my_container {
-  padding: 16px;
-}
-
-/* The Modal (background) */
-.my_modal {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.34);
-  padding-top: 50px;
-  display: none;
-}
-
-/* Modal Content/Box */
-.my_modal-content {
-  background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-  border: none;
-  width: 80%; /* Could be more or less, depending on screen size */
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Style the horizontal ruler */
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
- 
-/* The my_close Button (x) */
-.my_close {
-  position: absolute;
-  right: 35px;
-  top: 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #f1f1f1;
-}
-
-.my_close:hover,
-.my_close:focus {
-  color: #f44336;
-  cursor: pointer;
-}
-
-
-/* Clear floats */
-.my_clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-
-/* Change styles for cancel button and signup button on extra small screens */
-@media screen and (max-width: 300px) {
-  .my_my_cancelbtn, .my_signupbtn {
-     width: 100%;
-  }
-}
 </style>
 </head>
 <body id="body">
@@ -259,7 +102,7 @@ hr {
    
       <div class="my_clearfix">
         <button type="button" onclick="close_confirmation_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
-        <button type="submit" class="my_signupbtn my_modal_button">Effacer</button>
+        <input type="submit" class="my_signupbtn my_modal_button" value="Effacer">
       </div>
     </div>
   </form>
@@ -475,7 +318,6 @@ async function confirmAction(ressourceLink, reminder) {
   } else {
     console.log(response);
   }
-  // Implement error logic here
 }  
 
 
@@ -500,7 +342,7 @@ function open_modal(fetchRoute, reminder) {
 
 
 async function confirmAction2() {
-  let response = await fetch("/api/reminder", {method: 'DELETE'}); // fix this line to mnake all the reminders be deleted
+  let response = await fetch("/api/reminder", {method: 'DELETE'});
   if (response.ok) {
     console.log(response);
     close_confirmation_modal2();
@@ -576,7 +418,7 @@ window.onclick = function(event) {
 
 <script>
 // Get the modal
-var modal = document.getElementById('id01');
+var modal = document.getElementById('confirmation_modal');
 
 function open_close_modal() {
     modal.classList.toggle("hidden");

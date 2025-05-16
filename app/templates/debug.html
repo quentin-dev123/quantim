@@ -1,0 +1,30 @@
+{% extends 'form.html' %}
+
+{% set title = "Se connecter" %}
+{% set next_destination = "/agenda" %} 
+{% set fetch_destination = "/login" %}
+
+{% block form_content %} 
+<label for="username"><b> Entrer votre username </b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="username" value="Debug" required>
+<label for="password"><b> Entrer votre mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" id="password1" value="1234" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
+{% endblock %}
+{% block other_content %} {% endblock %}
+{% block modal_close_func %} {% endblock %}
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the button element by its ID
+  var button = document.getElementById('valider');
+
+  // Check if the button exists
+  if (button) {
+    // Simulate a click on the button
+    button.click();
+  } else {
+    console.error("Button with id 'valider' not found.");
+  }
+}); 
+</script>
+{% endblock %}

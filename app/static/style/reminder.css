@@ -54,6 +54,15 @@
         font-weight: bold;
         line-height: 0.1;
     }
+
+    .reminderinput { /* Mark as done checkbox */
+        position: absolute;
+  	top: 5px;
+        right: 5px;
+        transform: scale(1.25);
+        -ms-transform: scale(1.25);
+        -webkit-transform: scale(1.25);
+    }
 	  
 
     .add-dev-button {

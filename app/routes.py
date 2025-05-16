@@ -39,7 +39,11 @@ def home():
 @app.route('/agenda')
 @login_required
 def agenda():
-    return render_template('agenda.html', title="Agenda Personnel", user="test")
+    return render_template('agenda.html', title="Agenda Personnel")
+
+@app.route('/debug')
+def debug():
+    return render_template("debug.html")
 
 @app.route('/add_reminder')
 @login_required
@@ -607,8 +611,56 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
                         subject = Subject.query.get(reminder.subject_id)
                         tag = Tag.query.get(reminder.tag_id)
                         message += f"""
-<h2 style="color:{subject.bg_color}">{subject.content}: </h2> <span style="color:{tag.bg_color}">({tag.content})</span>
-<p>{reminder.content}<p>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- Google fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!--Google fonts -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- Google icons -->
+<div style="padding: 10px;">     
+<table style="
+        background-color: {subject.bg_color};
+        width: 21vw;
+        height: 102px;
+        border-radius: 15px;
+        overflow: auto;
+        color: #fff;
+        vertical-align: middle;  
+        text-align: center;
+        ">
+  <tr>
+    <td>
+      <a style="padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        
+        background-color: {tag.bg_color};">{tag.content}</a>
+    </td>
+    <td style="font-family: 'Anaheim', sans-serif;
+        font-size: 13px;
+        padding-left: 0px;
+position: relative;">Pour : Demain
+    <a href="https://quantix.pythonanywhere.com/agenda">
+    <img style="width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 5; 
+    right: 5;
+    cursor: pointer;" src="https://quantix.pythonanywhere.com/static/images/open_icon.png">
+    </a>
+</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="font-family: 'Architects Daughter', sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;"
+        color:white>{subject.content}</td>
+  </tr>
+  <tr>
+    <td colspan="2">{reminder.content}</td>
+  </tr>
+</table>
+</div>
 """
                     message += """
 <h4>Merci Beaucoup d'utiliser notre site !<br>Sincèrement, <br>Quentin de chez Quantix.</h4>
@@ -617,7 +669,7 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
                     mail = Mail(
                         from_email='quantix.agenda@gmail.com',
                         to_emails=user.email,
-                        subject="Devoir(s) à faire pour peu",
+                        subject="Devoir(s) à faire pour demain",
                         html_content=message
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
