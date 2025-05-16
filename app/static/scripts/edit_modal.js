@@ -1,13 +1,43 @@
-// Access the reminder_id variable from the window object
-const reminder_id = window.reminder_id;
-
 // Get the modal
 var modal = document.getElementById('editmodal');
+var reminder_id = undefined
 
-function editmodal_close_modal () {
-    history.back();
+function editmodal_close_modal() {
+    modal.classList.add("hidden");
 }
 
+function editmodal_open_modal(id) {
+    modal.classList.remove("hidden");
+    fetchReminder(id)
+    reminder_id = id
+    console.log(id)
+}
+
+const datePicker = document.getElementById("editmodal_datePicker");
+const content = document.getElementById('editmodal_Contenu');
+const subject_select = document.getElementById('editmodal_subject_select');
+const tag_select = document.getElementById('editmodal_tag_select');
+
+datePicker.min = new Date().toISOString().split("T")[0];
+
+async function fetchReminder (id) { 
+    let reminders = await loadRessource("/api/reminder/filter/id/" + id);
+    let reminder = reminders[0]
+    
+    datePicker.value = reminder.date.split("T")[0]
+    content.value = reminder.content
+
+    /*
+    console.log(global_subjectArr)
+    let subject_name = global_subjectArr.find(mySubject => mySubject.id === reminder.subject_id);
+    for (let i = 0; i < subject_select.options.length; i++) {
+        if (subject_select.options[i].text === subject_name) {
+            subject_select.selectedIndex = i;
+            break; // Exit after selecting the option (since there's only one)
+        }
+    }
+    */
+}
 
 const form = document.getElementById("editmodal_form");
 form.addEventListener('submit',  async (event) => {
@@ -33,6 +63,7 @@ form.addEventListener('submit',  async (event) => {
     }
 
     // Make a PUT request to the server
+    const reminder_id = window.reminder_id; // Access the reminder_id variable from the window object
     let result = await fetch("/api/reminder/" + reminder_id, {
         method: 'PUT',
         headers: {
@@ -63,6 +94,7 @@ form.addEventListener('submit',  async (event) => {
 
 
 // Show icons functions
+// does not work as editmodal_icon_subject and editmodal_icon_tag classes do not exist
 function show_icons_subject(){
 	let icons = document.getElementsByClassName("editmodal_icon_subject");
     for (let i = 0; i < icons.length; i++) {
@@ -82,17 +114,12 @@ function findIndexfromOptionName( select, optionName ) {
     let options = Array.from( select.options );
     return options.findIndex( (opt) => opt.value == optionName );
 }
-const tag_modal = document.getElementById("editmodal_tag_modal")
-const subject_modal = document.getElementById("editmodal_subject_modal")
 
 function close_a_modal (the_modal, selectId) {
     the_modal.style.display = "none";
     const select = document.getElementById(selectId)
     select.selectedIndex = "0";
 }
-
-const datePicker = document.getElementById("editmodal_datePicker");
-datePicker.min = new Date().toISOString().split("T")[0];
 
 async function dynamic_options(fetch_route, optgroup_id){
     let optionGroup = document.getElementById(optgroup_id);
@@ -114,7 +141,10 @@ async function dynamic_options(fetch_route, optgroup_id){
 dynamic_options("/api/tag", "editmodal_optionGroup2");
 dynamic_options("/api/subject", "editmodal_optionGroup");
 
-function changeSelect(elem, elemId) {
+const tag_modal = document.getElementById("editmodal_tag_modal")
+const subject_modal = document.getElementById("editmodal_subject_modal")
+
+function editmodal_changeSelect(elem, elemId) {
     if (document.getElementById(elemId).value ===  "new") {
         switch (elem) {
             case "tag" :

@@ -147,13 +147,13 @@
   margin-bottom: 10px;
 }
 
-.edit_select_icon_container {
+.editmodal .edit_select_icon_container {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.edit_icon {
+.editmodal .edit_icon {
   margin-left: 7px;
   margin-right: -2px;
   margin-bottom: 11px;
