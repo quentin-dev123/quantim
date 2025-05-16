@@ -14,7 +14,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import func
 
-from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat
+from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -880,6 +880,27 @@ def delete_account():
     db.session.commit()
     return redirect(url_for("home"))
 
+@app.route("/forgot_password")
+def forgot_pw_page():
+    return render_template("forgot_pw.html")
+
+@app.route("/forgot_password", methods=["POST"])
+def forgot_pw_mail():
+    data = json.loads(request.data)
+    email = data.get('email')
+    user = User.query.filter_by(email=email).first()
+    if user is not None:
+        message = Mail(
+                from_email='quantix.agenda@gmail.com',
+                to_emails=email,
+                subject="Mot de passe oublié",
+                html_content="blabla" # <<<----- À REMPLACER !!!!!
+            )
+        sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+        sg.send(message)
+        return "Email envoyé avec succès"
+    return "L'adresse email ne correspond à aucun compte"
+
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect(url_for('login'))
@@ -956,7 +977,7 @@ def login_pronote():
 # Other
 @app.cli.command('clear')
 def drop_tables():
-    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat]
+    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token]
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()

@@ -1,0 +1,10 @@
+{% extends 'form.html' %}
+
+{% set title = "Mot de passe oublié" %}
+{% set next_destination = "#" %} 
+{% set fetch_destination = "/forgot_password" %}
+
+{% block form_content %} 
+<label for="username"><b> Entrer votre addresse email </b></label>
+<input type="text" placeholder="Email" name="username" required>
+{% endblock %}

@@ -105,6 +105,7 @@ class User(UserMixin, db.Model):
     tags = db.relationship("Tag", backref="user")
     subjects = db.relationship("Subject", backref="user")
     otp = db.relationship("Otp", backref="user")
+    token = db.relationship("Token", backref="user")
 
 class Otp(db.Model):
     __tablename__ = 'Otp'
@@ -119,3 +120,10 @@ class Pat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
     val = db.Column(db.String(250), nullable=False)
+
+class Token(db.Model):
+    __tablename__ = 'Token'
+    id = db.Column(db.Integer, primary_key=True)
+    val = db.Column(db.String(250), nullable=False)
+    # --- Relationships --- 
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
