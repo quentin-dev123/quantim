@@ -537,9 +537,9 @@ def update_reminders(rem_id): # Update
         return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
 
-@app.route("/api/reminder/done/<int:rem_id>")
+@app.route("/api/reminder/done/<int:rem_id>/<status>")
 @login_required
-def mark_rem_as_done(rem_id): # Mark one as done
+def mark_rem_as_done(rem_id, status): # Mark one as done
     """Endpoint to mark as done a reminder
     ---
     tags:
@@ -550,12 +550,22 @@ def mark_rem_as_done(rem_id): # Mark one as done
         in: path
         type: integer
         required: true
+      - name: status
+        in: path
+        type: string
+        enum: ['True', 'False']
+        required: true
     responses:
       200:
         description: A validation message
         schema:
           type: string
           example: Reminder marked as done
+      400:
+        description: The status argument is invalid
+        schema:
+          type: string
+          example: Invalid argument status. Must be included in ['True', 'False']
       403:
         description: The reminder you're trying to access doesn't belong to you
         schema:
@@ -572,25 +582,23 @@ def mark_rem_as_done(rem_id): # Mark one as done
     reminder = Reminder.query.get(rem_id)
     if reminder is not None:
         if reminder.user_id == current_user.id: # Layer of security
-            if reminder.pronote_id is not None:
-                client = pronotepy.Client(
-                    'https://pronote.fis.edu.hk/eleve.html',
-                    username=current_user.pronote_username,
-                    password=current_user.pronote_password,
-                )
-                homeworks = client.homework(date_from=reminder.date.date())
-                homeworks = list(filter(lambda hw: hw.description == reminder.content and hw.date == reminder.date.date(), homeworks))
-                print(homeworks)
-                homework = homeworks[0]
-                homework.set_done(True)
-                print(homework.done)
-            reminder.done = True
-            db.session.commit()
-            return "Reminder marked as done succesfully", 200
-        else:
-            return "Not logged in the right account", 403
-    else:
-        return "Reminder not found", 404
+            if status in ["True", "False"]:
+                if reminder.pronote_id is not None:
+                    client = pronotepy.Client(
+                        'https://pronote.fis.edu.hk/eleve.html',
+                        username=current_user.pronote_username,
+                        password=current_user.pronote_password,
+                    )
+                    homeworks = client.homework(date_from=reminder.date.date())
+                    homeworks = list(filter(lambda hw: hw.description == reminder.content and hw.date == reminder.date.date(), homeworks))
+                    homework = homeworks[0]
+                    homework.set_done(status == "True")
+                reminder.done = (status == "True")
+                db.session.commit()
+                return "Reminder marked as done succesfully", 200
+            return "Invalid argument status. Must be included in ['True', 'False']", 400
+        return "Not logged in the right account", 403
+    return "Reminder not found", 404
 
 @app.route("/send_reminders")
 def send_reminders(): # Send email when due soon
