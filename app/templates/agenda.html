@@ -3,11 +3,11 @@
 {% block title %} {{ title }} {% endblock %}
 {% block stylesheets %}
   <!-- Import reminder css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
+  <link rel="stylesheet" href="/static/style/reminder.css">
   <!-- Import loading ring css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
+  <link rel="stylesheet" href="/static/style/loading_ring.css">
   <!-- Import sort icon css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/agenda_icons.css">
+  <link rel="stylesheet" href="/static/style/agenda_icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
 {% endblock %}
 {% block header %} {{ title }} {% endblock %}
@@ -36,6 +36,25 @@
 {% block after_content %}{% endblock %}
 {% block script %}
 <script>
+    async function reminder_mark_as_done(reminder_id, container_id){
+        event.stopPropagation()
+        const checkbox = document.getElementById(`reminput${container_id}`);
+        const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
+
+        let message;
+        if (checkbox.checked){
+            message = await fetch("/api/reminder/done/" + reminder_id);
+        } else {
+            message = await fetch("/api/reminder/done/" + reminder_id); /* Change this to the correct path */
+        }
+        if (message.ok){
+                overlay.classList.toggle('active');
+            } else {
+                checkbox.checked = !checkbox.checked
+                console.log(message.statusText)
+        }
+    }
+    
     const dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
         event.stopPropagation()
@@ -110,8 +129,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
     let reminderArr = await loadRessource("/api/reminder/sort/" + type);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject");
-    var global_tagArr = tagArr
-    var global_subjectArr = subjectArr
+    global_tagArr = tagArr
+    global_subjectArr = subjectArr
     loading = document.getElementById("loading")
 
     // remove expired reminders
@@ -148,7 +167,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	    container.appendChild(reminder);
 	    
 	    let overlay = document.createElement("div");
-	    overlay.className = "overlay";
+	    overlay.className = "overlay buttons_overlay";
 	    overlay.id = `overlay${index}`;
 	    container.appendChild(overlay);
 	    
@@ -172,30 +191,41 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	    overlay.appendChild(edit);
 	    overlay.appendChild(del);
 	    
+        let mark_as_done_overlay = document.createElement("div");
+	    mark_as_done_overlay.className = "overlay mark_as_done_overlay";
+	    mark_as_done_overlay.id = `mark_as_done_overlay${index}`;
+        if (element.done){
+            mark_as_done_overlay.classList.add('active');
+        }
+	    container.appendChild(mark_as_done_overlay);
+        
+
 	    document.getElementById("main").appendChild(container);
     
             const elem_attributes = {
                 tagged: {
                     htmlType: "a",
                     elemContent: tag.content,
-                    elemBgColor: tag.bg_color
+                    elemBgColor: tag.bg_color,
                 },
                 date: {
                     htmlType: "nobr",
-                    elemContent: "Pour : " + find_date_name(element.date)
+                    elemContent: "Pour : " + find_date_name(element.date),
                 },
                 topic: {
                     htmlType: "h2",
-                    elemContent: subject.content // Corrected to display subject name
+                    elemContent: subject.content, // Corrected to display subject name
                 },
                 text: {
                     htmlType: "p",
-                    elemContent: element.content
+                    elemContent: element.content,
                 },
                 checkbox: {
                     htmlType: "input",
                     elemContent: "",
-                    type: "checkbox"
+                    type: "checkbox",
+                    onclick: function() {reminder_mark_as_done(element.id, index)},
+                    checked: element.done,
                 }
             };
             Object.keys(elem_attributes).forEach(function(attr){
@@ -207,8 +237,15 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                } else if (elem_attributes[attr].htmlType === "input"){
+                }
+                if (elem_attributes[attr].type){
                     elem.type = elem_attributes[attr].type;
+                }
+                if (elem_attributes[attr].onclick) {
+                    elem.onclick = elem_attributes[attr].onclick;
+                }
+                if (elem_attributes[attr].checked) {
+                    elem.checked = elem_attributes[attr].checked;
                 }
                 reminder.appendChild(elem);
             });
