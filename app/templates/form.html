@@ -266,7 +266,7 @@ form.addEventListener('submit',  async (event) => {
       {% block sucess %}
         location.replace("{{ next_destination }}");
         {% endblock %}
-    } else if (result.status === 400) {
+    } else {
         const response = await result.json();
         alertText.innerHTML = response["message"];
         if (response["link_display"]) {

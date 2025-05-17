@@ -5,6 +5,18 @@
 {% set fetch_destination = "/forgot_password" %}
 
 {% block form_content %} 
-<label for="username"><b> Entrer votre addresse email </b></label>
-<input type="text" placeholder="Email" name="username" required>
+<label for="email"><b> Entrer votre addresse email </b></label>
+<input type="text" placeholder="Email" name="email" required>
+{% endblock %}
+
+{% block other_content %} 
+<div id="id02" class="my_modal" style="display:none;">
+  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <h1>Succès</h1>
+  <p>Un mail à été envoyé à l'adresse que vous venez de fournir.<br> Vous y trouverez un lien pour réinitialiser votre mot de passe</p>
+</div>
+{% endblock %}
+
+{% block sucess %}
+document.getElementById("id02").style.display = block;
 {% endblock %}

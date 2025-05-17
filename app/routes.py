@@ -50,6 +50,10 @@ def debug():
 def add_reminder():
     return render_template("add_reminder.html")
 
+@app.route('/test/<file>')
+def test(file):
+    return render_template(file)
+
 #------------------------------------------------------
 # API ~~ CRUD functions
 
@@ -941,17 +945,19 @@ def forgot_pw_mail():
     data = json.loads(request.data)
     email = data.get('email')
     user = User.query.filter_by(email=email).first()
+    print(email)
+    print(User.query.filter_by(username="quentin").first().email)
     if user is not None:
         message = Mail(
                 from_email='quantix.agenda@gmail.com',
                 to_emails=email,
                 subject="Mot de passe oublié",
-                html_content="blabla" # <<<----- À REMPLACER !!!!!
+                html_content=render_template("forgot_pw_mail.html", user=user) # <<<----- À REMPLACER !!!!!
             )
         sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
         sg.send(message)
-        return "Email envoyé avec succès"
-    return "L'adresse email ne correspond à aucun compte"
+        return "Email envoyé avec succès", 200
+    return jsonify({"message": "L'adresse email ne correspond à aucun compte"}), 404
 
 @login_manager.unauthorized_handler
 def unauthorized():
