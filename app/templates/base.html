@@ -11,19 +11,19 @@
   <script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 
   <!-- Import confirmation modal css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/confirmation_modal.css">
+  <link rel="stylesheet" href="/static/style/confirmation_modal.css">
   
   <!-- Import sidenav menu css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/sidenav.css">
+  <link rel="stylesheet" href="/static/style/sidenav.css">
   {% block stylesheets %}{% endblock %}
 
 	
   <!-- Edit modal styling -->
-<link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/edit_modal.css"> <!-- import styling-->
+<link rel="stylesheet" href="/static/style/edit_modal.css"> <!-- import styling-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
 <!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
-
+ 
   <style>
     body {
       margin: 0;
@@ -142,25 +142,25 @@
        
 <label for="subject_id"><b>Matière</b></label>
 <div class="edit_select_icon_container">
-  <select class="edit_form-select" name="subject_id" id="editmodal_subject_select" onchange="editmodal_changeSelect('subject', 'editmodal_subject_select')" required>
+  <select class="form-select" name="subject_id" id="editmodal_subject_select" onchange="editmodal_changeSelect('subject', 'editmodal_subject_select')" required>
       <option value="" hidden disabled selected>Choisissez une matière</option>
       <optgroup id="editmodal_optionGroup" style="display: none;" label="Matières">
       </optgroup>
       <option value="new">+ Plus</option>
   </select>
-  <span class="material-icons edit_icon edit_icon_subject" onclick="">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_subject">&#xe872;</span>
+  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe254;</span>
+  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe872;</span>
 </div>
 <label for="tag_id"><b>Tag</b></label>
 <div class="edit_select_icon_container">
-<select class="edit_form-select" name="tag_id" id="editmodal_tag_select" onchange="editmodal_changeSelect('tag', 'editmodal_tag_select')" required>
+<select class="form-select" name="tag_id" id="editmodal_tag_select" onchange="editmodal_changeSelect('tag', 'editmodal_tag_select')" required>
     <option value="" hidden disabled selected>Choisissez un tag</option>
     <optgroup id="editmodal_optionGroup2" style="display: none;" label="Tags">
     </optgroup>
     <option value="new">+ Plus</option>
 </select>
-  <span class="material-icons edit_icon edit_icon_tag" onclick="">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_tag">&#xe872;</span>
+  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe254;</span>
+  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
 <input type="date" name="date" id="editmodal_datePicker" required>
@@ -254,21 +254,44 @@
 
 
 	
+function getDayOfWeek(target_date){
+ current_date = new Date('2025-04-06')
+ days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
+  days_remaining = 7 - current_date.getDay()
+ if (days_remaining == 7){ /* if sunday */
+   days_remaining = 5
+ }
+  difference_milliseconds = target_date.getTime() - current_date.getTime()
+ difference_days = Math.round(difference_milliseconds / 86400000)
+ if (difference_days <= days_remaining && difference_days > 0){
+    day_of_week = current_date.getDay() + difference_days
+    return days[day_of_week - 1]
+ }
+ else {
+    return false
+ }
+}
 
 
 function find_date_name(date){
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
-       return "Aujourd'hui"
-    }
-    else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
-       return "Demain"
-    }
-    else {
+  const today = new Date();
+   const tomorrow = new Date();
+   tomorrow.setDate(today.getDate() + 1);
+   if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
+      return "Aujourd'hui"
+   }
+   else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
+      return "Demain"
+   }
+   else {
+     if (getDayOfWeek(date)){
+       return getDayOfWeek(date)
+     }
+     else {
        return date.toLocaleDateString('en-GB')
-    }
+     }
+   }
+
 }
 
 	
@@ -386,9 +409,9 @@ window.onclick = function(event) {
   if (event.target == confirmation_modal2) {
     close_confirmation_modal2();
   }
-  var editmodal = document.getElementById('id01');
+  var editmodal = document.getElementById('editmodal');
   if (event.target == editmodal) {
-    open_close_modal();
+    editmodal_close_modal();
   }
 }
 </script>

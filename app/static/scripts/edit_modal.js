@@ -16,7 +16,7 @@ function editmodal_open_modal(id) {
 const datePicker = document.getElementById("editmodal_datePicker");
 const content = document.getElementById('editmodal_Contenu');
 const subject_select = document.getElementById('editmodal_subject_select');
-const tag_select = document.getElementById('editmodal_tag_select');
+const tag_select = document.getElementById('editmodal_tag_select')
 
 datePicker.min = new Date().toISOString().split("T")[0];
 
@@ -27,16 +27,16 @@ async function fetchReminder (id) {
     datePicker.value = reminder.date.split("T")[0]
     content.value = reminder.content
 
-    /*
-    console.log(global_subjectArr)
-    let subject_name = global_subjectArr.find(mySubject => mySubject.id === reminder.subject_id);
-    for (let i = 0; i < subject_select.options.length; i++) {
-        if (subject_select.options[i].text === subject_name) {
-            subject_select.selectedIndex = i;
-            break; // Exit after selecting the option (since there's only one)
-        }
-    }
-    */
+    let subject = global_subjectArr.find(mySubject => mySubject.id === reminder.subject_id);
+    subject_select.value = subject.id
+    subject_select.style.backgroundColor = subject.bg_color
+    subject_select.style.color = "white";
+
+    let tag = global_tagArr.find(myTag => myTag.id === reminder.tag_id);
+    tag_select.value = tag.id
+    tag_select.style.backgroundColor = tag.bg_color
+    tag_select.style.color = "white";
+
 }
 
 const form = document.getElementById("editmodal_form");
