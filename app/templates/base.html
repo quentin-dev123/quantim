@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/edit_modal.css"> <!-- import styling-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
 
   <style>
     body {
@@ -133,18 +133,18 @@
 
 
 
-<div id="id01" class="editmodal edit_my_modal hidden">
-  <span onclick="close_modal()" class="edit_my_close" title="my_close Modal">&times;</span>
-  <form class="edit_my_modal-content edit_my_animate" id="form">
+<div id="editmodal" class="editmodal edit_my_modal hidden">
+  <span onclick="editmodal_close_modal()" class="edit_my_close" title="my_close Modal">&times;</span>
+  <form class="edit_my_modal-content edit_my_animate" id="editmodal_form">
     <div class="edit_my_container">
-      <h1>Créer un rappel</h1>
+      <h1>Modifier un rappel</h1>
       <hr>
        
 <label for="subject_id"><b>Matière</b></label>
 <div class="edit_select_icon_container">
-  <select class="edit_form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
+  <select class="edit_form-select" name="subject_id" id="editmodal_subject_select" onchange="editmodal_changeSelect('subject', 'editmodal_subject_select')" required>
       <option value="" hidden disabled selected>Choisissez une matière</option>
-      <optgroup id="optionGroup" style="display: none;" label="Matières">
+      <optgroup id="editmodal_optionGroup" style="display: none;" label="Matières">
       </optgroup>
       <option value="new">+ Plus</option>
   </select>
@@ -153,9 +153,9 @@
 </div>
 <label for="tag_id"><b>Tag</b></label>
 <div class="edit_select_icon_container">
-<select class="edit_form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')" required>
+<select class="edit_form-select" name="tag_id" id="editmodal_tag_select" onchange="editmodal_changeSelect('tag', 'editmodal_tag_select')" required>
     <option value="" hidden disabled selected>Choisissez un tag</option>
-    <optgroup id="optionGroup2" style="display: none;" label="Tags">
+    <optgroup id="editmodal_optionGroup2" style="display: none;" label="Tags">
     </optgroup>
     <option value="new">+ Plus</option>
 </select>
@@ -163,16 +163,16 @@
   <span class="material-icons edit_icon edit_icon_tag">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
-<input type="date" name="date" id="datePicker" required>
+<input type="date" name="date" id="editmodal_datePicker" required>
 <br>
 <label for="content"><b>Contenu du rappel</b></label>
-<input type="text" placeholder="Contenu" name="content" id="Contenu" required>
+<input type="text" placeholder="Contenu" name="content" id="editmodal_Contenu" required>
 
-        <div class="edit_alert edit_alert-danger" id="alert" style="display: none;">
-            <strong>Erreur! </strong> <span id="alert_text"></span> <a class="edit_alert-link" id="alert_link"></a>
+        <div class="edit_alert edit_alert-danger" id="editmodal_alert" style="display: none;">
+            <strong>Erreur! </strong> <span id="editmodal_alert_text"></span> <a class="edit_alert-link" id="editmodal_alert_link"></a>
           </div>
       <div class="edit_my_clearfix">
-        <button type="button" onclick="close_modal()" class="edit_my_cancelbtn">Annuler</button>
+        <button type="button" onclick="editmodal_close_modal()" class="edit_my_cancelbtn">Annuler</button>
         <button type="submit" class="edit_my_signupbtn">Valider</button>
       </div>
     </div>
@@ -180,14 +180,14 @@
 </div>
 
  
-<div id="tag_modal" class="editmodal edit_my_modal hidden">
-    <span onclick="close_a_modal(tag_modal, 'tag_select')" class="edit_my_close" title="edit_my_close">&times;</span>
-    <form class="edit_my_modal-content my_animate" id="form">
+<div id="editmodal_tag_modal" class="editmodal edit_my_modal hidden">
+    <span onclick="editmodal_close_a_modal(tag_modal, 'editmodal_tag_select')" class="edit_my_close" title="edit_my_close">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="editmodal_form">
       <div class="edit_my_container">
         <h1>Nouveau Tag</h1>
         <hr>
         <label for="content"><b>Nom du tag</b></label>
-        <input type="text" placeholder="Nom" name="content" id="Nom_tag" required>
+        <input type="text" placeholder="Nom" name="content" id="editmodal_Nom_tag" required>
         <br>
         <label for="bg_color"><b>Couleur</b></label>
         <input type="color" name="bg_color" required>
@@ -195,21 +195,21 @@
               <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
             </div>
         <div class="edit_my_clearfix">
-          <button type="button" onclick="close_a_modal(tag_modal, 'tag_select')" class="edit_my_cancelbtn">Annuler</button>
+          <button type="button" onclick="editmodal_close_a_modal(tag_modal, 'editmodal_tag_select')" class="edit_my_cancelbtn">Annuler</button>
           <button type="submit" class="edit_my_signupbtn">Valider</button>
         </div>
       </div>
     </form>
   </div>
 
-  <div id="subject_modal" class="editmodal edit_my_modal hidden">
-    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="edit_my_close" title="my_close Modal">&times;</span>
-    <form class="edit_my_modal-content my_animate" id="form">
+  <div id="editmodal_subject_modal" class="editmodal edit_my_modal hidden">
+    <span onclick="editmodal_close_a_modal(subject_modal, 'editmodal_subject_select')" class="edit_my_close" title="my_close Modal">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="editmodal_form">
       <div class="edit_my_container">
         <h1>Nouvelle Matière</h1>
         <hr>
         <label for="content"><b>Matière</b></label>
-        <input type="text" placeholder="Nom" name="content" id="Nom_subject" required>
+        <input type="text" placeholder="Nom" name="content" id="editmodal_Nom_subject" required>
         <br>
         <label for="bg_color"><b>Couleur</b></label>
         <input type="color" name="bg_color" required>
@@ -217,15 +217,14 @@
               <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
             </div>
         <div class="edit_my_clearfix">
-          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="edit_my_cancelbtn">Annuler</button>
+          <button type="button" onclick="editmodal_close_a_modal(subject_modal, 'editmodal_subject_select')" class="edit_my_cancelbtn">Annuler</button>
           <button type="submit" class="edit_my_signupbtn">Valider</button>
         </div>
       </div>
     </form>
   </div>
-<script>
+
     {% block script %} {% endblock %}
-</script>
 <script>
 // change footer date
     const d = new Date();
@@ -392,228 +391,6 @@ window.onclick = function(event) {
     open_close_modal();
   }
 }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Edit modal -->
-
-
-
-
-
-<script>
-// Get the modal
-var modal = document.getElementById('confirmation_modal');
-
-function open_close_modal() {
-    modal.classList.toggle("hidden");
-    console.log(modal)
-}
-
-
-// When the user clicks anywhere outside of the modal2, close it, if clicked and modal 2 closed, redirect
-
-const form = document.getElementById("form");
-form.addEventListener('submit',  async (event) => {
-    event.preventDefault();  // Prevent the default form submission
-
-    // Get elements
-    const formChildren = form.elements;
-    const alertDiv = document.getElementById("alert")
-    const alertText = document.getElementById("alert_text");
-    const alertLink = document.getElementById("alert_link");
-
-    alertDiv.style.display = "none";
-
-    const userAnswers = {};
-    for (let i = 0; i < formChildren.length; i++) {
-        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
-            	userAnswers[formChildren[i].name] = formChildren[i].value;
-        }
-    }
-
-    // Make a POST request to the server
-    let result = await fetch("/api/reminder", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userAnswers)
-    });
-    const response = await result.json();
-    if (result.ok) {
-        console.log(response["message"])
-        location.replace("/agenda");
-    } else if (result.status === 400) {
-        alertText.innerHTML = response["message"];
-        if (response["link_display"]) {
-            alertLink.innerHTML = response["link_display"];
-            alertLink.href = response["link_href"];
-        } else {
-            alertLink.innerHTML = "";
-        }
-        alertDiv.style.display = "block";
-    }
-});
-
-
-
-
-
-
-
-
-// Show icons functions
-function show_icons_subject(){
-	let icons = document.getElementsByClassName("icon_subject");
-    for (let i = 0; i < icons.length; i++) {
-        icons[i].style.display = "block";
-    }
-}
-
-function show_icons_tag(){
-	let icons = document.getElementsByClassName("icon_tag");
-    for (let i = 0; i < icons.length; i++) {
-    	icons[i].style.display = "block";
-	}
-}
-
-
-
-
-// function toggle passwords visibility
-function toggle_password_visibility(id){
-  var x = document.getElementById("id");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
-}
-</script>
- 
-<script>
-function findIndexfromOptionName( select, optionName ) {
-    let options = Array.from( select.options );
-    return options.findIndex( (opt) => opt.value == optionName );
-}
-const tag_modal = document.getElementById("tag_modal")
-const subject_modal = document.getElementById("subject_modal")
-
-function close_a_modal (the_modal, selectId) {
-    the_modal.style.display = "none";
-    const select = document.getElementById(selectId)
-    select.selectedIndex = "0";
-}
-
-const datePicker = document.getElementById("datePicker");
-datePicker.min = new Date().toISOString().split("T")[0];
-
-async function dynamic_options(fetch_route, optgroup_id){
-    let optionGroup = document.getElementById(optgroup_id);
-    let result = await fetch(fetch_route)
-    const response = await result.json();
-    if (response !== "") {
-        response.forEach(element => {
-            let option = document.createElement("option");
-            option.value = element.id;
-            option.innerHTML = element.content;
-            optionGroup.appendChild(option);
-        });
-        optionGroup.style.display = "block";
-    }
-};
-
-dynamic_options("/api/tag", "optionGroup2");
-dynamic_options("/api/subject", "optionGroup");
-
-function changeSelect(elem, elemId) {
-    if (document.getElementById(elemId).value ===  "new") {
-        switch (elem) {
-            case "tag" :
-                tag_modal.style.display = "block";
-                break;
-            case "subject" :
-                subject_modal.style.display = "block";
-                break;
-        }
-    }
-}
-
-async function secondary_modal(event, post_link, modalElem, select_id) {
-    event.preventDefault();  // Prevent the default form submission
-
-    // Get elements
-    const formElem = modalElem.querySelector("form")
-    const formChildren = formElem.elements;
-    const alertDiv = formElem.querySelector(".alert.alert-danger");
-    const alertText = alertDiv.querySelector("span")
-    const alertLink = alertDiv.querySelector("a");
-
-    alertDiv.style.display = "none";
-
-    const userAnswers = {};
-    for (let i = 0; i < formChildren.length; i++) {
-        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
-            	userAnswers[formChildren[i].name] = formChildren[i].value;
-        }
-    }
-
-    // Make a POST request to the server
-    let result = await fetch(post_link, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userAnswers)
-    });
-    const response = await result.json();
-    if (result.ok) {
-        console.log(response["content"])
-        let selectElem = document.getElementById(select_id);
-        let optionGroup = selectElem.querySelector('optgroup');
-        let option = document.createElement("option");
-        option.value = response.id;
-        option.innerHTML = response.content;
-        optionGroup.appendChild(option);
-        close_a_modal(modalElem, select_id)
-        let created_index = findIndexfromOptionName(selectElem, option.value)
-        selectElem.selectedIndex = created_index;
-    } else if (result.status === 400) {
-        alertText.innerHTML = response["message"];
-        if (response["link_display"]) {
-            alertLink.innerHTML = response["link_display"];
-            alertLink.href = response["link_href"];
-        } else {
-            alertLink.innerHTML = "";
-        }
-        alertDiv.style.display = "block";
-    }
-}
-
-tag_modal.querySelector("form").addEventListener("submit", function(event){
-    secondary_modal(event, "/api/tag", tag_modal, "tag_select");
-    document.getElementById("Nom_tag").innerHTML = "";
-});
-subject_modal.querySelector("form").addEventListener("submit", function(event){
-    secondary_modal(event, "/api/subject", subject_modal, "subject_select");
-    document.getElementById("Nom_subject").innerHTML = "";
-});
 </script>
 </body>
 </html>

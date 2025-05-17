@@ -35,6 +35,7 @@
 {% endblock %}
 {% block after_content %}{% endblock %}
 {% block script %}
+<script>
     const dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
         event.stopPropagation()
@@ -98,13 +99,19 @@ function remove_reminders(){
       element.remove();
     });
 }
-		
+
+var global_tagArr = undefined
+var global_subjectArr = undefined
+
 async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
     remove_reminders()
     loading.classList.remove('hide');
+    
     let reminderArr = await loadRessource("/api/reminder/sort/" + type);
     let tagArr = await loadRessource("/api/tag");
-    let subjectArr = await loadRessource("/api/subject"); 
+    let subjectArr = await loadRessource("/api/subject");
+    var global_tagArr = tagArr
+    var global_subjectArr = subjectArr
     loading = document.getElementById("loading")
 
     // remove expired reminders
@@ -149,7 +156,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	    edit.className = "edit";
 	    edit.innerHTML = "Modifier";
         edit.addEventListener('click', () => {
-            open_close_modal();
+            editmodal_open_modal(element.id);
         });
 	    edit.id = `edit${index}`;
 	    
@@ -217,5 +224,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 
 
 fetchData('date');
-    
+    </script>
+
+<!-- Edit modal -->
+<script src="/static/scripts/edit_modal.js"></script>
     {% endblock %}
