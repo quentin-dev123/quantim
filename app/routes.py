@@ -232,7 +232,7 @@ def get_reminders(): # Read all
                 db.session.add(my_homework)
                 reminder.pronote = my_homework
                 db.session.commit()
-    reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
+    reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
@@ -266,7 +266,7 @@ def get_sorted_reminders(property): # Read all (sorted)
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
+        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "Property not found", 404
