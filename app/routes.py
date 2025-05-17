@@ -950,7 +950,7 @@ def forgot_pw_mail():
     print(User.query.filter_by(username="quentin").first().email)
     if user is not None:
         token = Token(
-            val=uuid4()
+            val=uuid4(),
             expiry=helpers.add_seconds(datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
             user_id=user.id
         )
