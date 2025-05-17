@@ -125,5 +125,6 @@ class Token(db.Model):
     __tablename__ = 'Token'
     id = db.Column(db.Integer, primary_key=True)
     val = db.Column(db.String(250), nullable=False)
+    expiry = db.Column(db.DateTime, nullable=False)
     # --- Relationships --- 
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))

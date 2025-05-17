@@ -11,12 +11,20 @@
 
 {% block other_content %} 
 <div id="id02" class="my_modal" style="display:none;">
-  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
-  <h1>Succès</h1>
-  <p>Un mail à été envoyé à l'adresse que vous venez de fournir.<br> Vous y trouverez un lien pour réinitialiser votre mot de passe</p>
+    <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+    <div class="my_modal-content my_animate" id="test"></form>
+    <div class="my_container">
+      <h1>Succès</h1>
+      <hr>
+      <p>Un mail à été envoyé à l'adresse que vous venez de fournir.<br>
+         Vous y trouverez un lien pour réinitialiser votre mot de passe.<br>
+        Ce lien sera valide durant 10 minutes.</p>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
 
 {% block sucess %}
-document.getElementById("id02").style.display = block;
+document.getElementById("id02").style.display = "block";
 {% endblock %}

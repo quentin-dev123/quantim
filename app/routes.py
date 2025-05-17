@@ -13,6 +13,7 @@ from operator import attrgetter
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import func
+from uuid import uuid4
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token
 
@@ -948,16 +949,31 @@ def forgot_pw_mail():
     print(email)
     print(User.query.filter_by(username="quentin").first().email)
     if user is not None:
+        token = Token(
+            val=uuid4()
+            expiry=helpers.add_seconds(datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
+            user_id=user.id
+        )
         message = Mail(
                 from_email='quantix.agenda@gmail.com',
                 to_emails=email,
                 subject="Mot de passe oublié",
-                html_content=render_template("forgot_pw_mail.html", user=user) # <<<----- À REMPLACER !!!!!
+                html_content=render_template("forgot_pw_mail.html", user=user, token=token.val)
             )
         sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
         sg.send(message)
         return "Email envoyé avec succès", 200
     return jsonify({"message": "L'adresse email ne correspond à aucun compte"}), 404
+
+@app.route("/reset_password")
+def reset_pw_page():
+    args = request.args
+    if args and args.get("token"):
+        request_token = args.get("token")
+        token = Token.query.filter_by(val=request_token).first()
+        if token is not None:
+            if token.expiry > datetime.now():
+                pass #return render_template(), 200
 
 @login_manager.unauthorized_handler
 def unauthorized():
