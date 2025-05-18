@@ -43,15 +43,15 @@
 
         let message;
         if (checkbox.checked){
-            message = await fetch("/api/reminder/done/" + reminder_id);
+            message = await fetch("/api/reminder/done/" + reminder_id + "/True");
         } else {
-            message = await fetch("/api/reminder/done/" + reminder_id); /* Change this to the correct path */
+            message = await fetch("/api/reminder/done/" + reminder_id + "/False");
         }
         if (message.ok){
-                overlay.classList.toggle('active');
-            } else {
-                checkbox.checked = !checkbox.checked
-                console.log(message.statusText)
+            overlay.classList.toggle('active');
+        } else {
+            checkbox.checked = !checkbox.checked
+            console.log(message.statusText)
         }
     }
     
