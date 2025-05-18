@@ -823,7 +823,7 @@ bcrypt = Bcrypt(app)
 
 @login_manager.user_loader
 def loader_user(user_id):
-    return User.query.get_or_404(user_id)
+    return User.query.get(user_id)
     
 @app.route('/register', methods=["GET", "POST"])
 def register():
