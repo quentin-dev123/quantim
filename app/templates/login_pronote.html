@@ -5,11 +5,24 @@
 {% set fetch_destination = "/login_pronote" %}
 
 {% block form_content %} 
-<label type="text" for="username"><b> Entrer votre username PRONOTE </b></label>
-<input placeholder="Username" name="username" autocomplete="username" required>
+<label for="username"><b> Entrer votre username PRONOTE </b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="username" required>
+<br>
 <label for="password"><b> Entrer votre mot de passe </b></label>
 <input type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required>
-<div class="alert alert-info">
-    <strong>ⓘ</strong> Cette méthode est en cours de développement, elle est donc très peu sécurisé
+<div class="alert alert-danger">
+    <strong>⚠️</strong>CECI EST EXTRÊMEMENT RISQUÉ, VOTRE MOT DE PASSE NE SERA PAS PROTÉGÉ !
+    <div class="tooltip_container">
+        <span>ⓘ</span>
+        <label class="tooltip">Vos mot de passe ne seront pas encryptés, ni hashés.<br>
+             Ils seront enregistrés directement dans la base de données.<br>
+             Les développeurs du site ont un accès illimité à cette base de données.<br>
+             En cas de piratage, ces mots de passe seront les premiers à fuiter.<br>
+             Malheureusement, pour des raisons techniques, il est impossible de faire autrement.<br>
+             C'est pourquoi cette méthode est très peu recommandée.<br>
+             Quantim ne sera pas tenu responsable en cas de fuite des mots de passe.<br>
+             Poursuivez à vos propres risques.
+            </label>
+    </div>
 </div>
 {% endblock %}
