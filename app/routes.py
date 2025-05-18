@@ -961,6 +961,7 @@ def forgot_pw_mail():
             expiry=helpers.add_seconds(datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
             user_id=user.id
         )
+        db.session.commit()
         message = Mail(
                 from_email='quantix.agenda@gmail.com',
                 to_emails=email,
