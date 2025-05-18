@@ -986,6 +986,27 @@ def reset_pw_page():
         return "Invalid token", 401
     return "Token argument not found", 404
 
+@app.route("/reset_password", methods=["POST"])
+def reset_pw():
+    args = request.args
+    if args and args.get("token"):
+        request_token = args.get("token")
+        token = Token.query.filter_by(val=request_token).first()
+        if token is not None:
+            data = json.loads(request.data)
+            if data.get('pw2') == data.get('pw1'):
+                user = User.query.get(token.user_id)
+                if not bcrypt.check_password_hash(user.password, data.get('pw1')):
+                    user.password = bcrypt.generate_password_hash(data.get("pw1")).decode('utf-8')
+                    db.session.commit()
+                    return "Password modified succesfully", 200
+                return jsonify({"message": "Votre nouveau mot de passe ne peut pas être votre ancien mot de passe"}), 403 # new password can't be old password
+            return jsonify({"message": "Les deux mots de passe ne sont pas identique"}), 400 # the two passwords aren't the same
+        return jsonify({"message": "Reéssayez plus tard (le token de la requête est incorrect)"}), 403 # request header token is invalid
+    return jsonify({"message": "Reéssayez plus tard (aucun token fourni)"}), 401 # request header token is not provided
+                
+
+            
 @login_manager.unauthorized_handler
 def unauthorized(): 
     return redirect(url_for('login'))
