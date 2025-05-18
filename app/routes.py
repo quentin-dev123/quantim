@@ -954,9 +954,8 @@ def forgot_pw_mail():
     data = json.loads(request.data)
     email = data.get('email')
     user = User.query.filter_by(email=email).first()
-    print(email)
-    print(User.query.filter_by(username="quentin").first().email)
     if user is not None:
+        Token.query.filter_by(user_id=user.id).delete()
         token = Token(
             val=uuid4(),
             expiry=helpers.add_seconds(datetime.now(), 10 * 60), # Set the expiry date to 10 min from now
@@ -981,10 +980,14 @@ def reset_pw_page():
         token = Token.query.filter_by(val=request_token).first()
         if token is not None:
             if token.expiry > datetime.now():
-                pass #return render_template(), 200
+                Token.query.filter_by(user_id=token.user_id).delete()
+                return render_template("reset_pw.html", token=token.val), 200
+            return "Identification token expired (too late)", 403
+        return "Invalid token", 401
+    return "Token argument not found", 404
 
 @login_manager.unauthorized_handler
-def unauthorized():
+def unauthorized(): 
     return redirect(url_for('login'))
 
 @app.route("/login_pronote")

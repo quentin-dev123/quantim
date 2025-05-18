@@ -1,0 +1,12 @@
+{% extends 'form.html' %}
+
+{% set title = "Réinitialiser votre mot de passe" %}
+{% set next_destination = "/login" %} 
+{% set fetch_destination = "/reset_password" %}
+
+{% block form_content %} 
+<label for="password1"><b> Choisissez un nouveau mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
+<label for="password2"><b> Confirmez votre mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password2" id="password2" required><i class="fa fa-eye view_icon" id="view_icon2" onclick="toggle_password_visibility('2')"></i>
+{% endblock %}
