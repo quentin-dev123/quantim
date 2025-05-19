@@ -4,7 +4,7 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- Google fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!--Google fonts -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- Google icons -->
-{% for i in range(reminders.length) %}
+{% for i in range(len(reminders)) %}
 <div style="padding: 10px;">     
 <table style="
         background-color: {{subject[i].bg_color}};
