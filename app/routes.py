@@ -997,10 +997,10 @@ def reset_pw():
         request_token = data.get("token")
         token = Token.query.filter_by(val=request_token).first()
         if token is not None:
-            if data.get('pw2') == data.get('pw1'):
+            if data.get('password2') == data.get('password2'):
                 user = User.query.get(token.user_id)
-                if not bcrypt.check_password_hash(user.password, data.get('pw1')):
-                    user.password = bcrypt.generate_password_hash(data.get("pw1")).decode('utf-8')
+                if not bcrypt.check_password_hash(user.password, data.get('password2')):
+                    user.password = bcrypt.generate_password_hash(data.get("password2")).decode('utf-8')
                     db.session.commit()
                     return "Password modified succesfully", 200
                 return jsonify({"message": "Votre nouveau mot de passe ne peut pas être votre ancien mot de passe"}), 403 # new password can't be old password
