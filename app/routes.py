@@ -615,77 +615,18 @@ def send_reminders(): # Send email when due soon
                 print(Reminder.query.get(1).date.date())
                 print(tomorrow)
                 if reminders:
-                    message = f"""
-<h1>Bonjour {user.username},<br>
-Vous avez un ou plusieurs devoir à faire pour demain.</h1>
-<h2>Le(s) voici :</h2>
-"""
+                    subjects = []
+                    tags = []
                     for reminder in reminders:
                         subject = Subject.query.get(reminder.subject_id)
+                        subjects.append(subject)
                         tag = Tag.query.get(reminder.tag_id)
-                        message += f"""
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- Google fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!--Google fonts -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- Google icons -->
-<div style="padding: 10px;">     
-<table style="
-        background-color: {subject.bg_color};
-        width: 21vw;
-        height: 102px;
-        border-radius: 15px;
-        overflow: auto;
-        color: #fff;
-        vertical-align: middle;  
-        text-align: center;
-        ">
-  <tr>
-    <td>
-      <a style="padding: 7px;
-        padding-right: 10px;
-        padding-left: 10px;
-        border-radius: 20px;
-        font-size: 13px;
-        
-        background-color: {tag.bg_color};">{tag.content}</a>
-    </td>
-    <td style="font-family: 'Anaheim', sans-serif;
-        font-size: 13px;
-        padding-left: 0px;
-position: relative;">Pour : Demain
-    <a href="https://quantix.pythonanywhere.com/agenda">
-    <img style="width: 15px;
-    height: 15px;
-    height: 1vh;
-    
-    position: absolute;
-    top: 5; 
-    right: 5;
-    cursor: pointer;" src="https://quantix.pythonanywhere.com/static/images/open_icon.png">
-    </a>
-</td>
-  </tr>
-  <tr>
-    <td colspan="2" style="font-family: 'Architects Daughter', sans-serif;
-        font-size: 23px;
-        font-weight: bold;
-        line-height: 0.1;"
-        color:white>{subject.content}</td>
-  </tr>
-  <tr>
-    <td colspan="2">{reminder.content}</td>
-  </tr>
-</table>
-</div>
-"""
-                    message += """
-<h4>Merci Beaucoup d'utiliser notre site !<br>Sincèrement, <br>Quentin de chez Quantix.</h4>
-<p>P.S. : Mon équipe et moi (nous sommes 2) travaillons d'arrache pied pour vous apporter le meilleur service possible</p>
-"""
+                        tags.append(tag)
                     mail = Mail(
                         from_email='quantix.agenda@gmail.com',
                         to_emails=user.email,
                         subject="Devoir(s) à faire pour demain",
-                        html_content=message
+                        html_content=render_template("due_rem_mail.html", subjects=subjects, reminders=reminders, tags=tags)
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
                     response = sg.send(mail)
