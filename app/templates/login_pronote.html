@@ -10,19 +10,40 @@
 <br>
 <label for="password"><b> Entrer votre mot de passe </b></label>
 <input type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required>
-<div class="alert alert-danger">
-    <strong>⚠️</strong>CECI EST EXTRÊMEMENT RISQUÉ, VOTRE MOT DE PASSE NE SERA PAS PROTÉGÉ !
-    <div class="tooltip_container">
-        <span>ⓘ</span>
-        <label class="tooltip">Vos mot de passe ne seront pas encryptés, ni hashés.<br>
-             Ils seront enregistrés directement dans la base de données.<br>
-             Les développeurs du site ont un accès illimité à cette base de données.<br>
-             En cas de piratage, ces mots de passe seront les premiers à fuiter.<br>
-             Malheureusement, pour des raisons techniques, il est impossible de faire autrement.<br>
-             C'est pourquoi cette méthode est très peu recommandée.<br>
-             Quantim ne sera pas tenu responsable en cas de fuite des mots de passe.<br>
-             Poursuivez à vos propres risques.
-            </label>
-    </div>
+<div class="alert alert-danger" id="pronote_psw_alert">
+    <strong>⚠️ CECI EST EXTRÊMEMENT RISQUÉ, VOTRE MOT DE PASSE NE SERA PAS PROTÉGÉ ! ⚠️</strong>
+    <br>
+    <a onclick="toggle_information_visibility()" style="
+    color: #0000EE;
+    text-decoration: underline;
+    cursor: pointer;
+    ">Plus d'infos</a>
+    <p class="hidden">
+        <br>
+        Vos mot de passe ne seront pas encryptés, ni hashés.<br>
+        Ils seront enregistrés directement dans la base de données.<br>
+        Les développeurs du site ont un accès illimité à cette base de données.<br>
+        En cas de piratage, ces mots de passe seront les premiers à fuiter.<br>
+        Malheureusement, pour des raisons techniques, il est impossible de faire autrement.<br>
+        C'est pourquoi cette méthode est très peu recommandée.<br>
+        Quantim ne sera pas tenu responsable en cas de fuite des mots de passe.<br>
+        Poursuivez à vos propres risques.
+    </p>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+let div = document.getElementById("pronote_psw_alert")
+let a = div.querySelector('a');
+let p = div.querySelector('p');
+
+function toggle_information_visibility(){
+    p.classList.toggle("hidden")
+    if (a.innerHTML == "Plus d'infos"){
+        a.innerHTML = "Moins d'infos"
+    } else {
+        a.innerHTML = "Plus d'infos"
+    }
+}
+</script>
 {% endblock %}
