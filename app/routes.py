@@ -626,7 +626,13 @@ def send_reminders(): # Send email when due soon
                         from_email='quantix.agenda@gmail.com',
                         to_emails=user.email,
                         subject="Devoir(s) à faire pour demain",
-                        html_content=render_template("due_rem_mail.html", subjects=subjects, reminders=reminders, tags=tags)
+                        html_content=render_template(
+                            "due_rem_mail.html", 
+                            subjects=subjects, 
+                            reminders=reminders, 
+                            tags=tags,
+                            user=user
+                        )
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
                     response = sg.send(mail)
