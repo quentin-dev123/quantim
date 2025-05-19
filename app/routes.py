@@ -993,7 +993,7 @@ def reset_pw_page():
 @app.route("/reset_password", methods=["POST"])
 def reset_pw():
     args = request.args
-    print(args)
+    print(args.get("token"))
     if args and args.get("token"):
         request_token = args.get("token")
         token = Token.query.filter_by(val=request_token).first()
