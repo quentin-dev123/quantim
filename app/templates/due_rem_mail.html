@@ -7,7 +7,7 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
 {% for i in range(reminders|length) %}
 <div style="padding: 10px;">     
 <table style="
-        background-color: {{subject[i].bg_color}};
+        background-color: {{subjects[i].bg_color}};
         width: 21vw;
         height: 102px;
         border-radius: 15px;
@@ -47,7 +47,7 @@ position: relative;">Pour : Demain
         font-size: 23px;
         font-weight: bold;
         line-height: 0.1;"
-        color:white>{{subject[i].content}}</td>
+        color:white>{{subjects[i].content}}</td>
   </tr>
   <tr>
     <td colspan="2">{{reminders[i].content}}</td>
