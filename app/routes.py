@@ -1036,7 +1036,7 @@ def drop_tables():
 
 @app.cli.command('sandbox')
 def sandbox():
-    print(type(Reminder.query.get(1).date))
+    db.session.query(Pat).delete()
     print('Success')
 
 @app.cli.command("create_pat")
