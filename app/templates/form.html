@@ -256,6 +256,8 @@ form.addEventListener('submit',  async (event) => {
         }
     }
 
+{% block other_data %} {% endblock %}
+
     // Make a POST request to the server
     let result = await fetch("{{fetch_destination}}", {
         method: 'POST',

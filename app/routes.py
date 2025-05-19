@@ -992,13 +992,11 @@ def reset_pw_page():
 
 @app.route("/reset_password", methods=["POST"])
 def reset_pw():
-    args = request.args
-    print(args.get("token"))
-    if args and args.get("token"):
-        request_token = args.get("token")
+    data = json.loads(request.data)
+    if data and data.get("token"):
+        request_token = data.get("token")
         token = Token.query.filter_by(val=request_token).first()
         if token is not None:
-            data = json.loads(request.data)
             if data.get('pw2') == data.get('pw1'):
                 user = User.query.get(token.user_id)
                 if not bcrypt.check_password_hash(user.password, data.get('pw1')):
