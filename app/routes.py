@@ -655,6 +655,8 @@ position: relative;">Pour : Demain
     <a href="https://quantix.pythonanywhere.com/agenda">
     <img style="width: 15px;
     height: 15px;
+    height: 1vh;
+    
     position: absolute;
     top: 5; 
     right: 5;
