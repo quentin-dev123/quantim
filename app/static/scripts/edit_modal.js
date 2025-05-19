@@ -167,7 +167,7 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
     // Get elements
     const formElem = modalElem.querySelector("form")
     const formChildren = formElem.elements;
-    const alertDiv = formElem.querySelector(".alert.alert-danger");
+    const alertDiv = formElem.querySelector(".edit_alert.edit_alert-danger");
     const alertText = alertDiv.querySelector("span")
     const alertLink = alertDiv.querySelector("a");
 
