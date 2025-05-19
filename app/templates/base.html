@@ -346,13 +346,14 @@ async function confirmAction(ressourceLink, reminder) {
 	
 // Confirmation modal
 
+
 function close_confirmation_modal() {
 	confirmation_modal.style.display = "none";
 }
 
 function open_modal(fetchRoute, reminder) {
 	confirmation_modal.style.display = "block";
-  let confirm_form = modal.querySelector("form");
+  let confirm_form = confirmation_modal.querySelector("form");
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
     confirmAction(fetchRoute, reminder);

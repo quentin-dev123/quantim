@@ -183,8 +183,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	    del.className = "del";
 	    del.innerHTML = "Effacer";
 	    del.addEventListener('click', () => {
-		toggleDarkness(index);
-		open_modal(`/api/reminder/${element.id}`, `container${index}`);
+		    toggleDarkness(index);
+		    open_modal(`/api/reminder/${element.id}`, `container${index}`);
         });
 	    del.id = `del${index}`;
 	    
