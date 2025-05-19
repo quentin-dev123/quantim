@@ -997,7 +997,7 @@ def reset_pw():
         request_token = data.get("token")
         token = Token.query.filter_by(val=request_token).first()
         if token is not None:
-            if data.get('password2') == data.get('password2'):
+            if data.get('password1') == data.get('password2'):
                 user = User.query.get(token.user_id)
                 if not bcrypt.check_password_hash(user.password, data.get('password2')):
                     user.password = bcrypt.generate_password_hash(data.get("password2")).decode('utf-8')
