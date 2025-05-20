@@ -50,7 +50,7 @@
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
         }
         if (message.ok){
-            // overlay.classList.toggle('active');
+            overlay.classList.toggle('');
 	    text.classList.toggle('hidden')
         } else {
             checkbox.checked = !checkbox.checked
@@ -203,7 +203,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 
 	      let checkbox = document.createElement("input");
 	      checkbox.className =  "reminderinput";
-	      checkbox.id = "reminputindex";
+	      checkbox.id = `reminput${index}`;
 	      checkbox.type = "checkbox";
 	      checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
 	      checkbox.checked = element.done;
@@ -241,15 +241,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                }
-                if (elem_attributes[attr].type){
-                    elem.type = elem_attributes[attr].type;
-                }
-                if (elem_attributes[attr].onclick) {
-                    elem.onclick = elem_attributes[attr].onclick;
-                }
-                if (elem_attributes[attr].checked) {
-                    elem.checked = elem_attributes[attr].checked;
+                } else if (elem_attributes[attr].htmlType === "p") {
+                    elem.classList.toggle('hidden')
                 }
                 reminder.appendChild(elem);
             });
