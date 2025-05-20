@@ -231,6 +231,13 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     htmlType: "p",
                     elemContent: element.content,
                 },
+		checkbox: {
+                    htmlType: "input",
+                    elemContent: "",
+                    type: "checkbox",
+                    onclick: function() {reminder_mark_as_done(element.id, index)},
+                    checked: element.done,
+                },
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 let elem = document.createElement(elem_attributes[attr].htmlType);
@@ -244,9 +251,19 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                 } else if (elem_attributes[attr].htmlType === "p") {
                     elem.classList.toggle('hidden')
                 }
+                if (elem_attributes[attr].type){
+                    elem.type = elem_attributes[attr].type;
+                }
+                if (elem_attributes[attr].onclick) {
+                    elem.onclick = elem_attributes[attr].onclick;
+                }
+                if (elem_attributes[attr].checked) {
+                    elem.checked = elem_attributes[attr].checked;
+                }
                 reminder.appendChild(elem);
             });
         });
+	    
 	loading.classList.add('hide');
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
