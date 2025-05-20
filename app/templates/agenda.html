@@ -49,7 +49,7 @@
 	    checkbox.checked = false
         } else if (!mad_checkbox.checked) {
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
-	    mad_checkbox.checked = True
+	    mad_checkbox.checked = true
         }
         if (message.ok){
             overlay.classList.toggle('active');
@@ -207,7 +207,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	      checkbox.id = `madinput${index}`;
 	      checkbox.type = "checkbox";
 	      checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
-	      checkbox.checked = element.done;
+	      checkbox.checked = true;
 	    mark_as_done_overlay.appendChild(checkbox)
 	    container.appendChild(mark_as_done_overlay);
         
