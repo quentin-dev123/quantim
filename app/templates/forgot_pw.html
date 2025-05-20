@@ -27,13 +27,11 @@
 {% endblock %}
 
 {% block sucess %}
-//document.getElementById("id02").style.display = "block";
-
-console.log("start")
+document.getElementById("id02").style.display = "block";
 
 // Show gmail button
 email = document.getElementById("email")
-email_text = email.innerHTML
+email_text = email.value
 email_lowercase = email_text.toLowerCase()
 email_button = document.querySelector('.gmail_button');
 
