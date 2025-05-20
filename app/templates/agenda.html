@@ -37,29 +37,22 @@
 {% block script %}
 <script>
     async function reminder_mark_as_done(reminder_id, container_id){
-	console.log("start")
         event.stopPropagation()
-	    console.log("event.stopPropagation()")
         const checkbox = document.getElementById(`reminput${container_id}`);
-	    console.log(" const checkbox")
         const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
-	    console.log("const overlay")
 
         let message;
 	    console.log(message)
         if (checkbox.checked){
             message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-		console.log('message = await fetch("/api/reminder/done/" + reminder_id + "/True");')
         } else {
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
-		console.log('message = await fetch("/api/reminder/done/" + reminder_id + "/False");')
         }
         if (message.ok){
-            overlay.classList.toggle('active');
-		console.log("overlay.classList.toggle('active');")
+            // overlay.classList.toggle('active');
+		break
         } else {
             checkbox.checked = !checkbox.checked
-		console.log("checkbox.checked = !checkbox.checked")
             console.log(message.statusText)
         }
     }
