@@ -167,14 +167,10 @@
         }
         
         .mark_as_done_overlay {
-          opacity: 1;
 	  background-color: rgba(0, 0, 0, 0);
           z-index: 4;
-        }
-
-	.mark_as_done_overlay.active {
-            background-color: rgba(0, 0, 0, 0.5);
-	    z-index: -4;
+	  width: 100%;
+	  height: 100%;
         }
         
 
