@@ -249,7 +249,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                } else if (elem_attributes[attr].htmlType === "p" && elem_attributes[checkbox].checked)) {
+                } else if (elem_attributes[attr].htmlType === "p" && elem_attributes["checkbox"].checked)) {
                     elem.classList.toggle('hidden')
                 }
                 if (elem_attributes[attr].type){
