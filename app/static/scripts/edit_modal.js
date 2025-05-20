@@ -21,8 +21,7 @@ const tag_select = document.getElementById('editmodal_tag_select')
 datePicker.min = new Date().toISOString().split("T")[0];
 
 async function fetchReminder (id) { 
-    let reminders = await loadRessource("/api/reminder/filter/id/" + id);
-    let reminder = reminders[0]
+    let reminder = (await fetch("/api/reminder/" + id)).json();
     
     datePicker.value = reminder.date.split("T")[0]
     content.value = reminder.content
