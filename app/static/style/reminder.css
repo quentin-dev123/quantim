@@ -166,7 +166,7 @@
         }
         
         .mark_as_done_overlay {
-	  background-color: rgba(0, 0, 0, 0);
+	  background-color: rgba(0, 0, 0, 0.5);
           z-index: 4;
 	  width: 100%;
 	  height: 100%;
