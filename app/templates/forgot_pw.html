@@ -5,7 +5,7 @@
 {% set fetch_destination = "/forgot_password" %}
 
 {% block form_content %} 
-<label for="email"><b> Entrer votre addresse email </b></label>
+<label for="email"><b> Entrer votre adresse email </b></label>
 <input type="text" placeholder="Email" name="email" id="email" required>
 {% endblock %}
 
@@ -28,10 +28,12 @@
 
 {% block sucess %}
 document.getElementById("id02").style.display = "block";
+show_gmail_button()
 {% endblock %}
 
 {% block script %}
 <script>
+function show_gmail_button(){
     email = document.getElementById("email")
     email_text = email.innerHTML
     email_lowercase = email_text.toLowerCase()
@@ -40,5 +42,6 @@ document.getElementById("id02").style.display = "block";
     if (email_lowercase.includes("@gmail") || email_lowercase.includes("@g.")){
         email_button.classList.remove("hidden")
     }
+}
 </script>
 {% endblock %}
