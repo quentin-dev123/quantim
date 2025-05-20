@@ -28,20 +28,14 @@
 
 {% block sucess %}
 document.getElementById("id02").style.display = "block";
-show_gmail_button()
-{% endblock %}
 
-{% block script %}
-<script>
-function show_gmail_button(){
-    email = document.getElementById("email")
-    email_text = email.innerHTML
-    email_lowercase = email_text.toLowerCase()
-    email_button = document.querySelector('.gmail_button');
-    
-    if (email_lowercase.includes("@gmail") || email_lowercase.includes("@g.")){
-        email_button.classList.remove("hidden")
-    }
+// Show gmail button
+email = document.getElementById("email")
+email_text = email.innerHTML
+email_lowercase = email_text.toLowerCase()
+email_button = document.querySelector('.gmail_button');
+
+if (email_lowercase.includes("@gmail") || email_lowercase.includes("@g.")){
+    email_button.classList.remove("hidden")
 }
-</script>
 {% endblock %}
