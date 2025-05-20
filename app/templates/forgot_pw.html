@@ -37,7 +37,7 @@ document.getElementById("id02").style.display = "block";
     email_lowercase = email_text.toLowerCase()
     email_button = document.querySelector('.gmail_button');
     
-    if (email_lowercase.includes("@gmail")){
+    if (email_lowercase.includes("@gmail") || email_lowercase.includes("@g.")){
         email_button.classList.remove("hidden")
     }
 </script>
