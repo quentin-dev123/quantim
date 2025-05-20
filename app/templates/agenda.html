@@ -46,7 +46,7 @@
         let message;
         if (checkbox.checked){
             message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-	    checkbox.checked = False
+	    checkbox.checked = false
         } else if (!mad_checkbox.checked) {
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
 	    mad_checkbox.checked = True
