@@ -57,9 +57,8 @@
 
     .reminderinput { /* Mark as done checkbox */
         position: absolute;
-  	    top: 5px;
+  	top: 5px;
         right: 5px;
-        z-index: 5;
         transform: scale(1.25);
         -ms-transform: scale(1.25);
         -webkit-transform: scale(1.25);
