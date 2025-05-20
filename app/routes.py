@@ -779,8 +779,8 @@ def update_subjects(sub_id): # Update
     db_subject = Subject.query.get(sub_id)
     if db_subject is not None:
         if db_subject.user_id == current_user.id:
-            db_reminder.content = data.get("content")
-            db_reminder.bg_color = data.get("bgColor")
+            db_subject.content = data.get("content")
+            db_subject.bg_color = data.get("bgColor")
             db.session.commit()
             return "Subject updated succesfully", 200
         return "Not logged in the account of the subject", 403
@@ -805,6 +805,61 @@ def tags():
         return jsonify(tag.to_json()), 200
     else:
         return jsonify({"message": "Un tag avec le même nom existe déjà"}), 400
+
+@app.route("/api/tag/<int:sub_id>", methods=["PUT"])
+@login_required
+def update_tags(tag_id): # Update
+    """Endpoint to update a tag
+    ---
+    tags:
+      - Tag CRUD operations
+    description: Endpoint to update a tag with a specified id (must be logged in)
+    parameters:
+      - name: tag_id
+        in: path
+        type: integer
+        required: true
+      - name: body
+        in: body
+        required: True
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              example: Coding
+            bgColor:
+              type: string
+              example: #ff0000
+    responses:
+      200:
+        description: A validation message
+        schema:
+          type: string
+          example: Tag updated succesfully
+      403:
+        description: The tag you're trying to update doesn't belong to you
+        schema:
+          type: string
+          example: Not logged into the account of the tag
+      404:
+        description: The tag with the specified id was not found
+        schema:
+          type: string
+          example: Tag not found
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes.
+    """
+    data = json.loads(request.data)
+    db_tag = Tag.query.get(tag_id)
+    if db_tag is not None:
+        if db_tag.user_id == current_user.id:
+            db_tag.content = data.get("content")
+            db_tag.bg_color = data.get("bgColor")
+            db.session.commit()
+            return "Tag updated succesfully", 200
+        return "Not logged in the account of the tag", 403
+    return "Tag not found", 404
         
 #------------------------------------------------------
 # Auto deploy
