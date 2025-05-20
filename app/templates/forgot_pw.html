@@ -5,8 +5,8 @@
 {% set fetch_destination = "/forgot_password" %}
 
 {% block form_content %} 
-<label for="email"><b> Entrer votre addresse email </b></label>
-<input type="text" placeholder="Email" name="email" required>
+<label for="email"><b> Entrer votre adresse email </b></label>
+<input type="text" placeholder="Email" name="email" id="email" required>
 {% endblock %}
 
 {% block other_content %} 
@@ -19,6 +19,7 @@
       <p>Un mail à été envoyé à l'adresse que vous venez de fournir.<br>
          Vous y trouverez un lien pour réinitialiser votre mot de passe.<br>
         Ce lien sera valide durant 10 minutes.</p>
+      <a class="gmail_button hidden" href="https://mail.google.com/">Ouvrir Gmail</a>      
     </div>
   </div>
 </div>
@@ -27,4 +28,14 @@
 
 {% block sucess %}
 document.getElementById("id02").style.display = "block";
+
+// Show gmail button
+email = document.getElementById("email")
+email_text = email.value
+email_lowercase = email_text.toLowerCase()
+email_button = document.querySelector('.gmail_button');
+
+if (email_lowercase.includes("@gmail") || email_lowercase.includes("@g.")){
+    email_button.classList.remove("hidden")
+}
 {% endblock %}

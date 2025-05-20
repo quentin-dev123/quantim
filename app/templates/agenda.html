@@ -39,18 +39,22 @@
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
         const checkbox = document.getElementById(`reminput${container_id}`);
+	const mad_checkbox = document.getElementById(`madinput${container_id}`);
         const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
+	const text = document.getElementById(`remp${container_id}`);
 
         let message;
         if (checkbox.checked){
             message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-        } else {
+	    checkbox.checked = false
+        } else if (!mad_checkbox.checked) {
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
+	    mad_checkbox.checked = true
         }
         if (message.ok){
             overlay.classList.toggle('active');
+	    text.classList.toggle('hidden')
         } else {
-            checkbox.checked = !checkbox.checked
             console.log(message.statusText)
         }
     }
@@ -194,9 +198,17 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
         let mark_as_done_overlay = document.createElement("div");
 	    mark_as_done_overlay.className = "overlay mark_as_done_overlay";
 	    mark_as_done_overlay.id = `mark_as_done_overlay${index}`;
-        if (element.done){
-            mark_as_done_overlay.classList.add('active');
-        }
+	    if (element.done){
+	        mark_as_done_overlay.classList.add('active');
+	    }
+
+	      let checkbox = document.createElement("input");
+	      checkbox.className =  "reminderinput";
+	      checkbox.id = `madinput${index}`;
+	      checkbox.type = "checkbox";
+	      checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
+	      checkbox.checked = true;
+	    mark_as_done_overlay.appendChild(checkbox)
 	    container.appendChild(mark_as_done_overlay);
         
 
@@ -220,13 +232,13 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     htmlType: "p",
                     elemContent: element.content,
                 },
-                checkbox: {
+		checkbox: {
                     htmlType: "input",
                     elemContent: "",
                     type: "checkbox",
                     onclick: function() {reminder_mark_as_done(element.id, index)},
                     checked: element.done,
-                }
+                },
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 let elem = document.createElement(elem_attributes[attr].htmlType);
@@ -237,6 +249,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
                 } else if (elem_attributes[attr].htmlType === "h2") {
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+                } else if (elem_attributes[attr].htmlType === "p" && elem_attributes["checkbox"].checked) {
+                    elem.classList.toggle('hidden')
                 }
                 if (elem_attributes[attr].type){
                     elem.type = elem_attributes[attr].type;
@@ -250,6 +264,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                 reminder.appendChild(elem);
             });
         });
+	    
 	loading.classList.add('hide');
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
