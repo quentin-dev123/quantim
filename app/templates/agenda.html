@@ -197,9 +197,17 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
         let mark_as_done_overlay = document.createElement("div");
 	    mark_as_done_overlay.className = "overlay mark_as_done_overlay";
 	    mark_as_done_overlay.id = `mark_as_done_overlay${index}`;
-        if (element.done){
-            mark_as_done_overlay.classList.add('active');
-        }
+	    if (element.done){
+	        mark_as_done_overlay.classList.add('active');
+	    }
+
+	      let checkbox = document.createElement("input");]
+	      checkbox.className =  "reminderinput";
+	      checkbox.id = "reminputindex";
+	      checkbox.type = "checkbox";
+	      checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
+	      checkbox.checked = element.done;
+	    mark_as_done_overlay.appendChild(checkbox)
 	    container.appendChild(mark_as_done_overlay);
         
 
@@ -223,13 +231,6 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
                     htmlType: "p",
                     elemContent: element.content,
                 },
-                checkbox: {
-                    htmlType: "input",
-                    elemContent: "",
-                    type: "checkbox",
-                    onclick: function() {reminder_mark_as_done(element.id, index)},
-                    checked: element.done,
-                }
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 let elem = document.createElement(elem_attributes[attr].htmlType);
