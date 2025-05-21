@@ -27,13 +27,6 @@
         transition: transform 1s;
     }
 
-    /* Hover = Zoom */
-    .reminder-container:hover,
-    .reminder-container:focus,
-    .reminder-container-zoom{
-      transform: scale(1.05);
-    }
-
     .remindera { /*TAG*/
         padding: 7px;
         padding-right: 10px;
@@ -130,8 +123,15 @@
             height: 117px;
 	    vertical-align: middle;
             margin-bottom: 15px;
-            
-        }
+            transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .container:hover,
+    .container:focus,
+    .container-zoom{
+      transform: scale(1.05);
+    }
     
       .overlay {
             position: absolute;
