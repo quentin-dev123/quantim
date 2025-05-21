@@ -84,6 +84,7 @@
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
   <a onclick="open_modal2()">Effacer tous les rappels</a>
+  <a onclick="open_confirm_modal("account1")" style="color:red;">Effacer le compte</a>
 </div>
 <div id="mySecretSidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav2()">&times;</a>
@@ -93,6 +94,21 @@
 </div>
 
 <!-- Confirmation modal -->
+<div id="confirm_modal" class="my_modal">
+  <span onclick="close_confirmation_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content  my_animate">
+    <div class="my_container">
+      <h1>Effacer le rappel</h1>
+      <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
+   
+      <div class="my_clearfix">
+        <button type="button" onclick="close_confirmation_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
+        <input type="submit" class="my_signupbtn my_modal_button" value="Effacer">
+      </div>
+    </div>
+  </form>
+</div>
+	
 <div id="confirmation_modal" class="my_modal">
   <span onclick="close_confirmation_modal()" class="my_close" title="my_close Modal">&times;</span>
   <form class="my_modal-content  my_animate">
@@ -360,6 +376,22 @@ function open_modal(fetchRoute, reminder) {
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
     confirmAction(fetchRoute, reminder);
+  })
+}
+
+
+	
+function open_confirm_modal(title, message, action) {
+  let confirm_modal = document.getElementbyId("confirm_modal");
+  let confirm_form = confirm_modal.querySelector("form");
+  let confirm_title = confirm_modal.querySelector("h1");
+  let confirm_message = confirm_modal.querySelector("p");
+  confirm_title.innerHTML = title
+  confirm_message.innerHTML = message
+  confirm_modal.style.display = "block";
+  confirm_form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    confirmAction(actiona);
   })
 }
 
