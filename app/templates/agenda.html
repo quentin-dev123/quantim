@@ -46,10 +46,12 @@
         let message;
         if (checkbox.checked){
             message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-	    checkbox.checked = false
+	        checkbox.checked = false
+            mad_checkbox.checked = true
         } else if (!mad_checkbox.checked) {
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
-	    mad_checkbox.checked = true
+	        mad_checkbox.checked = true
+            checkbox.checked = false
         }
         if (message.ok){
             overlay.classList.toggle('active');
