@@ -266,53 +266,6 @@ def get_sorted_reminders(property): # Read all (sorted)
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        if current_user.pronote_username is not None:
-            client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=current_user.pronote_username,
-                password=current_user.pronote_password,
-            )
-            homeworks = client.homework(date_from=d.date.today())
-            for homework in homeworks:
-                my_homework = Pronote_homework.query.filter_by(
-                    content=homework.description, 
-                    user_id=current_user.id,
-                ).first()
-                if my_homework is None:
-                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                    if subject is None:
-                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                        subject = Subject(
-                            content=homework.subject.name, 
-                            bg_color=bgColor,
-                            user=current_user,
-                            user_id=current_user.id
-                        )
-                        db.session.add(subject)
-                        db.session.commit()
-                    reminder = Reminder(
-                        content=homework.description, 
-                        date=homework.date,
-                        done = False,
-                        user=current_user,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(reminder)
-                    db.session.commit()
-                    my_homework = Pronote_homework(
-                        content=homework.description, 
-                        date=homework.date,
-                        hidden=False,
-                        reminder=reminder,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(my_homework)
-                    reminder.pronote = my_homework
-                    db.session.commit()
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -575,6 +528,8 @@ def update_reminders(rem_id): # Update
         if db_reminder.user_id == current_user.id:
             db_reminder.content = data.get("content")
             db_reminder.date = datetime.strptime(data.get("date"), "%Y-%m-%d")
+            db_reminder.user = current_user
+            db_reminder.user_id = current_user.id
             db_reminder.tag_id = data.get("tag_id")
             db_reminder.subject_id = data.get("subject_id")
             db.session.commit()
@@ -1037,16 +992,31 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/delete_account")
+@app.route("/account", methods=["DELETE"])
 @login_required
 def delete_account():
+    """Delete your account (must be logged in)
+    ---
+    tags:
+      - User Verification
+    description: Endpoint to delete your account (must be logged in). Beware, this is irreversible and will erase ALL data linked to your account.
+    responses:
+      200:
+        description: Account deleted succesfully, you are now logged out, this will return a validation message.
+        schema:
+          type: string
+          example: Account deleted succesfully 
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes.
+    """
     tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
     for table in tables:
         table.query.filter_by(user_id=current_user.id).delete()
     db.session.delete(User.query.get(current_user.id))
     db.session.commit()
-    return redirect(url_for("home"))
-
+    logout_user()
+    return "Account deleted succesfully", 200
+    
 @app.route("/forgot_password")
 def forgot_pw_page():
     return render_template("forgot_pw.html")
@@ -1126,7 +1096,7 @@ def login_pronote():
     ---
     tags:
       - User Verification
-    description: Endpoint to link your PRONOTE account to get reminders from PRONOTE homeworks. This can also be used to update your credentials. (This function is currently only available for students of FIS Hong Kong)
+    description: Endpoint to link your PRONOTE account to get reminders from PRONOTE homeworks. This can also be used to update your credentials. (This function is currently only available for students of FIS Hong Kong). It's also VERY dangerous since passwords won't be hashed.
     parameters:
       - name: body
         in: body
