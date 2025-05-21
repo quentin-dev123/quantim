@@ -156,13 +156,6 @@
         .buttons_overlay {
           background-color: rgba(0, 0, 0, 0.7);
           z-index: 10;
-
-          transform: rotate3d(1, 1, 1, 0deg)
-          matrix3d(
-          1, 0, 1, 0,
-          0, 1, 1, 0,
-          1, 1, 0, 0,
-          0, 0, 0, 0.95);
         }
         
         .mark_as_done_overlay {
