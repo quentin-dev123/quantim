@@ -84,7 +84,7 @@
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
   <a onclick="open_modal2()">Effacer tous les rappels</a>
-  <a onclick="open_confirm_modal("account1")" style="color:red;">Effacer le compte</a>
+  <a onclick="open_confirm_modal('Effacer le compte rappel', 'Êtes-vous sûr de vouloir effacer votre compte ? Cette action ne peut pas être annulée !', '/account', function(){window.location.href = '/home';})" style="color:red;">Effacer le compte</a>
 </div>
 <div id="mySecretSidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav2()">&times;</a>
@@ -95,14 +95,14 @@
 
 <!-- Confirmation modal -->
 <div id="confirm_modal" class="my_modal">
-  <span onclick="close_confirmation_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <span onclick="close_confirm_modal()" class="my_close" title="my_close Modal">&times;</span>
   <form class="my_modal-content  my_animate">
     <div class="my_container">
-      <h1>Effacer le rappel</h1>
-      <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
+      <h1></h1>
+      <p></p>
    
       <div class="my_clearfix">
-        <button type="button" onclick="close_confirmation_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
+        <button type="button" onclick="close_confirm_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
         <input type="submit" class="my_signupbtn my_modal_button" value="Effacer">
       </div>
     </div>
@@ -349,13 +349,11 @@ function toggleDarkness(index) {
 </script>
 <script>
 
-async function confirmAction(ressourceLink, reminder) {
+async function confirmAction(ressourceLink) {
   let response = await fetch(ressourceLink, {method: 'DELETE'});
   if (response.ok) {
     console.log(response);
-    close_confirmation_modal();
-    const element = document.getElementById(reminder);
-    element.remove();
+    history.go(0); // reload the page
   } else {
     console.log(response);
   }
@@ -375,13 +373,18 @@ function open_modal(fetchRoute, reminder) {
   let confirm_form = confirmation_modal.querySelector("form");
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
-    confirmAction(fetchRoute, reminder);
+    confirmAction(fetchRoute);
   })
 }
 
 
+
+function close_confirm_modal() {
+	confirmation_modal.style.display = "none";
+}
+
 	
-function open_confirm_modal(title, message, action) {
+function open_confirm_modal(title, message, link, action) {
   let confirm_modal = document.getElementbyId("confirm_modal");
   let confirm_form = confirm_modal.querySelector("form");
   let confirm_title = confirm_modal.querySelector("h1");
@@ -391,7 +394,13 @@ function open_confirm_modal(title, message, action) {
   confirm_modal.style.display = "block";
   confirm_form.addEventListener("submit", function (event) {
     event.preventDefault();
-    confirmAction(actiona);
+      let response = await fetch(link, {method: 'DELETE'});
+      if (response.ok) {
+        console.log(response);
+        action()
+      } else {
+        console.log(response);
+      }
   })
 }
 
@@ -403,7 +412,6 @@ async function confirmAction2() {
   let response = await fetch("/api/reminder", {method: 'DELETE'});
   if (response.ok) {
     console.log(response);
-    close_confirmation_modal2();
     history.go(0); // reload the page
   } else {
     console.log(response);
