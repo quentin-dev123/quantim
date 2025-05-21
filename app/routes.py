@@ -266,7 +266,6 @@ def get_sorted_reminders(property): # Read all (sorted)
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        print(current_user.pronote_username)
         if current_user.pronote_username is not None:
             client = pronotepy.Client(
                 'https://pronote.fis.edu.hk/eleve.html',
