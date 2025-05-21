@@ -188,7 +188,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	    del.innerHTML = "Effacer";
 	    del.addEventListener('click', () => {
 		    toggleDarkness(index);
-		    open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); // reload the page})
+		    open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
         });
 	    del.id = `del${index}`;
 	    
@@ -268,8 +268,8 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 	loading.classList.add('hide');
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
-	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
-    } else {
+	body.addEventListener('click', (event) => {removeDarknessAll(reminderArr);});
+        } else {
         console.error("Data fetched is not an array");
     }
 }
