@@ -300,10 +300,11 @@ function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exc
       if (i !== excludeIndex) { // Skip the excluded index
           const overlay = document.getElementById(`overlay${i}`);
           const remDiv = document.getElementById(`remDiv${i}`);
-
+	  const container = document.getElementById(`container${i}`);
+	      
           overlay.classList.remove('active');
           remDiv.classList.remove('disable-content');
-          remDiv.classList.remove('reminder-container-zoom');
+          container.classList.remove('container-zoom');
         }
    }
 }
@@ -312,20 +313,22 @@ function removeDarknessALL(reminderArr) {
 	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
           const overlay = document.getElementById(`overlay${i}`);
           const remDiv = document.getElementById(`remDiv${i}`);
+	  const container = document.getElementById(`container${i}`);
 
           overlay.classList.remove('active');
           remDiv.classList.remove('disable-content');
-          remDiv.classList.remove('reminder-container-zoom');
+          container.classList.remove('container-zoom');
         }
    }
 
 function toggleDarkness(index) {
     const overlay = document.getElementById(`overlay${index}`);
     const remDiv = document.getElementById(`remDiv${index}`);
+    const container = document.getElementById(`container${index}`);
     
     overlay.classList.toggle('active');
     remDiv.classList.toggle('disable-content');
-    remDiv.classList.toggle('reminder-container-zoom');
+    container.classList.toggle('container-zoom');
 }
 </script>
 <script>
