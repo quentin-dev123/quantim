@@ -139,7 +139,7 @@ def get_reminder(rem_id): # Read one
             example: 2026-12-31T00:00:00
           content: 
             type: string
-            example: Create an account on quantix.pythonanywhere.com
+            example: Create an account on quantim.pythonanywhere.com
     responses:
       200:
         description: A reminder object
@@ -980,7 +980,7 @@ def create_otp():
             message = Mail(
                 from_email='quantix.agenda@gmail.com',
                 to_emails=user.email,
-                subject="Requête d'inscription sur Quantix",
+                subject="Requête d'inscription sur Quantim",
                 html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
