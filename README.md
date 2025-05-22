@@ -62,7 +62,7 @@ To run the application first set environment variable:
 - **FLASK_APP**: path to the python script to launch the application
 
 ```
-export FLASK_APP=quantix.py
+export FLASK_APP=quantim.py
 ```
 
 and create in application folder a file named .env containing:
