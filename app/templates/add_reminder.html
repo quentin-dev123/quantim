@@ -14,8 +14,8 @@
       </optgroup>
       <option value="new" style="background-color: white; color: black">+ Plus</option>
   </select>
-  <span class="material-icons icon icon_subject" onclick="">&#xe254;</span>
-  <span class="material-icons icon icon_subject">&#xe872;</span>
+  <span class="material-icons icon icon_subject" onclick="open_change_modal('subject')">&#xe254;</span>
+  <span class="material-icons icon icon_subject hidden">&#xe872;</span>
 </div>
 <label for="tag_id"><b>Tag</b></label>
 <div class="select_icon_container">
@@ -25,8 +25,8 @@
     </optgroup>
     <option value="new" style="background-color: white; color: black">+ Plus</option>
 </select>
-  <span class="material-icons icon icon_tag" onclick="">&#xe254;</span>
-  <span class="material-icons icon icon_tag">&#xe872;</span>
+  <span class="material-icons icon icon_tag" onclick="open_change_modal('tag')">&#xe254;</span>
+  <span class="material-icons icon icon_tag hidden">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
 <input type="date" name="date" id="datePicker" required>
@@ -64,7 +64,7 @@
       <h1>Nouvelle Matière</h1>
       <hr>
       <label for="content"><b>Matière</b></label>
-      <input type="text" placeholder="Nom" name="content" id="change_name" required>
+      <input type="text" placeholder="Nom" name="content" id="Nom_subject" required>
       <br>
       <label for="bg_color"><b>Couleur</b></label>
       <input type="color" name="bg_color" required>
@@ -79,13 +79,14 @@
   </form>
 </div>
 
+
 <div id="change_modal" class="my_modal" style="display: none;">
-  <span onclick="close_a_modal(change_modal, 'change_modal_select')" class="my_close" title="my_close Modal">&times;</span>
+  <span onclick="close_a_modal(change_modal, false)" class="my_close" title="my_close Modal">&times;</span>
   <form class="my_modal-content my_animate" id="form">
     <div class="my_container">
-      <h1>Changer une Matière</h1>
+      <h1></h1>
       <hr>
-      <label for="content"><b>Matière</b></label>
+      <label for="content"></label>
       <input type="text" placeholder="Nom" name="content" id="change_name" required>
       <br>
       <label for="bg_color"><b>Couleur</b></label>
@@ -94,7 +95,7 @@
             <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
           </div>
       <div class="my_clearfix">
-        <button type="button" onclick="close_a_modal(change_modal, 'change_modal_select')" class="my_cancelbtn">Annuler</button>
+        <button type="button" onclick="close_a_modal(change_modal, false)" class="my_cancelbtn">Annuler</button>
         <button type="submit" class="my_signupbtn">Valider</button>
       </div>
     </div>
@@ -105,10 +106,14 @@
 
 {% block script %} 
 <script>
-function findIndexfromOptionName( select, optionName ) {
+function findIndexfromOptionName(select, optionName ) {
     let options = Array.from( select.options );
     return options.findIndex( (opt) => opt.value == optionName );
 }
+
+var global_tag_id = 0
+var global_subject_id = 0
+
 const tag_modal = document.getElementById("tag_modal")
 const subject_modal = document.getElementById("subject_modal")
 
@@ -116,26 +121,30 @@ const change_modal = document.getElementById("change_modal")
 
 function close_a_modal (the_modal, selectId) {
     the_modal.style.display = "none";
-    const select = document.getElementById(selectId)
-    select.selectedIndex = "0";
+    if (selectId){
+      const select = document.getElementById(selectId)
+      select.selectedIndex = "0";
+    }
 }
 
 function open_change_modal(type){ // type = "subject" OR type = "tag"
     let h1 = change_modal.querySelector("label")
     let label = change_modal.querySelector("h1")
+    let id
     if (type == "subject"){
-        h1.innerHTML = "Changer une matière"
-        label.innerHTML = "Matière"
+        h1.innerHTML = "<b>Matière</b>"
+        label.innerHTML = "Changer une matière"
+        let id = global_subject_id
     } else if (type == "tag") {
-        h1.innerHTML = "Changer un tag"
-        label.innerHTML = "Tag"
+        h1.innerHTML = "<b>Tag</b>"
+        label.innerHTML = "Changer un tag"
+        let id = global_tag_id
     }
   
     change_modal.style.display = "block";
 
-  tag_modal.querySelector("form").addEventListener("submit", function(event){
-    secondary_modal(event, "/api/tag", tag_modal, "tag_select");
-    document.getElementById("Nom_tag").innerHTML = "";
+  change_modal.querySelector("form").addEventListener("submit", function(event){
+    func_change_modal(type, id)
 });
 }
 
@@ -169,9 +178,11 @@ function changeSelect(elem, elemId) {
         switch (elem) {
             case "tag" :
                 tag_modal.style.display = "block";
+                global_tag_id = elemId;
                 break;
             case "subject" :
                 subject_modal.style.display = "block";
+                global_subject_id = elemId;
                 break;
         }
     }
@@ -180,6 +191,66 @@ function changeSelect(elem, elemId) {
     selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
     selectElement.style.color = "white";
 }
+
+async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
+  event.preventDefault();  // Prevent the default form submission
+  
+  let subject_select = document.getElementById('subject_select')
+  let tag_select = document.getElementById('tag_select')
+  let option
+  let post_link
+  if (type == "subject"){
+    option = subject_select.options[subject_select.selectedIndex];
+    post_link = `/api/subject/${id}`
+  } else {
+    option = tag_select.options[tag_select.selectedIndex];
+    post_link = `/api/tag/${id}`
+  }
+
+
+  // Get elements
+    const formElem = change_modal.querySelector("form")
+    const formChildren = formElem.elements;
+    const alertDiv = formElem.querySelector(".alert.alert-danger");
+    const alertText = alertDiv.querySelector("span")
+    const alertLink = alertDiv.querySelector("a");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    for (let i = 0; i < formChildren.length; i++) {
+        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+            	userAnswers[formChildren[i].name] = formChildren[i].value;
+        }
+    }
+
+    // Make a PUT request to the server
+    let result = await fetch(post_link, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    if (result.ok) {
+      let change_modal_name = change_modal.querySelector('input[type="text"]')
+      let change_modal_bg_color = change_modal.querySelector('input[type="color"]')
+
+      option.value = id;
+      option.innerHTML = change_modal_name;
+      option.style.backgroundColor = change_modal_bg_color;
+      selectElem.style.backgroundColor = change_modal_bg_color;
+      document.getElementById("change_name").innerHTML = "";
+
+      close_a_modal(change_modal, false)
+
+    } else if (result.status === 400) {
+        alertText.innerHTML = await result.text();
+        alertDiv.style.display = "block";
+    }
+
+}
+
 
 async function secondary_modal(event, post_link, modalElem, select_id) {
     event.preventDefault();  // Prevent the default form submission
@@ -223,6 +294,12 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         close_a_modal(modalElem, select_id)
         let created_index = findIndexfromOptionName(selectElem, option.value)
         selectElem.selectedIndex = created_index;
+        if (subject_modal == modalElem){
+          global_subject_id = response.id;
+        } else {
+          global_tag_id = response.id;
+        }
+
     } else if (result.status === 400) {
         alertText.innerHTML = await result.text();
         alertDiv.style.display = "block";
