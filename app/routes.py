@@ -666,7 +666,7 @@ def send_reminders(): # Send email when due soon
                         tag = Tag.query.get(reminder.tag_id)
                         tags.append(tag)
                     mail = Mail(
-                        from_email='quantix.agenda@gmail.com',
+                        from_email='quantim.hk@gmail.com',
                         to_emails=user.email,
                         subject="Devoir(s) à faire pour demain",
                         html_content=render_template(
@@ -978,7 +978,7 @@ def create_otp():
             db.session.add(otp)
             db.session.commit()
             message = Mail(
-                from_email='quantix.agenda@gmail.com',
+                from_email='quantim.hk@gmail.com',
                 to_emails=user.email,
                 subject="Requête d'inscription sur Quantim",
                 html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
@@ -1081,7 +1081,7 @@ def forgot_pw_mail():
         db.session.add(token)
         db.session.commit()
         message = Mail(
-                from_email='quantix.agenda@gmail.com',
+                from_email='quantim.hk@gmail.com',
                 to_emails=email,
                 subject="Mot de passe oublié",
                 html_content=render_template("forgot_pw_mail.html", user=user, token=token.val)
