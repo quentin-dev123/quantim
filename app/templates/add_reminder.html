@@ -57,27 +57,27 @@
     </form>
   </div>
 
-  <div id="subject_modal" class="my_modal" style="display: none;">
-    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="my_close" title="my_close Modal">&times;</span>
-    <form class="my_modal-content my_animate" id="form">
-      <div class="my_container">
-        <h1>Nouvelle Matière</h1>
-        <hr>
-        <label for="content"><b>Matière</b></label>
-        <input type="text" placeholder="Nom" name="content" id="Nom_subject" required>
-        <br>
-        <label for="bg_color"><b>Couleur</b></label>
-        <input type="color" name="bg_color" required>
-          <div class=" alert alert-danger" style="display: none;">
-              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
-            </div>
-        <div class="my_clearfix">
-          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="my_cancelbtn">Annuler</button>
-          <button type="submit" class="my_signupbtn">Valider</button>
-        </div>
+<div id="change_modal" class="my_modal" style="display: none;">
+  <span onclick="close_a_modal(change_modal, 'change_modal_select')" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content my_animate" id="form">
+    <div class="my_container">
+      <h1>Changer une Matière</h1>
+      <hr>
+      <label for="content"><b>Matière</b></label>
+      <input type="text" placeholder="Nom" name="content" id="change_name" required>
+      <br>
+      <label for="bg_color"><b>Couleur</b></label>
+      <input type="color" name="bg_color" required>
+        <div class=" alert alert-danger" style="display: none;">
+            <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+          </div>
+      <div class="my_clearfix">
+        <button type="button" onclick="close_a_modal(change_modal, 'change_modal_select')" class="my_cancelbtn">Annuler</button>
+        <button type="submit" class="my_signupbtn">Valider</button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
 
 
@@ -90,11 +90,34 @@ function findIndexfromOptionName( select, optionName ) {
 const tag_modal = document.getElementById("tag_modal")
 const subject_modal = document.getElementById("subject_modal")
 
+const change_modal = document.getElementById("change_modal")
+
 function close_a_modal (the_modal, selectId) {
     the_modal.style.display = "none";
     const select = document.getElementById(selectId)
     select.selectedIndex = "0";
 }
+
+function open_change_modal(type){ // type = "subject" OR type = "tag"
+    let h1 = change_modal.querySelector("label")
+    let label = change_modal.querySelector("h1")
+    if (type == "subject"){
+        h1.innerHTML = "Changer une matière"
+        label.innerHTML = "Matière"
+    } else if (type == "tag") {
+        h1.innerHTML = "Changer un tag"
+        label.innerHTML = "Tag"
+    }
+  
+    change_modal.style.display = "block";
+
+  tag_modal.querySelector("form").addEventListener("submit", function(event){
+    secondary_modal(event, "/api/tag", tag_modal, "tag_select");
+    document.getElementById("Nom_tag").innerHTML = "";
+});
+}
+
+
 
 const datePicker = document.getElementById("datePicker");
 datePicker.min = new Date().toISOString().split("T")[0];
@@ -192,5 +215,6 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
     secondary_modal(event, "/api/subject", subject_modal, "subject_select");
     document.getElementById("Nom_subject").innerHTML = "";
 });
+
 </script>
 {% endblock %}
