@@ -237,7 +237,11 @@
      document.getElementById("mySidenav").style.width = "0"
    }
 
-	
+function removeAllEventListeners(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+  return clone;
+}	
 
 	
 // Secret Sidenav menu
@@ -291,6 +295,11 @@ function find_date_name(date){
 
 }
 
+function removeAllEventListeners(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+  return clone;
+}
 	
 function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exclude an index
 	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
@@ -349,6 +358,7 @@ function open_confirm_modal(title, message, link, action) {
   confirm_title.innerHTML = title
   confirm_message.innerHTML = message
   confirm_modal.style.display = "block";
+  confirm_form = removeAllEventListeners(confirm_form)
   confirm_form.addEventListener("submit", async function (event) {
     event.preventDefault();
       let response = await fetch(link, {method: 'DELETE'});
