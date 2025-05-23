@@ -146,13 +146,12 @@ function open_change_modal(type){ // type = "subject" OR type = "tag"
         label.innerHTML = "Changer un tag"
         id = global_tag_id
     }
-  
+  console.log(id)
     change_modal.style.display = "block";
   
     let change_modal_form = change_modal.querySelector("form")
     change_modal_form = removeAllEventListeners(change_modal_form);
     change_modal_form.addEventListener("submit", function(event){
-      console.log(type)
       func_change_modal(type, id)
     });
 }
@@ -206,21 +205,20 @@ function changeSelect(elem, elemId) {
 }
 
 async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
-  event.preventDefault();  // Prevent the default form submission
+  
+  console.log(id)
+    event.preventDefault();  // Prevent the default form submission
   
   let subject_select = document.getElementById('subject_select')
   let tag_select = document.getElementById('tag_select')
   let option
   let post_link
-  console.log(id)
   if (type == "subject"){
     option = subject_select.options[subject_select.selectedIndex];
     post_link = `/api/subject/${id}`
-    console.log(post_link)
   } else {
     option = tag_select.options[tag_select.selectedIndex];
     post_link = `/api/tag/${id}`
-    console.log(post_link)
   }
 
 
