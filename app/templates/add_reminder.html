@@ -136,17 +136,27 @@ function removeAllEventListeners(element) {
 function open_change_modal(type){ // type = "subject" OR type = "tag"
     let h1 = change_modal.querySelector("label")
     let label = change_modal.querySelector("h1")
+  
+    let change_modal_name = change_modal.querySelector('input[type="text"]')
+    let change_modal_bg_color = change_modal.querySelector('input[type="color"]')
+  
+    let option
     let id
     if (type == "subject"){
         h1.innerHTML = "<b>Matière</b>"
         label.innerHTML = "Changer une matière"
+        option = subject_select.options[subject_select.selectedIndex];
         id = global_subject_id
     } else if (type == "tag") {
         h1.innerHTML = "<b>Tag</b>"
         label.innerHTML = "Changer un tag"
+        option = tag_select.options[tag_select.selectedIndex];
         id = global_tag_id
     }
     change_modal.style.display = "block";
+      
+    change_modal_name.value = option.innerHTML;
+    change_modal_bg_color.value = option.style.backgroundColor;
   
     let change_modal_form = change_modal.querySelector("form")
     change_modal_form = removeAllEventListeners(change_modal_form);
