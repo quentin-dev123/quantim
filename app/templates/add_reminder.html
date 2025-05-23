@@ -175,23 +175,17 @@ dynamic_options("/api/tag", "optionGroup2");
 dynamic_options("/api/subject", "optionGroup");
 
 function changeSelect(elem, elemId) {
-    if (document.getElementById(elemId).value ===  "new") {
-        switch (elem) {
-            case "tag" :
-                tag_modal.style.display = "block";
-                global_tag_id = elemId;
-                break;
-            case "subject" :
-                subject_modal.style.display = "block";
-                global_subject_id = elemId;
-                break;
-        }
-    }
     switch (elem) {
             case "tag" :
+                if (document.getElementById(elemId).value ===  "new") {
+                  tag_modal.style.display = "block";
+                }
                 global_tag_id = elemId;
                 break;
             case "subject" :
+                if (document.getElementById(elemId).value ===  "new") {
+                  subject_modal.style.display = "block";
+                }
                 global_subject_id = elemId;
                 break;
         }
