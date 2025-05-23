@@ -96,7 +96,7 @@
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
-  <a href="/login_pronote">Se connecter à Pronote</a>
+  <a class="green" href="/login_pronote">Se connecter à Pronote</a>
   <a class="red" onclick="open_confirm_modal('Effacer TOUS les rappels', 'Êtes-vous sûr de vouloir effacer TOUS vos rappels ? Vous ne pouvez pas revenir en arrière.', '/api/reminder', function(){history.go(0); /* reload the page */})">Effacer tous les rappels</a>
   <a class="red" onclick="open_confirm_modal('Effacer votre compte', 'Êtes-vous sûr de vouloir effacer votre compte ? Vous ne pouvez pas revenir en arrière.', '/account', function(){window.location.href = '/home';})">Effacer le compte</a>
 </div>
