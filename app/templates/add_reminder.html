@@ -142,7 +142,8 @@ function open_change_modal(type){ // type = "subject" OR type = "tag"
     }
   
     change_modal.style.display = "block";
-
+console.log(id)
+  console.log(global_tag_id)
   change_modal.querySelector("form").addEventListener("submit", function(event){
     func_change_modal(type, id)
 });
@@ -179,6 +180,8 @@ function changeSelect(elem, elemId) {
             case "tag" :
                 tag_modal.style.display = "block";
                 global_tag_id = elemId;
+                console.log(elemId)
+                console.log(global_tag_id)
                 break;
             case "subject" :
                 subject_modal.style.display = "block";
