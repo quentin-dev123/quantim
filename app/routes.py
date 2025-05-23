@@ -65,23 +65,23 @@ def recover_homeworks(): # Recover all PRONOTE
     ---
     tags:
       - Reminder CRUD operations
-    description: Endpoint recovering all deleted PRONOTE homeworks linked to your account (must be logged in and have a linked PRONOTE account)
+    description: Endpoint recovering all deleted PRONOTE homeworks linked to your account (must be logged in and have once added PRONOTE reminders)
     responses:
       200:
-        description: A list of all thee recovered reminders sorted chronologically by date property
+        description: A list of all the recovered reminders sorted chronologically by date property
         schema:
           type: array
           items:
             $ref: '#/definitions/Reminder'
       401:
-        description: You are unauthenticated (you haven't linked your account to a PRONOTE account)
+        description: You are unauthenticated (you haven't ever added PRONOTE reminders)
         schema:
           type: string
-          example: No PRONOTE account linked to your account
+          example: No PRONOTE homeworks ever fetched from your account
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    if current_user.pronote_username is not None:
+    if current_user.pronote_tag_id is not None:
         homeworks = Pronote_homework.query.filter_by(hidden=True, user_id=current_user.id)
         reminders = []
         for homework in homeworks:
@@ -89,6 +89,7 @@ def recover_homeworks(): # Recover all PRONOTE
             reminder = Reminder(
                 content=homework.content, 
                 date=homework.date,
+                done=False,
                 user=current_user,
                 user_id=current_user.id,
                 tag_id=current_user.pronote_tag_id,
@@ -103,7 +104,7 @@ def recover_homeworks(): # Recover all PRONOTE
             reminders.append(reminder)
         sorted_rems = sorted(reminders, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
-    return "No PRONOTE account linked to your account", 401
+    return "No PRONOTE homeworks ever fetched from your account", 401
 
 @app.route("/api/reminder/<int:rem_id>")
 @login_required
@@ -185,53 +186,6 @@ def get_reminders(): # Read all
       500:
         description: An error ocurred internally. This isn't planned and can have many causes
     """
-    if current_user.pronote_username is not None:
-        client = pronotepy.Client(
-            'https://pronote.fis.edu.hk/eleve.html',
-            username=current_user.pronote_username,
-            password=current_user.pronote_password,
-        )
-        homeworks = client.homework(date_from=d.date.today())
-        for homework in homeworks:
-            my_homework = Pronote_homework.query.filter_by(
-                content=homework.description, 
-                user_id=current_user.id,
-            ).first()
-            if my_homework is None:
-                subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                if subject is None:
-                    bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                    subject = Subject(
-                        content=homework.subject.name, 
-                        bg_color=bgColor,
-                        user=current_user,
-                        user_id=current_user.id
-                    )
-                    db.session.add(subject)
-                    db.session.commit()
-                reminder = Reminder(
-                    content=homework.description, 
-                    date=homework.date,
-                    done = False,
-                    user=current_user,
-                    user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(reminder)
-                db.session.commit()
-                my_homework = Pronote_homework(
-                    content=homework.description, 
-                    date=homework.date,
-                    hidden=False,
-                    reminder=reminder,
-                    user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(my_homework)
-                reminder.pronote = my_homework
-                db.session.commit()
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -266,53 +220,6 @@ def get_sorted_reminders(property): # Read all (sorted)
         description: An error ocurred internally. This isn't planned and can have many causes
     """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        if current_user.pronote_username is not None:
-            client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=current_user.pronote_username,
-                password=current_user.pronote_password,
-            )
-            homeworks = client.homework(date_from=d.date.today())
-            for homework in homeworks:
-                my_homework = Pronote_homework.query.filter_by(
-                    content=homework.description, 
-                    user_id=current_user.id,
-                ).first()
-                if my_homework is None:
-                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                    if subject is None:
-                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                        subject = Subject(
-                            content=homework.subject.name, 
-                            bg_color=bgColor,
-                            user=current_user,
-                            user_id=current_user.id
-                        )
-                        db.session.add(subject)
-                        db.session.commit()
-                    reminder = Reminder(
-                        content=homework.description, 
-                        date=homework.date,
-                        done = False,
-                        user=current_user,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(reminder)
-                    db.session.commit()
-                    my_homework = Pronote_homework(
-                        content=homework.description, 
-                        date=homework.date,
-                        hidden=False,
-                        reminder=reminder,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(my_homework)
-                    reminder.pronote = my_homework
-                    db.session.commit()
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -628,16 +535,6 @@ def mark_rem_as_done(rem_id, status): # Mark one as done
     if reminder is not None:
         if reminder.user_id == current_user.id: # Layer of security
             if status in ["True", "False"]:
-                if reminder.pronote_id is not None:
-                    client = pronotepy.Client(
-                        'https://pronote.fis.edu.hk/eleve.html',
-                        username=current_user.pronote_username,
-                        password=current_user.pronote_password,
-                    )
-                    homeworks = client.homework(date_from=reminder.date.date())
-                    homeworks = list(filter(lambda hw: hw.description == reminder.content and hw.date == reminder.date.date(), homeworks))
-                    homework = homeworks[0]
-                    homework.set_done(status == "True")
                 reminder.done = (status == "True")
                 db.session.commit()
                 return "Reminder marked as done succesfully", 200
@@ -684,6 +581,123 @@ def send_reminders(): # Send email when due soon
             return f"Sucesfully sent {emails_sent} email(s)!", 200
         return "Invalid PAT (Personnal Authorisation Token)", 403
     return "Invalid args to request, no PAT", 401
+
+@app.route("/fetch_from_pronote")
+@login_required
+def fetch_pronote_page():
+    return render_template("login_pronote.html")
+
+@app.route("/fetch_from_pronote", methods=["POST"])
+@login_required
+def fetch_pronote():
+    """Endpoint to fetch all of your PRONOTE homeworks
+    ---
+    tags:
+      - Reminder CRUD operations
+    description: Endpoint to fetch all of your PRONOTE homeworks using the credentials provided.
+    parameters:
+      - name: body
+        in: body
+        required: True
+        schema:
+          type: object
+          properties:
+            pronote_url:
+              type: string
+              example: https://i.love.pronote/eleve.html
+            username:
+              type: string
+              example: AmbitiousDevelopper5498
+            password:
+              type: string
+              example: MySecretPassword
+    responses:
+      200:
+        description: A validation message
+        schema:
+          type: string
+          example: Succesfully logged into PRONOTE
+      400:
+        description: The credentials you provided are incorrect. Throws an error message (in french)
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Le mot de passe ou l'identifiant est incorrect
+      400:
+        description: You didn't provide any credentials. Throws an error message (in english)
+        schema:
+          type: string
+          example: Missing body argument - No credentials sent
+      500:
+        description: An error ocurred internally. This isn't planned and can have many causes.
+    """
+    if request.data:
+        data = json.loads(request.data)
+        try:
+            client = pronotepy.Client(
+                data.get('pronote_url'),
+                username=data.get('username'),
+                password=data.get('password'),
+            )
+            if current_user.pronote_tag_id is None:
+                tag = Tag(
+                    content="de PRONOTE", 
+                    bg_color="#009853",
+                    user=current_user,
+                    user_id=current_user.id
+                )
+                db.session.add(tag)
+                db.session.commit()
+                current_user.pronote_tag_id = tag.id
+                db.session.commit()
+        except pronotepy.CryptoError:
+            return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
+        homeworks = client.homework(date_from=d.date.today())
+        for homework in homeworks:
+            my_homework = Pronote_homework.query.filter_by(
+                content=homework.description, 
+                user_id=current_user.id,
+            ).first()
+            if my_homework is None:
+                subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+                if subject is None:
+                    bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
+                    subject = Subject(
+                        content=homework.subject.name, 
+                        bg_color=bgColor,
+                        user=current_user,
+                        user_id=current_user.id
+                    )
+                    db.session.add(subject)
+                    db.session.commit()
+                reminder = Reminder(
+                    content=homework.description, 
+                    date=homework.date,
+                    done = False,
+                    user=current_user,
+                    user_id=current_user.id,
+                    tag_id=current_user.pronote_tag_id,
+                    subject_id=subject.id
+                )
+                db.session.add(reminder)
+                db.session.commit()
+                print("One reminder added succesfully")
+                my_homework = Pronote_homework(
+                    content=homework.description, 
+                    date=homework.date,
+                    hidden=False,
+                    reminder=reminder,
+                    user_id=current_user.id,
+                    tag_id=current_user.pronote_tag_id,
+                    subject_id=subject.id
+                )
+                db.session.add(my_homework)
+                reminder.pronote = my_homework
+                db.session.commit()
+        return "Homeworks fetched succesfully", 200
+    return "Missing body argument - No credentials sent", 401
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required
@@ -1139,73 +1153,6 @@ def reset_pw():
 @login_manager.unauthorized_handler
 def unauthorized(): 
     return redirect(url_for('login'))
-
-@app.route("/login_pronote")
-@login_required
-def get_login_pronote():
-    return render_template("login_pronote.html")
-
-@app.route("/login_pronote", methods=["POST"])
-@login_required
-def login_pronote():
-    """Endpoint to add your PRONOTE credentials
-    ---
-    tags:
-      - User Verification
-    description: Endpoint to link your PRONOTE account to get reminders from PRONOTE homeworks. This can also be used to update your credentials. (This function is currently only available for students of FIS Hong Kong). It's also VERY dangerous since passwords won't be hashed.
-    parameters:
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            username:
-              type: string
-              example: AmbitiousDevelopper5498
-            password:
-              type: string
-              example: MySecretPassword
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Succesfully logged into PRONOTE
-      400:
-        description: The credentials you provided are incorrect. Throws an error message (in french)
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Le mot de passe ou l'identifiant est incorrect
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
-    if request.data:
-        data = json.loads(request.data)
-        try:
-            client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=data.get('username'),
-                password=data.get('password'),
-            )
-            tag = Tag(
-                content="de PRONOTE", 
-                bg_color="#009853",
-                user=current_user,
-                user_id=current_user.id
-            )
-            db.session.add(tag)
-            db.session.commit()
-            current_user.pronote_username = client.username
-            current_user.pronote_password = client.password
-            current_user.pronote_tag_id = tag.id
-            db.session.commit()
-            return "Succesfully logged into PRONOTE", 200
-        except pronotepy.CryptoError:
-            return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
 
 
 #------------------------------------------------------

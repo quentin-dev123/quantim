@@ -98,8 +98,6 @@ class User(UserMixin, db.Model):
     active = db.Column(db.Boolean)
     accept_mail = db.Column(db.Boolean)
     # --- PRONOTE --- 
-    pronote_username = db.Column(db.String(250), nullable=True)
-    pronote_password = db.Column(db.String(250), nullable=True)
     pronote_tag_id = db.Column(db.Integer, nullable=True)
     # --- Relationships --- 
     reminders = db.relationship("Reminder", backref="user")
