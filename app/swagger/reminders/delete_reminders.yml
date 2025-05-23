@@ -1,0 +1,13 @@
+Endpoint to delete reminders
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint deleting all reminders linked to your account (must be logged in)
+responses:
+  200:
+    description: A confirmation message
+    schema:
+      type: string
+      example: Reminders deleted succesfully
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

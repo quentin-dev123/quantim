@@ -1,0 +1,14 @@
+Endpoint to read reminders
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint returning all reminders linked to your account (must be logged in)
+responses:
+  200:
+    description: A list of all reminders sorted chronologically by date property
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Reminder'
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

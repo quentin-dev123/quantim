@@ -1,0 +1,25 @@
+Endpoint to read reminders sorted with a certain property
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint returning all reminders linked to your account with a certain property (by default is sorted by date) (must be logged in)
+parameters:
+  - name: property
+    in: path
+    type: string
+    enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
+    required: true
+responses:
+  200:
+    description: A list of all reminders sorted by a property
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Reminder'
+  404:
+    description: The specified property was not found
+    schema:
+      type: string
+      example: Property not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

@@ -14,6 +14,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import func
 from uuid import uuid4
+from flasgger import swag_from
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token
 
@@ -22,9 +23,9 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 """
 To-do list :
-    - Send emails when reminders are due soon
     - Finish swagger
     - Make tag and subject editable
+    - Add a possibility to send comments (for support or feedback)
 """
 
 #------------------------------------------------------
@@ -57,30 +58,23 @@ def test(file):
 
 #------------------------------------------------------
 # API ~~ CRUD functions
-
+@app.route("/api/reminder/<int:rem_id>")
+@login_required
+@swag_from('swagger/reminders/get_reminder.yml')
+def get_reminder(rem_id): # Read one
+    reminders = Reminder.query.get(rem_id)
+    if reminders is not None:
+        if reminders.user_id == current_user.id:
+            return jsonify(reminders.to_json()), 200
+        else:
+            return "Not logged into the account of the reminder", 403
+    else:
+        return "Reminder not found", 404
+    
 @app.route("/api/reminder/recover_pronote")
 @login_required
+@swag_from('swagger/reminders/recover_homeworks.yml')
 def recover_homeworks(): # Recover all PRONOTE
-    """Endpoint to recover PRONOTE homeworks
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint recovering all deleted PRONOTE homeworks linked to your account (must be logged in and have once added PRONOTE reminders)
-    responses:
-      200:
-        description: A list of all the recovered reminders sorted chronologically by date property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      401:
-        description: You are unauthenticated (you haven't ever added PRONOTE reminders)
-        schema:
-          type: string
-          example: No PRONOTE homeworks ever fetched from your account
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     if current_user.pronote_tag_id is not None:
         homeworks = Pronote_homework.query.filter_by(hidden=True, user_id=current_user.id)
         reminders = []
@@ -105,120 +99,19 @@ def recover_homeworks(): # Recover all PRONOTE
         sorted_rems = sorted(reminders, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
     return "No PRONOTE homeworks ever fetched from your account", 401
-
-@app.route("/api/reminder/<int:rem_id>")
-@login_required
-def get_reminder(rem_id): # Read one
-    """Endpoint to read a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-    definitions:
-      Reminder:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1478
-          user_id: 
-            type: integer
-            example: 3927
-          tag_id: 
-            type: integer
-            example: 8370
-          subject_id: 
-            type: integer
-            example: 9239
-          date: 
-            type: string
-            example: 2026-12-31T00:00:00
-          content: 
-            type: string
-            example: Create an account on quantim.pythonanywhere.com
-    responses:
-      200:
-        description: A reminder object
-        schema:
-          $ref: '#/definitions/Reminder'
-      403:
-        description: The reminder with the specified id belongs to someone else
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
-    reminders = Reminder.query.get(rem_id)
-    if reminders is not None:
-        if reminders.user_id == current_user.id:
-            return jsonify(reminders.to_json()), 200
-        else:
-            return "Not logged into the account of the reminder", 403
-    else:
-        return "Reminder not found", 404
     
 @app.route("/api/reminder")
 @login_required
+@swag_from('swagger/reminders/get_reminders.yml')
 def get_reminders(): # Read all
-    """Endpoint to read reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders linked to your account (must be logged in)
-    responses:
-      200:
-        description: A list of all reminders sorted chronologically by date property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
 @app.route("/api/reminder/sort/<property>")
 @login_required
+@swag_from('swagger/reminders/get_sorted_reminders.yml')
 def get_sorted_reminders(property): # Read all (sorted)
-    """Endpoint to read reminders sorted with a certain property
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders linked to your account with a certain property (by default is sorted by date) (must be logged in)
-    parameters:
-      - name: property
-        in: path
-        type: string
-        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
-        required: true
-    responses:
-      200:
-        description: A list of all reminders sorted by a property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      404:
-        description: The specified property was not found
-        schema:
-          type: string
-          example: Property not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
@@ -227,37 +120,8 @@ def get_sorted_reminders(property): # Read all (sorted)
 
 @app.route("/api/reminder/filter/<property>/<property_value>")
 @login_required
+@swag_from('swagger/reminders/get_filtered_reminders.yml')
 def get_filtered_reminders(property, property_value): # Read all (filtered)
-    """Endpoint to read reminders filtered 
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders  linked to your account filtered with a certain property (must be logged in)
-    parameters:
-      - name: property
-        in: path
-        type: string
-        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
-        required: true
-      - name: property_value
-        in: path
-        type: string
-        required: true
-    responses:
-      200:
-        description: A list of all reminders filtered by a property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      404:
-        description: The specified property/property_id was not found
-        schema:
-          type: string
-          example: Property not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
         filtered_rems = filter(lambda rem: getattr(rem, property) == type(getattr(rem, property))(property_value), reminders)
@@ -267,64 +131,8 @@ def get_filtered_reminders(property, property_value): # Read all (filtered)
     
 @app.route("/api/reminder", methods=["POST"])
 @login_required
+@swag_from('swagger/reminders/create_reminders.yml')
 def create_reminders(): # Create
-    """Endpoint to create reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to create new reminders linked to your account (must be logged in)
-    parameters:
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Have a good day :)
-            date:
-              type: string
-              example: 2027-01-01T00:00:00
-            subject_id:
-              type: integer
-              example: 8888
-            tag_id:
-              type: integer
-              example: 1234
-    responses:
-      200:
-        description: Returns the newly created reminder
-        schema:
-          $ref: '#/definitions/Reminder'
-        examples:
-          application/json: {
-            "content": "Don't forget to smile :)",
-            "date": "2025-05-25T00:00:00",
-            "id": 1234,
-            "subject_id": 5678,
-            "tag_id": 8765,
-            "user_id": 4321
-          }
-      404:
-        description: Meaning one of the params of the request was not found in the database 
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Tag requested not found
-      403:
-        description: Meaning one of the params of the request was found but doesnt belong to your account
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Tag requested not linked to your account
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
-    """
     data = json.loads(request.data)
     tag_id=data.get("tag_id")
     subject_id=data.get("subject_id")
@@ -354,36 +162,8 @@ def create_reminders(): # Create
 
 @app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
 @login_required
+@swag_from('swagger/reminders/delete_reminder.yml')
 def delete_reminder(rem_id): # Delete one
-    """Endpoint to delete a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to delete a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder deleted succesfully
-      403:
-        description: The reminder you're trying to delete doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminder = Reminder.query.get(rem_id)
     if reminder:
         if reminder.user_id == current_user.id: # Layer of security
@@ -401,21 +181,8 @@ def delete_reminder(rem_id): # Delete one
     
 @app.route("/api/reminder", methods=["DELETE"])
 @login_required
+@swag_from('swagger/reminders/delete_reminders.yml')
 def delete_reminders(): # Delete all
-    """Endpoint to delete reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint deleting all reminders linked to your account (must be logged in)
-    responses:
-      200:
-        description: A confirmation message
-        schema:
-          type: string
-          example: Reminders deleted succesfully
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     for reminder in reminders:
         if reminder.pronote_id is not None:
@@ -428,54 +195,8 @@ def delete_reminders(): # Delete all
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
+@swag_from('swagger/reminders/update_reminders.yml')
 def update_reminders(rem_id): # Update
-    """Endpoint to update a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to update a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Don't worry, be happy
-            date:
-              type: string
-              example: 2027-01-01
-            subject_id:
-              type: integer
-              example: 4321
-            tag_id:
-              type: integer
-              example: 1234
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder updated succesfully
-      403:
-        description: The reminder you're trying to update doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
-    """
     data = json.loads(request.data)
     db_reminder = Reminder.query.get(rem_id)
     if db_reminder:

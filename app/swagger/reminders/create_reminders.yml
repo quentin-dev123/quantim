@@ -1,0 +1,56 @@
+Endpoint to create reminders
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint to create new reminders linked to your account (must be logged in)
+parameters:
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Have a good day :)
+        date:
+          type: string
+          example: 2027-01-01T00:00:00
+        subject_id:
+          type: integer
+          example: 8888
+        tag_id:
+          type: integer
+          example: 1234
+responses:
+  200:
+    description: Returns the newly created reminder
+    schema:
+      $ref: '#/definitions/Reminder'
+    examples:
+      application/json: {
+        "content": "Don't forget to smile :)",
+        "date": "2025-05-25T00:00:00",
+        "id": 1234,
+        "subject_id": 5678,
+        "tag_id": 8765,
+        "user_id": 4321
+      }
+  404:
+    description: Meaning one of the params of the request was not found in the database 
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tag requested not found
+  403:
+    description: Meaning one of the params of the request was found but doesnt belong to your account
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tag requested not linked to your account
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
