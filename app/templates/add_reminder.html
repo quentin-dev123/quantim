@@ -127,9 +127,9 @@ function close_a_modal (the_modal, selectId) {
     }
 }
 
-function removeAllEventListeners(Element) {
-  const clone = buttonElement.cloneNode(true);
-  buttonElement.parentNode.replaceChild(clone, buttonElement);
+function removeAllEventListeners(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
   return clone;
 }
   
