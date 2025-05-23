@@ -800,7 +800,7 @@ def update_subjects(sub_id): # Update
               example: Coding
             bgColor:
               type: string
-              example: #ff0000
+              example: red
     responses:
       200:
         description: A validation message
@@ -875,7 +875,7 @@ def update_tags(tag_id): # Update
               example: Coding
             bgColor:
               type: string
-              example: #ff0000
+              example: red
     responses:
       200:
         description: A validation message
