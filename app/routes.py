@@ -851,7 +851,7 @@ def tags():
     else:
         return jsonify({"message": "Un tag avec le même nom existe déjà"}), 400
 
-@app.route("/api/tag/<int:sub_id>", methods=["PUT"])
+@app.route("/api/tag/<int:tag_id>", methods=["PUT"])
 @login_required
 def update_tags(tag_id): # Update
     """Endpoint to update a tag
