@@ -260,6 +260,9 @@ async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
         body: JSON.stringify(userAnswers)
     });
     if (result.ok) {
+      location.reload(true); // reload page
+      
+      /*
       let change_modal_name = change_modal.querySelector('input[type="text"]')
       let change_modal_bg_color = change_modal.querySelector('input[type="color"]')
 
@@ -270,6 +273,7 @@ async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
       document.getElementById("change_name").innerHTML = "";
 
       close_a_modal(change_modal, false)
+      */
 
     } else if (result.status === 400) {
         alertText.innerHTML = await result.text();
