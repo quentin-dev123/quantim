@@ -175,14 +175,13 @@ dynamic_options("/api/tag", "optionGroup2");
 dynamic_options("/api/subject", "optionGroup");
 
 function changeSelect(elem, elemId) {
-  console.log('start')  
   switch (elem) {
             case "tag" :
                 if (document.getElementById(elemId).value ===  "new") {
                   tag_modal.style.display = "block";
                 }
-                global_tag_id = elemId;
-                console.log(elemId)
+                global_tag_id = document.getElementById(elemId).value;
+                console.log(document.getElementById(elemId).value)
                 console.log(global_tag_id)
                 break;
             case "subject" :
