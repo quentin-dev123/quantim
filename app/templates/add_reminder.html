@@ -145,7 +145,6 @@ function open_change_modal(type){ // type = "subject" OR type = "tag"
         h1.innerHTML = "<b>Tag</b>"
         label.innerHTML = "Changer un tag"
         id = global_tag_id
-      console.log(global_tag_id)
     }
   
     change_modal.style.display = "block";
@@ -213,12 +212,15 @@ async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
   let tag_select = document.getElementById('tag_select')
   let option
   let post_link
+  console.log(id)
   if (type == "subject"){
     option = subject_select.options[subject_select.selectedIndex];
     post_link = `/api/subject/${id}`
+    console.log(post_link)
   } else {
     option = tag_select.options[tag_select.selectedIndex];
     post_link = `/api/tag/${id}`
+    console.log(post_link)
   }
 
 
