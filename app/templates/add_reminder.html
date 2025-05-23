@@ -127,6 +127,12 @@ function close_a_modal (the_modal, selectId) {
     }
 }
 
+function removeAllEventListeners(Element) {
+  const clone = buttonElement.cloneNode(true);
+  buttonElement.parentNode.replaceChild(clone, buttonElement);
+  return clone;
+}
+  
 function open_change_modal(type){ // type = "subject" OR type = "tag"
     let h1 = change_modal.querySelector("label")
     let label = change_modal.querySelector("h1")
@@ -143,10 +149,13 @@ function open_change_modal(type){ // type = "subject" OR type = "tag"
     }
   
     change_modal.style.display = "block";
-  change_modal.querySelector("form").addEventListener("submit", function(event){
-    console.log(type)
-    func_change_modal(type, id)
-});
+  
+    let change_modal_form = change_modal.querySelector("form")
+    change_modal_form = removeAllEventListeners(change_modal_form);
+    change_modal_form.addEventListener("submit", function(event){
+      console.log(type)
+      func_change_modal(type, id)
+    });
 }
 
 
