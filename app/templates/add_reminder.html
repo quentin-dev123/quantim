@@ -250,7 +250,7 @@ async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
             	userAnswers[formChildren[i].name] = formChildren[i].value;
         }
     }
-
+console.log(JSON.stringify(userAnswers))
     // Make a PUT request to the server
     let result = await fetch(post_link, {
         method: 'PUT',
