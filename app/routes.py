@@ -674,7 +674,8 @@ def send_reminders(): # Send email when due soon
                             subjects=subjects, 
                             reminders=reminders, 
                             tags=tags,
-                            user=user
+                            user=user,
+                            base_url=current_app.config["BASE_URL"]
                         )
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
@@ -981,7 +982,12 @@ def create_otp():
                 from_email='quantim.hk@gmail.com',
                 to_emails=user.email,
                 subject="Requête d'inscription sur Quantim",
-                html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
+                html_content=render_template(
+                    "verify_email.html", 
+                    username=user.username, 
+                    email=user.email, 
+                    otp=otp.value, 
+                    base_url=current_app.config["BASE_URL"])
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
             response = sg.send(message)
@@ -1084,7 +1090,12 @@ def forgot_pw_mail():
                 from_email='quantim.hk@gmail.com',
                 to_emails=email,
                 subject="Mot de passe oublié",
-                html_content=render_template("forgot_pw_mail.html", user=user, token=token.val)
+                html_content=render_template(
+                    "forgot_pw_mail.html", 
+                    user=user, 
+                    token=token.val, 
+                    base_url=current_app.config["BASE_URL"]
+                )
             )
         sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
         sg.send(message)
