@@ -46,6 +46,14 @@
   color: #ff6666;
 }
 
+.sidenav a.green {
+  color: #247b56;
+}
+
+.sidenav a.green:hover {
+  color: #369c74;
+}
+
 .sidenav .closebtn {
   position: absolute;
   top: 0;
