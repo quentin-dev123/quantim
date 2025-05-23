@@ -145,8 +145,8 @@
       </optgroup>
       <option value="new">+ Plus</option>
   </select>
-  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe872;</span>
+  <span class="material-icons edit_icon icon_subject" onclick="open_change_modal('subject')">&#xe254;</span>
+  <span class="material-icons edit_icon icon_subject hidden">&#xe872;</span>
 </div>
 <label for="tag_id"><b>Tag</b></label>
 <div class="edit_select_icon_container">
@@ -155,9 +155,9 @@
     <optgroup id="editmodal_optionGroup2" style="display: none;" label="Tags">
     </optgroup>
     <option value="new">+ Plus</option>
-</select>
-  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe872;</span>
+  </select>
+  <span class="material-icons edit_icon icon_tag" onclick="open_change_modal('tag')">&#xe254;</span>
+  <span class="material-icons edit_icon icon_tag hidden">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
 <input type="date" name="date" id="editmodal_datePicker" required>
@@ -221,6 +221,27 @@
     </form>
   </div>
 
+  <div id="editmodal_change_modal" class="editmodal edit_my_modal hidden" style="display: none;">
+    <span onclick="editmodal_close_a_modal(change_modal, false)" class="edit_my_close" title="my_close Modal">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="editmodal_form">
+      <div class="edit_my_container">
+        <h1></h1>
+        <hr>
+        <label for="content"></label>
+        <input type="text" placeholder="Nom" name="content" id="editmodal_change_name" required>
+        <br>
+        <label for="bgColor"><b>Couleur</b></label>
+        <input type="color" name="bgColor" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
+            </div>
+        <div class="edit_my_clearfix">
+          <button type="button" onclick="editmodal_close_a_modal(change_modal, false)" class="edit_my_cancelbtn">Annuler</button>
+          <button type="submit" class="edit_my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
     {% block script %} {% endblock %}
 <script>
 // change footer date
