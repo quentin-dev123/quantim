@@ -1,6 +1,8 @@
 # Quantim
+
+
 ### Works like a personal agenda
-> This project is still under developpement
+
 
 ### Manage source code versioning ###
 Use of standard "*[feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)*" workflow:
@@ -70,6 +72,8 @@ and create in application folder a file named .env containing:
 ```
 export GIT_REPO_PATH=<path to application folder>
 export GIT_REPO_BRANCH=main
+export BASE_URL='<base url used (if running local, usually is : http://127.0.0.1:5000)>'
+export SENDGRID_API_KEY='<your sendgrid api key>'
 export DEV_DATABASE_URL=sqlite://<absolute path to sqllite file>
 ```
 > for windows it should look like sqlite:///C:\\\\path\\\\to\\\\foo.db
@@ -78,4 +82,9 @@ export DEV_DATABASE_URL=sqlite://<absolute path to sqllite file>
 Finally launch it with
 ```
 flask run
+```
+
+ If you get an error, it's possible you'll have to set FLASK_APP explicitly in the terminal:
+```
+export FLASK_APP=quantim.py
 ```
