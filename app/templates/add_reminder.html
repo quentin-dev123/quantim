@@ -180,8 +180,6 @@ function changeSelect(elem, elemId) {
             case "tag" :
                 tag_modal.style.display = "block";
                 global_tag_id = elemId;
-                console.log(elemId)
-                console.log(global_tag_id)
                 break;
             case "subject" :
                 subject_modal.style.display = "block";
@@ -189,6 +187,14 @@ function changeSelect(elem, elemId) {
                 break;
         }
     }
+    switch (elem) {
+            case "tag" :
+                global_tag_id = elemId;
+                break;
+            case "subject" :
+                global_subject_id = elemId;
+                break;
+        }
     const selectElement = document.getElementById(elemId)
     const selectedOption = selectElement.options[selectElement.selectedIndex]
     selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
