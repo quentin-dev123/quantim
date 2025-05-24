@@ -40,3 +40,66 @@
 .sort_icon-dropdown_content a i.hide {
   display: none;
 }
+
+
+
+/* Filter icon */
+
+.filter_icon {
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+  
+  position: absolute;
+  right: 60px;
+  transform: translateY(3px);
+}
+
+
+
+.filter_dropdown_content {
+  position: absolute;
+  right: 50px;
+  top: 102px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  width: 300px;
+}
+
+.filter_display-flex {
+  display: flex; 
+}
+
+.filter_dropdown_content a {
+  color: black;
+  padding: 14px 16px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  border-bottom: 3px solid #969696;
+}
+
+.filter_dropdown_content a.on {
+  background-color: #f1f1f1;
+  border-bottom-color: #046404;
+}
+
+.filter_dropdown_content a:hover {
+  background-color: #dfdfdf;
+}
+
+.filter_select_icon_container select {
+  margin-bottom: 10px;
+}
+
+.filter_select_icon_container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}

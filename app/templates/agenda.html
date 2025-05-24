@@ -19,6 +19,37 @@
 </div>
 <div>
     <div class="tooltip_container_left">
+        <span class="fas filter_icon" onclick="filter_icon_dropdown_content()">&#xf0b0;</span>
+        <label class="tooltip">Filtrer</label>
+    </div>
+    <div class="filter_dropdown_content hide" id="filter_dropdown_content" onclick="stopPropagation(event)">
+        <div class="filter_display-flex">
+            <a onclick="filter('subject', event)" id="filter_matière" class="on">Matière</a>
+            <a onclick="filter('tag', event)" id="filter_tag">Tag</a>
+        </div>
+        <!-- Same divs and same selecy as editmodal -->
+        <div class="edit_my_container" id="subject_container">
+            <div class="edit_select_icon_container">
+                <select class="form-select" name="id" id="filter_subject_select" onchange="filter_changeSelect('subject', event)" required>
+                    <option value="none" style="background-color: white; color: black" selected>Réinitialiser</option>
+                    <optgroup id="filter_subject_optionGroup" style="display: none;" label="Matières">
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        <div class="edit_my_container hidden" id="tag_container">
+            <div class="edit_select_icon_container">
+                <select class="form-select" name="id" id="filter_tag_select" onchange="filter_changeSelect('tag', event)" required>
+                    <option value="none" style="background-color: white; color: black" selected>Réinitialiser</option>
+                    <optgroup id="filter_tag_optionGroup" style="display: none;" label="Matières">
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="tooltip_container_left">
       <span class="material-icons sort_icon"  onclick="sort_icon_dropdown_content()">&#xe053;</span>
       <label class="tooltip">Trier</label>
     </div>
@@ -36,6 +67,11 @@
 {% block after_content %}{% endblock %}
 {% block script %}
 <script>
+    const header = document.querySelector("header")
+
+    document.getElementById("sort_icon-dropdown_content").style.height = header.offsetHeight
+    document.getElementById("filter_dropdown_content").style.height = header.offsetHeight
+
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
         const checkbox = document.getElementById(`reminput${container_id}`);
@@ -61,16 +97,19 @@
         }
     }
     
-    const dropdown_content = document.getElementById('sort_icon-dropdown_content');
+    const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
         event.stopPropagation()
-        dropdown_content.classList.toggle('show');
+        close_filter_icon_dropdown_content()
+        sort_dropdown_content.classList.toggle('show');
+    }
+
+    function close_sort_icon_dropdown_content(){
+        sort_dropdown_content.classList.remove('show');
     }
 
     // when the document is pressed
-    document.addEventListener('click', function(event) {
-        dropdown_content.classList.remove('show');
-    });
+    document.addEventListener('click', close_sort_icon_dropdown_content);
 
   function sort(type, event){
     event.stopPropagation();
@@ -78,24 +117,108 @@
     const matière = document.getElementById('sort_matière_check')
     const tag = document.getElementById('sort_tag_check')
     if (type == 'date') {
-      fetchData('date');
+      fetchData('/sort/date');
       date.classList.remove('hide')
       matière.classList.add('hide')
       tag.classList.add('hide')
     }
     else if (type == 'matière') {
-      fetchData('subject_id');
+      fetchData('/sort/subject_id');
       date.classList.add('hide')
       matière.classList.remove('hide')
       tag.classList.add('hide')
     }
     else if (type == 'tag') {
-      fetchData('tag_id');
+      fetchData('/sort/tag_id');
       date.classList.add('hide')
       matière.classList.add('hide')
       tag.classList.remove('hide')
     }
   }
+
+
+
+  const filter_dropdown_content = document.getElementById('filter_dropdown_content');
+    function filter_icon_dropdown_content(){
+        event.stopPropagation()
+        close_sort_icon_dropdown_content()
+        filter_dropdown_content.classList.toggle('hide');
+    }
+
+    function close_filter_icon_dropdown_content(){
+        filter_dropdown_content.classList.add('hide');
+    }
+
+    // when the document is pressed
+    document.addEventListener('click', close_filter_icon_dropdown_content);
+
+  function filter(type, event){
+    event.stopPropagation();
+    const matière = document.getElementById('filter_matière')
+    const tag = document.getElementById('filter_tag')
+    const subjectSelect = document.getElementById("subject_container")
+    const tagSelect = document.getElementById("tag_container")
+    if (type == 'subject') {
+      matière.classList.add('on')
+      tag.classList.remove('on')
+      subjectSelect.classList.remove('hidden')
+      tagSelect.classList.add('hidden')
+    }
+    else if (type == 'tag') {
+      matière.classList.remove('on')
+      tag.classList.add('on')
+      subjectSelect.classList.add('hidden')
+      tagSelect.classList.remove('hidden')
+    }
+  }
+
+  async function filter_dynamic_options(fetch_route, optgroup_id){
+    let optionGroup = document.getElementById(optgroup_id);
+    let result = await fetch(fetch_route)
+    const response = await result.json();
+    if (response !== "") {
+        response.forEach(element => {
+            let option = document.createElement("option");
+            option.value = element.id;
+            option.innerHTML = element.content;
+            option.style.backgroundColor = element.bg_color;
+            option.style.color = 'white';
+            optionGroup.appendChild(option);
+        });
+        optionGroup.style.display = "block";
+    }
+  };
+
+  filter_dynamic_options("/api/subject", "filter_subject_optionGroup");
+  filter_dynamic_options("/api/tag", "filter_tag_optionGroup");
+
+
+
+  function filter_changeSelect(elem, event){
+    event.stopPropagation()
+    const selectElement = document.getElementById(`filter_${elem}_select`)
+    const selectedOption = selectElement.options[selectElement.selectedIndex]
+    const optionValue = selectedOption.value
+    if (optionValue == "none"){
+        fetchData("");
+    }
+    else {
+        fetchData(`/filter/${elem}_id/${optionValue}`);
+    }
+
+    selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
+    selectElement.style.color = selectedOption.style.color;
+  }
+
+  function stopPropagation(event){
+    event.stopPropagation()
+  }
+
+
+
+
+
+
 
     function adjustColorBrightness(color, percent) {
         let num = parseInt(color.slice(1), 16);
@@ -128,11 +251,11 @@ function remove_reminders(){
 var global_tagArr = undefined
 var global_subjectArr = undefined
 
-async function fetchData (type) { // type = date OR subject_id OR tag_id OR content OR id
+async function fetchData (fetchlink) {
     remove_reminders()
     loading.classList.remove('hide');
     
-    let reminderArr = await loadRessource("/api/reminder/sort/" + type);
+    let reminderArr = await loadRessource("/api/reminder" + fetchlink);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject");
     global_tagArr = tagArr
@@ -277,7 +400,7 @@ async function fetchData (type) { // type = date OR subject_id OR tag_id OR cont
 }
 
 
-fetchData('date');
+fetchData("");
     </script>
 
 <!-- Edit modal -->
