@@ -27,7 +27,7 @@
 <input type="text" placeholder="Username" name="username" autocomplete="pronote_username" required>
 <br>
 <label for="password"><b> Entrer votre mot de passe PRONOTE</b></label>
-<input type="password" placeholder="Mot de passe" name="password" autocomplete="pronote_password" required>
+<input type="password" placeholder="Mot de passe" name="password" autocomplete="pronote_password" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
 {% endblock %}
 {% block script %}
 <script>
