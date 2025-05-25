@@ -26,24 +26,30 @@
         <div class="filter_display-flex">
             <a onclick="filter('subject', event)" id="filter_matière" class="on">Matière</a>
             <a onclick="filter('tag', event)" id="filter_tag">Tag</a>
+            <a onclick="filter('date', event)" id="filter_date" style="display:none">Date</a>
         </div>
         <!-- Same divs and same selecy as editmodal -->
-        <div class="edit_my_container" id="subject_container">
-            <div class="edit_select_icon_container">
+        <div class="filter_my_container" id="subject_container">
+            <div class="filter_select_container">
                 <select class="form-select" name="id" id="filter_subject_select" onchange="filter_changeSelect('subject', event)" required>
-                    <option value="none" style="background-color: white; color: black" selected>Réinitialiser</option>
+                    <option value="reset" style="background-color: white; color: black" selected>Réinitialiser</option>
                     <optgroup id="filter_subject_optionGroup" style="display: none;" label="Matières">
                     </optgroup>
                 </select>
             </div>
         </div>
-        <div class="edit_my_container hidden" id="tag_container">
-            <div class="edit_select_icon_container">
+        <div class="filter_my_container hidden" id="tag_container">
+            <div class="filter_select_container">
                 <select class="form-select" name="id" id="filter_tag_select" onchange="filter_changeSelect('tag', event)" required>
-                    <option value="none" style="background-color: white; color: black" selected>Réinitialiser</option>
+                    <option value="reset" style="background-color: white; color: black" selected>Réinitialiser</option>
                     <optgroup id="filter_tag_optionGroup" style="display: none;" label="Matières">
                     </optgroup>
                 </select>
+            </div>
+        </div>
+        <div class="filter_my_container hidden" id="date_container">
+            <div class="filter_select_container">
+                <input class="form-date" type="date" name="date" id="filter_datePicker" onchange="filter_changeDate(event)" required>
             </div>
         </div>
     </div>
@@ -66,6 +72,9 @@
 {% endblock %}
 {% block after_content %}{% endblock %}
 {% block script %}
+<!-- Import filter.js -->
+<script src="/static/scripts/filter.js"></script>
+
 <script>
     const header = document.querySelector("header")
 
@@ -135,87 +144,6 @@
       tag.classList.remove('hide')
     }
   }
-
-
-
-  const filter_dropdown_content = document.getElementById('filter_dropdown_content');
-    function filter_icon_dropdown_content(){
-        event.stopPropagation()
-        close_sort_icon_dropdown_content()
-        filter_dropdown_content.classList.toggle('hide');
-    }
-
-    function close_filter_icon_dropdown_content(){
-        filter_dropdown_content.classList.add('hide');
-    }
-
-    // when the document is pressed
-    document.addEventListener('click', close_filter_icon_dropdown_content);
-
-  function filter(type, event){
-    event.stopPropagation();
-    const matière = document.getElementById('filter_matière')
-    const tag = document.getElementById('filter_tag')
-    const subjectSelect = document.getElementById("subject_container")
-    const tagSelect = document.getElementById("tag_container")
-    if (type == 'subject') {
-      matière.classList.add('on')
-      tag.classList.remove('on')
-      subjectSelect.classList.remove('hidden')
-      tagSelect.classList.add('hidden')
-    }
-    else if (type == 'tag') {
-      matière.classList.remove('on')
-      tag.classList.add('on')
-      subjectSelect.classList.add('hidden')
-      tagSelect.classList.remove('hidden')
-    }
-  }
-
-  async function filter_dynamic_options(fetch_route, optgroup_id){
-    let optionGroup = document.getElementById(optgroup_id);
-    let result = await fetch(fetch_route)
-    const response = await result.json();
-    if (response !== "") {
-        response.forEach(element => {
-            let option = document.createElement("option");
-            option.value = element.id;
-            option.innerHTML = element.content;
-            option.style.backgroundColor = element.bg_color;
-            option.style.color = 'white';
-            optionGroup.appendChild(option);
-        });
-        optionGroup.style.display = "block";
-    }
-  };
-
-  filter_dynamic_options("/api/subject", "filter_subject_optionGroup");
-  filter_dynamic_options("/api/tag", "filter_tag_optionGroup");
-
-
-
-  function filter_changeSelect(elem, event){
-    event.stopPropagation()
-    const selectElement = document.getElementById(`filter_${elem}_select`)
-    const selectedOption = selectElement.options[selectElement.selectedIndex]
-    const optionValue = selectedOption.value
-    if (optionValue == "none"){
-        fetchData("");
-    }
-    else {
-        fetchData(`/filter/${elem}_id/${optionValue}`);
-    }
-
-    selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
-    selectElement.style.color = selectedOption.style.color;
-  }
-
-  function stopPropagation(event){
-    event.stopPropagation()
-  }
-
-
-
 
 
 
