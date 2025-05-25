@@ -212,46 +212,8 @@ def update_reminders(rem_id): # Update
 
 @app.route("/api/reminder/done/<int:rem_id>/<status>")
 @login_required
+@swag_from('swagger/reminders/mark_rem_as_done.yml')
 def mark_rem_as_done(rem_id, status): # Mark one as done
-    """Endpoint to mark as done a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to mark as done a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-      - name: status
-        in: path
-        type: string
-        enum: ['True', 'False']
-        required: true
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder marked as done
-      400:
-        description: The status argument is invalid
-        schema:
-          type: string
-          example: Invalid argument status. Must be included in ['True', 'False']
-      403:
-        description: The reminder you're trying to access doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminder = Reminder.query.get(rem_id)
     if reminder is not None:
         if reminder.user_id == current_user.id: # Layer of security
@@ -264,6 +226,7 @@ def mark_rem_as_done(rem_id, status): # Mark one as done
     return "Reminder not found", 404
 
 @app.route("/send_reminders")
+@swag_from('swagger/reminders/send_reminders.yml')
 def send_reminders(): # Send email when due soon
     args = request.args
     if args and args.get("pat"):
@@ -310,50 +273,8 @@ def fetch_pronote_page():
 
 @app.route("/fetch_from_pronote", methods=["POST"])
 @login_required
+@swag_from('swagger/reminders/fetch_pronote.yml')
 def fetch_pronote():
-    """Endpoint to fetch all of your PRONOTE homeworks
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to fetch all of your PRONOTE homeworks using the credentials provided.
-    parameters:
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            pronote_url:
-              type: string
-              example: https://i.love.pronote/eleve.html
-            username:
-              type: string
-              example: AmbitiousDevelopper5498
-            password:
-              type: string
-              example: MySecretPassword
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Succesfully logged into PRONOTE
-      400:
-        description: The credentials you provided are incorrect. Throws an error message (in french)
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Le mot de passe ou l'identifiant est incorrect
-      400:
-        description: You didn't provide any credentials. Throws an error message (in english)
-        schema:
-          type: string
-          example: Missing body argument - No credentials sent
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
     if request.data:
         data = json.loads(request.data)
         try:

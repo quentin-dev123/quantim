@@ -1,0 +1,43 @@
+Endpoint to fetch all of your PRONOTE homeworks
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint to fetch all of your PRONOTE homeworks using the credentials provided.
+parameters:
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        pronote_url:
+          type: string
+          example: https://i.love.pronote/eleve.html
+        username:
+          type: string
+          example: AmbitiousDevelopper5498
+        password:
+          type: string
+          example: MySecretPassword
+    description: Your PRONOTE credentials to be able to fetch your PRONOTE homeworks
+responses:
+  200:
+    description: A validation message
+    schema:
+      type: string
+      example: Homeworks fetched succesfully
+  400:
+    description: The credentials you provided are incorrect. Throws an error message (in french)
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Le mot de passe ou l'identifiant est incorrect
+  401:
+    description: You didn't provide any credentials. Throws an error message (in english)
+    schema:
+      type: string
+      example: Missing body argument - No credentials sent
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.
