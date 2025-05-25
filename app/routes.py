@@ -1,7 +1,7 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy, random, click
+import os, pronotepy, random, click, requests
 import datetime as d
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -269,7 +269,9 @@ def send_reminders(): # Send email when due soon
 @app.route("/fetch_from_pronote")
 @login_required
 def fetch_pronote_page():
-    return render_template("login_pronote.html")
+    if None not in [current_user.pronote_url, current_user.pronote_username]:
+        return render_template("login_pronote.html", url=current_user.pronote_url, username=current_user.pronote_username)
+    return render_template("login_pronote.html", url="", username="")
 
 @app.route("/fetch_from_pronote", methods=["POST"])
 @login_required
@@ -277,69 +279,78 @@ def fetch_pronote_page():
 def fetch_pronote():
     if request.data:
         data = json.loads(request.data)
-        try:
-            client = pronotepy.Client(
-                data.get('pronote_url'),
-                username=data.get('username'),
-                password=data.get('password'),
-            )
-            if current_user.pronote_tag_id is None:
-                tag = Tag(
-                    content="de PRONOTE", 
-                    bg_color="#009853",
-                    user=current_user,
-                    user_id=current_user.id
+        url = data.get('pronote_url')
+        username = data.get('username')
+        password = data.get('password')
+        if None not in [username, password, url]:
+            try:
+                client = pronotepy.Client(
+                    pronote_url=url,
+                    username=username,
+                    password=password,
                 )
-                db.session.add(tag)
-                db.session.commit()
-                current_user.pronote_tag_id = tag.id
-                db.session.commit()
-        except pronotepy.CryptoError:
-            return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
-        homeworks = client.homework(date_from=d.date.today())
-        for homework in homeworks:
-            my_homework = Pronote_homework.query.filter_by(
-                content=homework.description, 
-                user_id=current_user.id,
-            ).first()
-            if my_homework is None:
-                subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                if subject is None:
-                    bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                    subject = Subject(
-                        content=homework.subject.name, 
-                        bg_color=bgColor,
+                if current_user.pronote_tag_id is None:
+                    tag = Tag(
+                        content="de PRONOTE", 
+                        bg_color="#009853",
                         user=current_user,
                         user_id=current_user.id
                     )
-                    db.session.add(subject)
+                    db.session.add(tag)
                     db.session.commit()
-                reminder = Reminder(
-                    content=homework.description, 
-                    date=homework.date,
-                    done = False,
-                    user=current_user,
-                    user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(reminder)
+                    current_user.pronote_tag_id = tag.id
+                current_user.pronote_url = url
+                current_user.pronote_username = username
                 db.session.commit()
-                print("One reminder added succesfully")
-                my_homework = Pronote_homework(
+            except pronotepy.CryptoError:
+                return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 403  # the client has failed to log in
+            except (requests.exceptions.SSLError, pronotepy.exceptions.PronoteAPIError):
+                return jsonify({"message": "La page PRONOTE n'a pas été trouvé (lien invalide)"}), 404
+            homeworks = client.homework(date_from=d.date.today())
+            for homework in homeworks:
+                my_homework = Pronote_homework.query.filter_by(
                     content=homework.description, 
-                    date=homework.date,
-                    hidden=False,
-                    reminder=reminder,
                     user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(my_homework)
-                reminder.pronote = my_homework
-                db.session.commit()
-        return "Homeworks fetched succesfully", 200
-    return "Missing body argument - No credentials sent", 401
+                ).first()
+                if my_homework is None:
+                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+                    if subject is None:
+                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
+                        subject = Subject(
+                            content=homework.subject.name, 
+                            bg_color=bgColor,
+                            user=current_user,
+                            user_id=current_user.id
+                        )
+                        db.session.add(subject)
+                        db.session.commit()
+                    reminder = Reminder(
+                        content=homework.description, 
+                        date=homework.date,
+                        done = False,
+                        user=current_user,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(reminder)
+                    db.session.commit()
+                    print("One reminder added succesfully")
+                    my_homework = Pronote_homework(
+                        content=homework.description, 
+                        date=homework.date,
+                        hidden=False,
+                        reminder=reminder,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(my_homework)
+                    reminder.pronote = my_homework
+                    db.session.commit()
+            return "Homeworks fetched succesfully", 200
+        return "Invalid request (one or more arguments in body are missing or invalid)", 400
+    return "Missing body argument - No data sent", 401
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required

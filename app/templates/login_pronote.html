@@ -21,10 +21,10 @@
         <img id="lfi_logo" class="school_logo" onclick="pronote_link('https://pronote.fis.edu.hk/eleve.html')" src="/static/images/lfi_logo.png">
         <label class="tooltip">Appuyer seulement si vous êtes un élève au LFI de Hong Kong</label>
     </div>
-    <input id="pronote_url" type="text" placeholder="Exemple: https://pronote.mon.ecole/eleve.html" name="pronote_url" autocomplete="pronote_url" required>
+    <input id="pronote_url" type="text" placeholder="Exemple: https://pronote.mon.ecole/eleve.html" name="pronote_url" autocomplete="pronote_url" value="{{url}}" required>
 </div>
 <label for="username"><b> Entrer votre username PRONOTE</b></label>
-<input type="text" placeholder="Username" name="username" autocomplete="pronote_username" required>
+<input type="text" placeholder="Username" name="username" autocomplete="pronote_username" value="{{username}}" required>
 <br>
 <label for="password"><b> Entrer votre mot de passe PRONOTE</b></label>
 <input type="password" placeholder="Mot de passe" name="password" autocomplete="pronote_password" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>

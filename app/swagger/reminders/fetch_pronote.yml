@@ -27,17 +27,30 @@ responses:
       type: string
       example: Homeworks fetched succesfully
   400:
-    description: The credentials you provided are incorrect. Throws an error message (in french)
+    description: Missing or invalid data in the body, throws error message
+    schema:
+      type: string
+      example: Invalid request (one or more arguments in body are missing or invalid)
+  401:
+    description: You didn't provide any credentials. Throws an error message
+    schema:
+      type: string
+      example: Missing body argument - No data sent
+  403:
+    description: Invalid credentials, the client has failed to log in (throws error message in french)
     schema:
       type: object
       properties:
         message:
           type: string
           example: Le mot de passe ou l'identifiant est incorrect
-  401:
-    description: You didn't provide any credentials. Throws an error message (in english)
+  404:
+    description: Invalid PRONOTE url, valid page not found (throws error message in french)
     schema:
-      type: string
-      example: Missing body argument - No credentials sent
+      type: object
+      properties:
+        message:
+          type: string
+          example: La page PRONOTE n'a pas été trouvé (lien invalide)
   500:
     description: An error ocurred internally. This isn't planned and can have many causes.
