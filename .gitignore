@@ -5,4 +5,3 @@ env.*.sh
 *.sqlite
 set_env.cmd
 daily.py
-migrations/
