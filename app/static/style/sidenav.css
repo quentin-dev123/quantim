@@ -71,15 +71,22 @@
 
 
   .sidenav .amelioration {
-  	padding: 4px 8px 8px 32px;
+  	margin: 4px 32px 8px 32px;
+    padding: 0; /* Remove padding */
+    text-align: center;
+    box-sizing: border-box;
   }
 
   .sidenav .amelioration textarea {
-    padding: 5px;
+    padding: 5px; /* Remove padding */
+    margin: 0; /* Remove margin padding */
+    box-sizing: border-box;
     resize: vertical;
+    width: 100%; /* Take full width */
   }
   .sidenav .amelioration div {
-    margin-right: 25px;
+    margin: 0; /* Remove margin padding */
+    margin-bottom: 50px;
   }
   
   .sidenav .amelioration button{
