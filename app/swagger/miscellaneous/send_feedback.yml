@@ -1,0 +1,33 @@
+Endpoint to send feedback to Quantim
+---
+tags:
+  - Miscellaneous
+description: Endpoint to send a given feedback to Quantim (can be anonymous or not)
+parameters:
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        anonymous:
+          type: string
+          enum: ['True', 'False']
+          example: True
+        content:
+          type: string
+          example: I love your website. 
+    description: The mail to send (with the choice to be anonymous)
+responses:
+  200:
+    description: A validation message
+    schema:
+      type: string
+      example: Succesfully sent feedback
+  400:
+    description: The body is malformated (doesnt exist or invalid content), throws error message descibing error precisely
+    schema:
+      type: string
+      example: Invalid arguments to request (invalid type)
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.
