@@ -96,6 +96,14 @@
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
   <!--a class="green" href="/fetch_from_pronote">Se connecter à Pronote</a-->
+  <!--a onclick="mySidenav_amelioration()" id="amelioration_a">Proposer une amélioration</a-->
+  <div class="amelioration hide" id="amelioration_div">
+    <textarea rows="5"></textarea>
+    <div>
+      <button type="button" onclick="mySidenav_amelioration()">Annuler</button>
+      <button type="submit" onclick="mySidenav_amelioration_send()">Envoyer</button>
+    </div>
+  </div>
   <a class="red" onclick="open_confirm_modal('Effacer TOUS les rappels', 'Êtes-vous sûr de vouloir effacer TOUS vos rappels ? Vous ne pouvez pas revenir en arrière.', '/api/reminder', function(){history.go(0); /* reload the page */})">Effacer tous les rappels</a>
   <a class="red" onclick="open_confirm_modal('Effacer votre compte', 'Êtes-vous sûr de vouloir effacer votre compte ? Vous ne pouvez pas revenir en arrière.', '/account', function(){window.location.href = '/home';})">Effacer le compte</a>
 </div>
@@ -264,6 +272,18 @@ function removeAllEventListeners(element) {
   return clone;
 }	
 
+function mySidenav_amelioration(){
+  	let amelioration_a = document.getElementById("amelioration_a")
+    let amelioration_div = document.getElementById("amelioration_div")
+    amelioration_div.classList.toggle('hide')
+    amelioration_a.classList.toggle('on')
+  }
+
+function mySidenav_amelioration_send(){
+    alert('Amélioration envoyée !')
+    mySidenav_amelioration()
+}
+
 	
 // Secret Sidenav menu
    function openNav2() {
@@ -277,7 +297,7 @@ function removeAllEventListeners(element) {
 
 	
 function getDayOfWeek(target_date){
- current_date = new Date()
+ current_date = new Date('2025-04-06')
  days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
   days_remaining = 7 - current_date.getDay()
  if (days_remaining == 7){ /* if sunday */
