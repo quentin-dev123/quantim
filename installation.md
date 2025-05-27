@@ -40,6 +40,10 @@ then commit all changes includint the new files created in the folder migrations
 To apply the last changes on the db on a running environment or to create a new empty DB with latest structure for your local devs/test, run:
 >flask db upgrade
 
+Note:
+If you haven't made any changes but recently pulled from github, you can just look at a commit and if it says db upgrade needed, then : 
+>flask db upgrade
+
 ## Run the application ##
 ### Prepare running environment ###
 
