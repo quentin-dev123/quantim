@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 945c7cc7ca9f
+Revision ID: aaa48c0bc368
 Revises: 
-Create Date: 2025-04-27 19:26:11.318918
+Create Date: 2025-05-28 06:47:09.691071
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '945c7cc7ca9f'
+revision = 'aaa48c0bc368'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,9 +31,9 @@ def upgrade():
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('accept_mail', sa.Boolean(), nullable=True),
-    sa.Column('pronote_username', sa.String(length=250), nullable=True),
-    sa.Column('pronote_password', sa.String(length=250), nullable=True),
     sa.Column('pronote_tag_id', sa.Integer(), nullable=True),
+    sa.Column('pronote_username', sa.String(length=250), nullable=True),
+    sa.Column('pronote_url', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
@@ -42,6 +42,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('value', sa.Integer(), nullable=False),
     sa.Column('expiry', sa.DateTime(), nullable=False),
+    sa.Column('test', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -65,6 +66,7 @@ def upgrade():
     op.create_table('Token',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('val', sa.String(length=250), nullable=False),
+    sa.Column('expiry', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ),
     sa.PrimaryKeyConstraint('id')
