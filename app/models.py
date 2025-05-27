@@ -113,7 +113,6 @@ class Otp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer, nullable=False)
     expiry = db.Column(db.DateTime, nullable=False)
-    test = db.Column(db.Integer, nullable=True)
     # --- Relationships --- 
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 
