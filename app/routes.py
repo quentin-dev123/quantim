@@ -277,51 +277,8 @@ def fetch_pronote_page():
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required
+@swag_from('swagger/subject/get_subject.yml')
 def get_subject(subject_id): # Read one
-    """Endpoint to read a subject
-    ---
-    tags:
-      - Subject CRUD operations
-    description: Endpoint returning a subject with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-    definitions:
-      Subject:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1234
-          content: 
-            type: string
-            example: a good subject
-          bg_color: 
-            type: string
-            example: #ff0000
-          user_id: 
-            type: integer
-            example: 4321
-    responses:
-      200:
-        description: A subject object
-        schema:
-          $ref: '#/definitions/Subject'
-      403:
-        description: The subject with the specified id belongs to someone else
-        schema:
-          type: string
-          example: Not logged into the account of the subject
-      404:
-        description: The subject with the specified id was not found
-        schema:
-          type: string
-          example: Subject not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     subject = Subject.query.get(subject_id)
     if subject:
         if subject.user_id == current_user.id:
@@ -331,22 +288,8 @@ def get_subject(subject_id): # Read one
 
 @app.route("/api/subject")
 @login_required
+@swag_from('swagger/subject/get_subjects.yml')
 def get_subjects(): # Read all
-    """Endpoint to read subjects
-    ---
-    tags:
-      - Subject CRUD operations
-    description: Endpoint returning all subjects linked to your account (must be logged in)
-    responses:
-      200:
-        description: A list of all subjects 
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Subject'
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     subjects = Subject.query.filter_by(user_id=current_user.id).all()
     return jsonify([s.to_json() for s in subjects])
 
@@ -369,48 +312,8 @@ def create_subjects(): # Create
 
 @app.route("/api/subject/<int:sub_id>", methods=["PUT"])
 @login_required
+@swag_from('swagger/subject/update_subjects.yml')
 def update_subjects(sub_id): # Update
-    """Endpoint to update a subject
-    ---
-    tags:
-      - Subject CRUD operations
-    description: Endpoint to update a subject with a specified id (must be logged in)
-    parameters:
-      - name: sub_id
-        in: path
-        type: integer
-        required: true
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Coding
-            bgColor:
-              type: string
-              example: red
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Subject updated succesfully
-      403:
-        description: The subject you're trying to update doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the subject
-      404:
-        description: The subject with the specified id was not found
-        schema:
-          type: string
-          example: Subject not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
     data = json.loads(request.data)
     db_subject = Subject.query.get(sub_id)
     if db_subject is not None:
@@ -444,48 +347,8 @@ def tags():
 
 @app.route("/api/tag/<int:tag_id>", methods=["PUT"])
 @login_required
+@swag_from('swagger/tag/update_tags.yml')
 def update_tags(tag_id): # Update
-    """Endpoint to update a tag
-    ---
-    tags:
-      - Tag CRUD operations
-    description: Endpoint to update a tag with a specified id (must be logged in)
-    parameters:
-      - name: tag_id
-        in: path
-        type: integer
-        required: true
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Coding
-            bgColor:
-              type: string
-              example: red
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Tag updated succesfully
-      403:
-        description: The tag you're trying to update doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the tag
-      404:
-        description: The tag with the specified id was not found
-        schema:
-          type: string
-          example: Tag not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
     data = json.loads(request.data)
     db_tag = Tag.query.get(tag_id)
     if db_tag is not None:
@@ -745,6 +608,7 @@ def logout():
 
 @app.route("/account", methods=["DELETE"])
 @login_required
+@swag_from('swagger/user/delete_account.yml')
 def delete_account():
     """Delete your account (must be logged in)
     ---

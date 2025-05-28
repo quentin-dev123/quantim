@@ -1,0 +1,14 @@
+Endpoint to read subjects
+---
+tags:
+  - Subject CRUD operations
+description: Endpoint returning all subjects linked to your account (must be logged in)
+responses:
+  200:
+    description: A list of all subjects 
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Subject'
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes
