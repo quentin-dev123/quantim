@@ -26,6 +26,7 @@ To-do list :
     - Finish swagger and externalize all doc in /swagger
     - Make tag and subject editable
     - Test possibility to send comments (for support or feedback)
+    - Make it possible to send reminders to other persons/users
 """
 
 #------------------------------------------------------

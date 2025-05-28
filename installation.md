@@ -1,7 +1,9 @@
 # Quantim
 
 
-### Works like a personal agenda
+## Works like a personal agenda
+
+---
 
 
 ### Manage source code versioning ###
@@ -12,6 +14,7 @@ Use of standard "*[feature branch](https://www.atlassian.com/git/tutorials/compa
 - each new feature work should be implemented in a dedicated branch starting from latest main version:
     ```
     git checkout -b new_feature
+    ```
 - before merging back the new feature to main you need to re-synch feature branch with main making sure you re-sync local repository with github version:
     ```
     git checkout main
@@ -27,24 +30,58 @@ Use of standard "*[feature branch](https://www.atlassian.com/git/tutorials/compa
 
 > Same approach can be used with contributor branches which resync then merge to deliver work done once finalized.
 
+## The Database:
+
+### Setting up DB
+First, initialize the db and migrations (the tool to manage changes to the database structure):
+```
+flask db init
+```
+
+Then remove the migrations folder :
+```
+rm -rf migrations
+```
+
+Now you can pull the correct one from github:
+```
+git stash
+git pull
+```
+
+Now you need to use that correct migration folder: 
+```
+flask db upgrade
+```
 
 ### After DB changes
+
 to manage changes made on the database structure on the running environment you need to keep track of those change and prepare migrations scripts.
 These can be automativally generated.
 
 To do so, after each change in models.py, run:
->flask db migrate -m "comment"
+```
+flask db migrate -m "comment"
+```
 
 then commit all changes includint the new files created in the folder migrations.
 
 To apply the last changes on the db on a running environment or to create a new empty DB with latest structure for your local devs/test, run:
->flask db upgrade
-
+```
+flask db upgrade
+```
+### Keeping the DB up to date
 Note:
-If you haven't made any changes but recently pulled from github, you can just look at a commit and if it says db upgrade needed, then : 
->flask db upgrade
+When you do a ```git pull```, you need to look if the commit(s) message(s) contain db upgrade needed. In that case,
+you need to logically upgrade your database, which can be done with : 
+```
+flask db upgrade
+```
+
+> This upgrade is necessary when changes have been made to the structure of the db.
 
 ## Run the application ##
+
 ### Prepare running environment ###
 
 You need to install python virtual environment
