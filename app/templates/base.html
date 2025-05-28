@@ -85,7 +85,6 @@
 </main>
     {% block after_content %} {% endblock %}
 <footer>
-<p style="color: red;">La base de données va bientôt être effacé car ce projet est encore en cours de développement et des modifications sont en cours.</p>
   <p>&copy; <span id=date>2024-2025</span> <span onclick="openNav2()">Quantim</span>. Tous droits réservés. 
 	  <a href="/apidocs" style="color: white;">API Docs,</a>  
 	  <a href="/static/mention_legale.pdf" style="color: white;">Mentions légales,</a> 
@@ -96,6 +95,15 @@
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="/home">Accueil</a>
   <a href="/logout">Se déconnecter</a>
+  <!--a class="green" href="/fetch_from_pronote">Se connecter à Pronote</a-->
+  <!--a onclick="mySidenav_amelioration()" id="amelioration_a">Proposer une amélioration</a-->
+  <div class="amelioration hide" id="amelioration_div">
+    <textarea rows="5"></textarea>
+    <div>
+      <button type="button" onclick="mySidenav_amelioration()">Annuler</button>
+      <button type="submit" onclick="mySidenav_amelioration_send()">Envoyer</button>
+    </div>
+  </div>
   <a class="red" onclick="open_confirm_modal('Effacer TOUS les rappels', 'Êtes-vous sûr de vouloir effacer TOUS vos rappels ? Vous ne pouvez pas revenir en arrière.', '/api/reminder', function(){history.go(0); /* reload the page */})">Effacer tous les rappels</a>
   <a class="red" onclick="open_confirm_modal('Effacer votre compte', 'Êtes-vous sûr de vouloir effacer votre compte ? Vous ne pouvez pas revenir en arrière.', '/account', function(){window.location.href = '/home';})">Effacer le compte</a>
 </div>
@@ -145,8 +153,8 @@
       </optgroup>
       <option value="new">+ Plus</option>
   </select>
-  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_subject" style="display: none;">&#xe872;</span>
+  <span class="material-icons edit_icon icon_subject" onclick="open_change_modal('subject')">&#xe254;</span>
+  <span class="material-icons edit_icon icon_subject hidden">&#xe872;</span>
 </div>
 <label for="tag_id"><b>Tag</b></label>
 <div class="edit_select_icon_container">
@@ -155,9 +163,9 @@
     <optgroup id="editmodal_optionGroup2" style="display: none;" label="Tags">
     </optgroup>
     <option value="new">+ Plus</option>
-</select>
-  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe254;</span>
-  <span class="material-icons edit_icon edit_icon_tag" style="display: none;">&#xe872;</span>
+  </select>
+  <span class="material-icons edit_icon icon_tag" onclick="open_change_modal('tag')">&#xe254;</span>
+  <span class="material-icons edit_icon icon_tag hidden">&#xe872;</span>
 </div>
 <label for="date"><b>Date</b></label>
 <input type="date" name="date" id="editmodal_datePicker" required>
@@ -221,6 +229,27 @@
     </form>
   </div>
 
+  <div id="editmodal_change_modal" class="editmodal edit_my_modal hidden" style="display: none;">
+    <span onclick="editmodal_close_a_modal(change_modal, false)" class="edit_my_close" title="my_close Modal">&times;</span>
+    <form class="edit_my_modal-content my_animate" id="editmodal_form">
+      <div class="edit_my_container">
+        <h1></h1>
+        <hr>
+        <label for="content"></label>
+        <input type="text" placeholder="Nom" name="content" id="editmodal_change_name" required>
+        <br>
+        <label for="bgColor"><b>Couleur</b></label>
+        <input type="color" name="bgColor" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="edit_alert-link"></a>
+            </div>
+        <div class="edit_my_clearfix">
+          <button type="button" onclick="editmodal_close_a_modal(change_modal, false)" class="edit_my_cancelbtn">Annuler</button>
+          <button type="submit" class="edit_my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
     {% block script %} {% endblock %}
 <script>
 // change footer date
@@ -237,7 +266,23 @@
      document.getElementById("mySidenav").style.width = "0"
    }
 
-	
+function removeAllEventListeners(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+  return clone;
+}	
+
+function mySidenav_amelioration(){
+  	let amelioration_a = document.getElementById("amelioration_a")
+    let amelioration_div = document.getElementById("amelioration_div")
+    amelioration_div.classList.toggle('hide')
+    amelioration_a.classList.toggle('on')
+  }
+
+function mySidenav_amelioration_send(){
+    alert('Amélioration envoyée !')
+    mySidenav_amelioration()
+}
 
 	
 // Secret Sidenav menu
@@ -291,6 +336,11 @@ function find_date_name(date){
 
 }
 
+function removeAllEventListeners(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+  return clone;
+}
 	
 function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exclude an index
 	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
@@ -349,6 +399,7 @@ function open_confirm_modal(title, message, link, action) {
   confirm_title.innerHTML = title
   confirm_message.innerHTML = message
   confirm_modal.style.display = "block";
+  confirm_form = removeAllEventListeners(confirm_form)
   confirm_form.addEventListener("submit", async function (event) {
     event.preventDefault();
       let response = await fetch(link, {method: 'DELETE'});

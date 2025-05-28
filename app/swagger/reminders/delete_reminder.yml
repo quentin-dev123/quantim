@@ -1,0 +1,28 @@
+Endpoint to delete a reminder
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint to delete a reminder with a specified id (must be logged in)
+parameters:
+  - name: rem_id
+    in: path
+    type: integer
+    required: true
+responses:
+  200:
+    description: A validation message
+    schema:
+      type: string
+      example: Reminder deleted succesfully
+  403:
+    description: The reminder you're trying to delete doesn't belong to you
+    schema:
+      type: string
+      example: Not logged into the account of the reminder
+  404:
+    description: The reminder with the specified id was not found
+    schema:
+      type: string
+      example: Reminder not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

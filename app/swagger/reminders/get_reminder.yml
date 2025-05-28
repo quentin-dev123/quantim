@@ -1,0 +1,49 @@
+Endpoint to read a reminder
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint returning reminder with a specified id (must be logged in)
+parameters:
+  - name: rem_id
+    in: path
+    type: integer
+    required: true
+definitions:
+  Reminder:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 1478
+      user_id: 
+        type: integer
+        example: 3927
+      tag_id: 
+        type: integer
+        example: 8370
+      subject_id: 
+        type: integer
+        example: 9239
+      date: 
+        type: string
+        example: 2026-12-31T00:00:00
+      content: 
+        type: string
+        example: Create an account on quantim.pythonanywhere.com
+responses:
+  200:
+    description: A reminder object
+    schema:
+      $ref: '#/definitions/Reminder'
+  403:
+    description: The reminder with the specified id belongs to someone else
+    schema:
+      type: string
+      example: Not logged into the account of the reminder
+  404:
+    description: The reminder with the specified id was not found
+    schema:
+      type: string
+      example: Reminder not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

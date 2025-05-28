@@ -33,7 +33,7 @@
 	cursor: pointer;
 }
 
-.sidenav a:hover {
+.sidenav a:hover, .sidenav a.on {
   color: #f1f1f1;
 }
 
@@ -44,6 +44,14 @@
 
 .sidenav a.red:hover {
   color: #ff6666;
+}
+
+.sidenav a.green {
+  color: #247b56;
+}
+
+.sidenav a.green:hover {
+  color: #369c74;
 }
 
 .sidenav .closebtn {
@@ -58,3 +66,47 @@
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
+
+
+
+
+  .sidenav .amelioration {
+  	margin: 4px 32px 8px 32px;
+    padding: 0; /* Remove padding */
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .sidenav .amelioration textarea {
+    padding: 5px; /* Remove padding */
+    margin: 0; /* Remove margin padding */
+    box-sizing: border-box;
+    resize: vertical;
+    width: 100%; /* Take full width */
+  }
+  .sidenav .amelioration div {
+    margin: 0; /* Remove margin padding */
+    margin-bottom: 50px;
+  }
+  
+  .sidenav .amelioration button{
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin-bottom: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+    float: left;
+    width: 50%;
+  }
+  
+  .sidenav .amelioration button:hover {
+    opacity:1;
+  }
+  
+  .sidenav .amelioration button[type="button"]{
+    padding: 14px 20px;
+    background-color: #f44336;
+  }

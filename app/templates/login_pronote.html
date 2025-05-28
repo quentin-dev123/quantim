@@ -1,49 +1,51 @@
 {% extends 'form.html' %}
 
-{% set title = "Se connecter à votre compte PRONOTE" %}
+{% set title = "Récuperer vos devoirs de PRONOTE" %}
 {% set next_destination = "/agenda" %} 
-{% set fetch_destination = "/login_pronote" %}
+{% set fetch_destination = "/fetch_from_pronote" %}
+
+{% block style %}
+<style>
+.school_logo {
+    cursor: pointer;
+    border: 2px solid #f1f1f1;
+}
+</style>
+{% endblock %}
 
 {% block form_content %} 
-<label for="username"><b> Entrer votre username PRONOTE </b></label>
-<input type="text" placeholder="Username" name="username" autocomplete="username" required>
+<label for="pronote_url"><b> Entrer le lien que vous utilisez pour accéder à PRONOTE</b></label>
 <br>
-<label for="password"><b> Entrer votre mot de passe </b></label>
-<input type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required>
-<div class="alert alert-danger" id="pronote_psw_alert">
-    <strong>⚠️ CECI EST EXTRÊMEMENT RISQUÉ, VOTRE MOT DE PASSE NE SERA PAS PROTÉGÉ ! ⚠️</strong>
-    <br>
-    <a onclick="toggle_information_visibility()" style="
-    color: #0000EE;
-    text-decoration: underline;
-    cursor: pointer;
-    ">Plus d'infos</a>
-    <p class="hidden">
-        <br>
-        Vos mot de passe ne seront pas encryptés, ni hashés.<br>
-        Ils seront enregistrés directement dans la base de données.<br>
-        Les développeurs du site ont un accès illimité à cette base de données.<br>
-        Il leur suffit d'une seule commande (SQL) : "select pronote_password from users;"<br>
-        En cas de piratage, ces mots de passe seront les premiers à fuiter.<br>
-        Malheureusement, pour des raisons techniques, il est impossible de faire autrement.<br>
-        C'est pourquoi cette méthode est extrêmement peu recommandée.<br>
-        Poursuivez à vos propres risques et en pleine connaissance de ces derniers.
-    </p>
+<div id="pronote_link_div">
+    <div class="tooltip_container" style="display: inline-block">
+        <img id="lfi_logo" class="school_logo" onclick="pronote_link('https://pronote.fis.edu.hk/eleve.html')" src="/static/images/lfi_logo.png">
+        <label class="tooltip">Appuyer seulement si vous êtes un élève au LFI de Hong Kong</label>
+    </div>
+    <input id="pronote_url" type="text" placeholder="Exemple: https://pronote.mon.ecole/eleve.html" name="pronote_url" autocomplete="pronote_url" value="{{url}}" required>
 </div>
+<label for="username"><b> Entrer votre username PRONOTE</b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="pronote_username" value="{{username}}" required>
+<br>
+<label for="password"><b> Entrer votre mot de passe PRONOTE</b></label>
+<input type="password" placeholder="Mot de passe" name="password" autocomplete="pronote_password" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
 {% endblock %}
 {% block script %}
 <script>
-let div = document.getElementById("pronote_psw_alert")
-let a = div.querySelector('a');
-let p = div.querySelector('p');
+const link_div = document.getElementById("pronote_link_div")
+const tooltip_container = link_div.querySelector("div")
+const logo = link_div.querySelector("img")
+const pronote_url = link_div.querySelector("input")
 
-function toggle_information_visibility(){
-    p.classList.toggle("hidden")
-    if (a.innerHTML == "Plus d'infos"){
-        a.innerHTML = "Moins d'infos"
-    } else {
-        a.innerHTML = "Plus d'infos"
-    }
+let logo_height = pronote_url.offsetHeight + 'px';
+logo.style.height = logo_height;
+logo.style.width = logo_height;
+tooltip_container.style.width = logo_height;
+pronote_url.style.width = pronote_url.offsetWidth - pronote_url.offsetHeight - 5 + 'px';
+
+function pronote_link(url){
+    pronote_url.value = url
 }
+
+
 </script>
 {% endblock %}

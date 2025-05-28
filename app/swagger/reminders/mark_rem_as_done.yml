@@ -1,0 +1,38 @@
+Endpoint to mark as done a reminder
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint to mark as done a reminder with a specified id (must be logged in)
+parameters:
+  - name: rem_id
+    in: path
+    type: integer
+    required: true
+  - name: status
+    in: path
+    type: string
+    enum: ['True', 'False']
+    required: true
+responses:
+  200:
+    description: A validation message
+    schema:
+      type: string
+      example: Reminder marked as done
+  400:
+    description: The status argument is invalid
+    schema:
+      type: string
+      example: Invalid argument status. Must be included in ['True', 'False']
+  403:
+    description: The reminder you're trying to access doesn't belong to you
+    schema:
+      type: string
+      example: Not logged into the account of the reminder
+  404:
+    description: The reminder with the specified id was not found
+    schema:
+      type: string
+      example: Reminder not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

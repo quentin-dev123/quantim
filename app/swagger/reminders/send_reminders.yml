@@ -1,0 +1,31 @@
+Endpoint to send reminders to everyone
+---
+tags:
+  - Reminder CRUD operations
+description: This will send an email to every account with reminders due for tomorrow. Needs a personal authentification token (admin).
+parameters:
+  - name: pat
+    in: query
+    schema:
+      type: string
+      example: IUb12bw*!wwbbw1oP@M(Gh3n9uBVSwvs
+    required: true
+    description: A authentification token to verify you're an admin
+responses:
+  200:
+    description: Sent an email to everyone, returns validation message with number of emails sent.
+    schema:
+      type: string
+      example: Sucesfully sent 8,224,699,439 email(s)!
+  401:
+    description: You didn't provide any argument (no pat)
+    schema:
+      type: string
+      example: Invalid args to request, no PAT
+  403:
+    description: The PAT you provided is incorrect
+    schema:
+      type: string
+      example: Invalid PAT (Personnal Authorisation Token)
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

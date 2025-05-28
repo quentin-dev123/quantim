@@ -1,7 +1,7 @@
 #------------------------------------------------------
 # Define all entry points (Web pages & API endpoints)
 #------------------------------------------------------
-import os, pronotepy, random, click
+import os, pronotepy, random, click, requests
 import datetime as d
 from flask import jsonify, json, abort, request, render_template, redirect, current_app, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -14,6 +14,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import func
 from uuid import uuid4
+from flasgger import swag_from
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token
 
@@ -22,9 +23,9 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 """
 To-do list :
-    - Send emails when reminders are due soon
-    - Finish swagger
+    - Finish swagger and externalize all doc in /swagger
     - Make tag and subject editable
+    - Test possibility to send comments (for support or feedback)
 """
 
 #------------------------------------------------------
@@ -57,31 +58,24 @@ def test(file):
 
 #------------------------------------------------------
 # API ~~ CRUD functions
-
+@app.route("/api/reminder/<int:rem_id>")
+@login_required
+@swag_from('swagger/reminders/get_reminder.yml')
+def get_reminder(rem_id): # Read one
+    reminders = Reminder.query.get(rem_id)
+    if reminders is not None:
+        if reminders.user_id == current_user.id:
+            return jsonify(reminders.to_json()), 200
+        else:
+            return "Not logged into the account of the reminder", 403
+    else:
+        return "Reminder not found", 404
+    
 @app.route("/api/reminder/recover_pronote")
 @login_required
+@swag_from('swagger/reminders/recover_homeworks.yml')
 def recover_homeworks(): # Recover all PRONOTE
-    """Endpoint to recover PRONOTE homeworks
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint recovering all deleted PRONOTE homeworks linked to your account (must be logged in and have a linked PRONOTE account)
-    responses:
-      200:
-        description: A list of all thee recovered reminders sorted chronologically by date property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      401:
-        description: You are unauthenticated (you haven't linked your account to a PRONOTE account)
-        schema:
-          type: string
-          example: No PRONOTE account linked to your account
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
-    if current_user.pronote_username is not None:
+    if current_user.pronote_tag_id is not None:
         homeworks = Pronote_homework.query.filter_by(hidden=True, user_id=current_user.id)
         reminders = []
         for homework in homeworks:
@@ -89,6 +83,7 @@ def recover_homeworks(): # Recover all PRONOTE
             reminder = Reminder(
                 content=homework.content, 
                 date=homework.date,
+                done=False,
                 user=current_user,
                 user_id=current_user.id,
                 tag_id=current_user.pronote_tag_id,
@@ -103,216 +98,21 @@ def recover_homeworks(): # Recover all PRONOTE
             reminders.append(reminder)
         sorted_rems = sorted(reminders, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
-    return "No PRONOTE account linked to your account", 401
-
-@app.route("/api/reminder/<int:rem_id>")
-@login_required
-def get_reminder(rem_id): # Read one
-    """Endpoint to read a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-    definitions:
-      Reminder:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1478
-          user_id: 
-            type: integer
-            example: 3927
-          tag_id: 
-            type: integer
-            example: 8370
-          subject_id: 
-            type: integer
-            example: 9239
-          date: 
-            type: string
-            example: 2026-12-31T00:00:00
-          content: 
-            type: string
-            example: Create an account on quantim.pythonanywhere.com
-    responses:
-      200:
-        description: A reminder object
-        schema:
-          $ref: '#/definitions/Reminder'
-      403:
-        description: The reminder with the specified id belongs to someone else
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
-    reminders = Reminder.query.get(rem_id)
-    if reminders is not None:
-        if reminders.user_id == current_user.id:
-            return jsonify(reminders.to_json()), 200
-        else:
-            return "Not logged into the account of the reminder", 403
-    else:
-        return "Reminder not found", 404
+    return "No PRONOTE homeworks ever fetched from your account", 401
     
 @app.route("/api/reminder")
 @login_required
+@swag_from('swagger/reminders/get_reminders.yml')
 def get_reminders(): # Read all
-    """Endpoint to read reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders linked to your account (must be logged in)
-    responses:
-      200:
-        description: A list of all reminders sorted chronologically by date property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
-    if current_user.pronote_username is not None:
-        client = pronotepy.Client(
-            'https://pronote.fis.edu.hk/eleve.html',
-            username=current_user.pronote_username,
-            password=current_user.pronote_password,
-        )
-        homeworks = client.homework(date_from=d.date.today())
-        for homework in homeworks:
-            my_homework = Pronote_homework.query.filter_by(
-                content=homework.description, 
-                user_id=current_user.id,
-            ).first()
-            if my_homework is None:
-                subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                if subject is None:
-                    bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                    subject = Subject(
-                        content=homework.subject.name, 
-                        bg_color=bgColor,
-                        user=current_user,
-                        user_id=current_user.id
-                    )
-                    db.session.add(subject)
-                    db.session.commit()
-                reminder = Reminder(
-                    content=homework.description, 
-                    date=homework.date,
-                    done = False,
-                    user=current_user,
-                    user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(reminder)
-                db.session.commit()
-                my_homework = Pronote_homework(
-                    content=homework.description, 
-                    date=homework.date,
-                    hidden=False,
-                    reminder=reminder,
-                    user_id=current_user.id,
-                    tag_id=current_user.pronote_tag_id,
-                    subject_id=subject.id
-                )
-                db.session.add(my_homework)
-                reminder.pronote = my_homework
-                db.session.commit()
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
 @app.route("/api/reminder/sort/<property>")
 @login_required
+@swag_from('swagger/reminders/get_sorted_reminders.yml')
 def get_sorted_reminders(property): # Read all (sorted)
-    """Endpoint to read reminders sorted with a certain property
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders linked to your account with a certain property (by default is sorted by date) (must be logged in)
-    parameters:
-      - name: property
-        in: path
-        type: string
-        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
-        required: true
-    responses:
-      200:
-        description: A list of all reminders sorted by a property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      404:
-        description: The specified property was not found
-        schema:
-          type: string
-          example: Property not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        if current_user.pronote_username is not None:
-            client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=current_user.pronote_username,
-                password=current_user.pronote_password,
-            )
-            homeworks = client.homework(date_from=d.date.today())
-            for homework in homeworks:
-                my_homework = Pronote_homework.query.filter_by(
-                    content=homework.description, 
-                    user_id=current_user.id,
-                ).first()
-                if my_homework is None:
-                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                    if subject is None:
-                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                        subject = Subject(
-                            content=homework.subject.name, 
-                            bg_color=bgColor,
-                            user=current_user,
-                            user_id=current_user.id
-                        )
-                        db.session.add(subject)
-                        db.session.commit()
-                    reminder = Reminder(
-                        content=homework.description, 
-                        date=homework.date,
-                        done = False,
-                        user=current_user,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(reminder)
-                    db.session.commit()
-                    my_homework = Pronote_homework(
-                        content=homework.description, 
-                        date=homework.date,
-                        hidden=False,
-                        reminder=reminder,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(my_homework)
-                    reminder.pronote = my_homework
-                    db.session.commit()
         reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         sorted_rems = sorted(reminders, key=attrgetter(property))
         return jsonify([r.to_json() for r in sorted_rems]), 200
@@ -320,37 +120,8 @@ def get_sorted_reminders(property): # Read all (sorted)
 
 @app.route("/api/reminder/filter/<property>/<property_value>")
 @login_required
+@swag_from('swagger/reminders/get_filtered_reminders.yml')
 def get_filtered_reminders(property, property_value): # Read all (filtered)
-    """Endpoint to read reminders filtered 
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint returning all reminders  linked to your account filtered with a certain property (must be logged in)
-    parameters:
-      - name: property
-        in: path
-        type: string
-        enum: ['tag_id', 'subject_id', 'date', 'content', 'id']
-        required: true
-      - name: property_value
-        in: path
-        type: string
-        required: true
-    responses:
-      200:
-        description: A list of all reminders filtered by a property
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Reminder'
-      404:
-        description: The specified property/property_id was not found
-        schema:
-          type: string
-          example: Property not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
         reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
         filtered_rems = filter(lambda rem: getattr(rem, property) == type(getattr(rem, property))(property_value), reminders)
@@ -360,64 +131,8 @@ def get_filtered_reminders(property, property_value): # Read all (filtered)
     
 @app.route("/api/reminder", methods=["POST"])
 @login_required
+@swag_from('swagger/reminders/create_reminders.yml')
 def create_reminders(): # Create
-    """Endpoint to create reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to create new reminders linked to your account (must be logged in)
-    parameters:
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Have a good day :)
-            date:
-              type: string
-              example: 2027-01-01T00:00:00
-            subject_id:
-              type: integer
-              example: 8888
-            tag_id:
-              type: integer
-              example: 1234
-    responses:
-      200:
-        description: Returns the newly created reminder
-        schema:
-          $ref: '#/definitions/Reminder'
-        examples:
-          application/json: {
-            "content": "Don't forget to smile :)",
-            "date": "2025-05-25T00:00:00",
-            "id": 1234,
-            "subject_id": 5678,
-            "tag_id": 8765,
-            "user_id": 4321
-          }
-      404:
-        description: Meaning one of the params of the request was not found in the database 
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Tag requested not found
-      403:
-        description: Meaning one of the params of the request was found but doesnt belong to your account
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Tag requested not linked to your account
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
-    """
     data = json.loads(request.data)
     tag_id=data.get("tag_id")
     subject_id=data.get("subject_id")
@@ -447,36 +162,8 @@ def create_reminders(): # Create
 
 @app.route("/api/reminder/<int:rem_id>", methods=["DELETE"])
 @login_required
+@swag_from('swagger/reminders/delete_reminder.yml')
 def delete_reminder(rem_id): # Delete one
-    """Endpoint to delete a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to delete a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder deleted succesfully
-      403:
-        description: The reminder you're trying to delete doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminder = Reminder.query.get(rem_id)
     if reminder:
         if reminder.user_id == current_user.id: # Layer of security
@@ -494,21 +181,8 @@ def delete_reminder(rem_id): # Delete one
     
 @app.route("/api/reminder", methods=["DELETE"])
 @login_required
+@swag_from('swagger/reminders/delete_reminders.yml')
 def delete_reminders(): # Delete all
-    """Endpoint to delete reminders
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint deleting all reminders linked to your account (must be logged in)
-    responses:
-      200:
-        description: A confirmation message
-        schema:
-          type: string
-          example: Reminders deleted succesfully
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     for reminder in reminders:
         if reminder.pronote_id is not None:
@@ -521,54 +195,8 @@ def delete_reminders(): # Delete all
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
+@swag_from('swagger/reminders/update_reminders.yml')
 def update_reminders(rem_id): # Update
-    """Endpoint to update a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to update a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: Don't worry, be happy
-            date:
-              type: string
-              example: 2027-01-01
-            subject_id:
-              type: integer
-              example: 4321
-            tag_id:
-              type: integer
-              example: 1234
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder updated succesfully
-      403:
-        description: The reminder you're trying to update doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes. Most of the _*time*_ related to format of the date property of the body parameter. Should be YYYY-MM-DD.
-    """
     data = json.loads(request.data)
     db_reminder = Reminder.query.get(rem_id)
     if db_reminder:
@@ -584,60 +212,12 @@ def update_reminders(rem_id): # Update
 
 @app.route("/api/reminder/done/<int:rem_id>/<status>")
 @login_required
+@swag_from('swagger/reminders/mark_rem_as_done.yml')
 def mark_rem_as_done(rem_id, status): # Mark one as done
-    """Endpoint to mark as done a reminder
-    ---
-    tags:
-      - Reminder CRUD operations
-    description: Endpoint to mark as done a reminder with a specified id (must be logged in)
-    parameters:
-      - name: rem_id
-        in: path
-        type: integer
-        required: true
-      - name: status
-        in: path
-        type: string
-        enum: ['True', 'False']
-        required: true
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Reminder marked as done
-      400:
-        description: The status argument is invalid
-        schema:
-          type: string
-          example: Invalid argument status. Must be included in ['True', 'False']
-      403:
-        description: The reminder you're trying to access doesn't belong to you
-        schema:
-          type: string
-          example: Not logged into the account of the reminder
-      404:
-        description: The reminder with the specified id was not found
-        schema:
-          type: string
-          example: Reminder not found
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes
-    """
     reminder = Reminder.query.get(rem_id)
     if reminder is not None:
         if reminder.user_id == current_user.id: # Layer of security
             if status in ["True", "False"]:
-                if reminder.pronote_id is not None:
-                    client = pronotepy.Client(
-                        'https://pronote.fis.edu.hk/eleve.html',
-                        username=current_user.pronote_username,
-                        password=current_user.pronote_password,
-                    )
-                    homeworks = client.homework(date_from=reminder.date.date())
-                    homeworks = list(filter(lambda hw: hw.description == reminder.content and hw.date == reminder.date.date(), homeworks))
-                    homework = homeworks[0]
-                    homework.set_done(status == "True")
                 reminder.done = (status == "True")
                 db.session.commit()
                 return "Reminder marked as done succesfully", 200
@@ -646,6 +226,7 @@ def mark_rem_as_done(rem_id, status): # Mark one as done
     return "Reminder not found", 404
 
 @app.route("/send_reminders")
+@swag_from('swagger/reminders/send_reminders.yml')
 def send_reminders(): # Send email when due soon
     args = request.args
     if args and args.get("pat"):
@@ -674,7 +255,8 @@ def send_reminders(): # Send email when due soon
                             subjects=subjects, 
                             reminders=reminders, 
                             tags=tags,
-                            user=user
+                            user=user,
+                            base_url=current_app.config["BASE_URL"]
                         )
                     )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
@@ -683,6 +265,14 @@ def send_reminders(): # Send email when due soon
             return f"Sucesfully sent {emails_sent} email(s)!", 200
         return "Invalid PAT (Personnal Authorisation Token)", 403
     return "Invalid args to request, no PAT", 401
+
+@app.route("/fetch_from_pronote")
+@login_required
+def fetch_pronote_page():
+    if None not in [current_user.pronote_url, current_user.pronote_username]:
+        return render_template("login_pronote.html", url=current_user.pronote_url, username=current_user.pronote_username)
+    return render_template("login_pronote.html", url="", username="")
+
 
 @app.route("/api/subject/<int:subject_id>")
 @login_required
@@ -800,7 +390,7 @@ def update_subjects(sub_id): # Update
               example: Coding
             bgColor:
               type: string
-              example: #ff0000
+              example: red
     responses:
       200:
         description: A validation message
@@ -851,7 +441,7 @@ def tags():
     else:
         return jsonify({"message": "Un tag avec le même nom existe déjà"}), 400
 
-@app.route("/api/tag/<int:sub_id>", methods=["PUT"])
+@app.route("/api/tag/<int:tag_id>", methods=["PUT"])
 @login_required
 def update_tags(tag_id): # Update
     """Endpoint to update a tag
@@ -875,7 +465,7 @@ def update_tags(tag_id): # Update
               example: Coding
             bgColor:
               type: string
-              example: #ff0000
+              example: red
     responses:
       200:
         description: A validation message
@@ -916,6 +506,116 @@ def git_webhook():
     origin = repo.remotes.origin
     origin.pull(current_app.config['GIT_REPO_BRANCH'])
     return 'Updated PythonAnywhere successfully', 200
+
+#------------------------------------------------------
+# Miscellaneous
+@app.route("/fetch_from_pronote", methods=["POST"])
+@login_required
+@swag_from('swagger/reminders/fetch_pronote.yml')
+def fetch_pronote():
+    if request.data:
+        data = json.loads(request.data)
+        url = data.get('pronote_url')
+        username = data.get('username')
+        password = data.get('password')
+        if None not in [username, password, url]:
+            try:
+                client = pronotepy.Client(
+                    pronote_url=url,
+                    username=username,
+                    password=password,
+                )
+                if current_user.pronote_tag_id is None:
+                    tag = Tag(
+                        content="de PRONOTE", 
+                        bg_color="#009853",
+                        user=current_user,
+                        user_id=current_user.id
+                    )
+                    db.session.add(tag)
+                    db.session.commit()
+                    current_user.pronote_tag_id = tag.id
+                current_user.pronote_url = url
+                current_user.pronote_username = username
+                db.session.commit()
+            except pronotepy.CryptoError:
+                return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 403  # the client has failed to log in
+            except (requests.exceptions.SSLError, pronotepy.exceptions.PronoteAPIError):
+                return jsonify({"message": "La page PRONOTE n'a pas été trouvé (lien invalide)"}), 404
+            homeworks = client.homework(date_from=d.date.today())
+            for homework in homeworks:
+                my_homework = Pronote_homework.query.filter_by(
+                    content=homework.description, 
+                    user_id=current_user.id,
+                ).first()
+                if my_homework is None:
+                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+                    if subject is None:
+                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
+                        subject = Subject(
+                            content=homework.subject.name, 
+                            bg_color=bgColor,
+                            user=current_user,
+                            user_id=current_user.id
+                        )
+                        db.session.add(subject)
+                        db.session.commit()
+                    reminder = Reminder(
+                        content=homework.description, 
+                        date=homework.date,
+                        done = False,
+                        user=current_user,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(reminder)
+                    db.session.commit()
+                    print("One reminder added succesfully")
+                    my_homework = Pronote_homework(
+                        content=homework.description, 
+                        date=homework.date,
+                        hidden=False,
+                        reminder=reminder,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(my_homework)
+                    reminder.pronote = my_homework
+                    db.session.commit()
+            return "Homeworks fetched succesfully", 200
+        return "Invalid request (one or more arguments in body are missing or invalid)", 400
+    return "Missing body argument - No data sent", 401
+
+@app.route("/send_feedback", methods=["POST"])
+@login_required
+@swag_from('swagger/reminders/send_feedback.yml')
+def send_feedback():
+    if request.data:
+        try: 
+            data = json.loads(request.data)
+            content = str(data.get("content"))
+            anonymous = data.get("anonymous") == "True"
+        except:
+            return "Invalid arguments to request (invalid type)", 400
+        if not (None in [content, anonymous]):
+            if not anonymous:
+                mail = f"Retour de l'utilisateur : {current_user.username}"
+            else: 
+                mail = "Retour d'un utilisateur anonyme"
+            mail += content
+            message = Mail(
+                from_email='quantim.hk@gmail.com',
+                to_emails='quantim.hk@gmail.com',
+                subject="Retour d'utilisateur",
+                plain_text_content=content
+            )
+            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+            response = sg.send(message)
+            return "Succesfully sent feedback", 200
+        return "Missing arguments in body", 400
+    return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
 # User Verification
@@ -981,7 +681,12 @@ def create_otp():
                 from_email='quantim.hk@gmail.com',
                 to_emails=user.email,
                 subject="Requête d'inscription sur Quantim",
-                html_content=render_template("verify_email.html", username=user.username, email=user.email, otp=otp.value)
+                html_content=render_template(
+                    "verify_email.html", 
+                    username=user.username, 
+                    email=user.email, 
+                    otp=otp.value, 
+                    base_url=current_app.config["BASE_URL"])
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
             response = sg.send(message)
@@ -1084,7 +789,12 @@ def forgot_pw_mail():
                 from_email='quantim.hk@gmail.com',
                 to_emails=email,
                 subject="Mot de passe oublié",
-                html_content=render_template("forgot_pw_mail.html", user=user, token=token.val)
+                html_content=render_template(
+                    "forgot_pw_mail.html", 
+                    user=user, 
+                    token=token.val, 
+                    base_url=current_app.config["BASE_URL"]
+                )
             )
         sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
         sg.send(message)
@@ -1129,76 +839,9 @@ def reset_pw():
 def unauthorized(): 
     return redirect(url_for('login'))
 
-@app.route("/login_pronote")
-@login_required
-def get_login_pronote():
-    return render_template("login_pronote.html")
-
-@app.route("/login_pronote", methods=["POST"])
-@login_required
-def login_pronote():
-    """Endpoint to add your PRONOTE credentials
-    ---
-    tags:
-      - User Verification
-    description: Endpoint to link your PRONOTE account to get reminders from PRONOTE homeworks. This can also be used to update your credentials. (This function is currently only available for students of FIS Hong Kong). It's also VERY dangerous since passwords won't be hashed.
-    parameters:
-      - name: body
-        in: body
-        required: True
-        schema:
-          type: object
-          properties:
-            username:
-              type: string
-              example: AmbitiousDevelopper5498
-            password:
-              type: string
-              example: MySecretPassword
-    responses:
-      200:
-        description: A validation message
-        schema:
-          type: string
-          example: Succesfully logged into PRONOTE
-      400:
-        description: The credentials you provided are incorrect. Throws an error message (in french)
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Le mot de passe ou l'identifiant est incorrect
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
-    if request.data:
-        data = json.loads(request.data)
-        try:
-            client = pronotepy.Client(
-                'https://pronote.fis.edu.hk/eleve.html',
-                username=data.get('username'),
-                password=data.get('password'),
-            )
-            tag = Tag(
-                content="de PRONOTE", 
-                bg_color="#009853",
-                user=current_user,
-                user_id=current_user.id
-            )
-            db.session.add(tag)
-            db.session.commit()
-            current_user.pronote_username = client.username
-            current_user.pronote_password = client.password
-            current_user.pronote_tag_id = tag.id
-            db.session.commit()
-            return "Succesfully logged into PRONOTE", 200
-        except pronotepy.CryptoError:
-            return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 400  # the client has failed to log in
-
 
 #------------------------------------------------------
-# Other
+# Commands
 @app.cli.command('clear')
 def drop_tables():
     tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token]

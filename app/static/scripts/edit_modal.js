@@ -2,6 +2,10 @@
 var modal = document.getElementById('editmodal');
 var reminder_id = undefined
 
+var global_subject_id = 0
+var global_tag_id = 0
+
+
 function editmodal_close_modal() {
     modal.classList.add("hidden");
 }
@@ -28,11 +32,13 @@ async function fetchReminder (id) {
 
     let subject = global_subjectArr.find(mySubject => mySubject.id === reminder.subject_id);
     subject_select.value = subject.id
+    global_subject_id = subject.id
     subject_select.style.backgroundColor = subject.bg_color
     subject_select.style.color = "white";
 
     let tag = global_tagArr.find(myTag => myTag.id === reminder.tag_id);
     tag_select.value = tag.id
+    global_tag_id = tag.id
     tag_select.style.backgroundColor = tag.bg_color
     tag_select.style.color = "white";
 
@@ -109,16 +115,97 @@ function show_icons_tag(){
 }
 
 
+
+
+
+
+
+
+
+
 function findIndexfromOptionName( select, optionName ) {
     let options = Array.from( select.options );
     return options.findIndex( (opt) => opt.value == optionName );
 }
 
-function close_a_modal (the_modal, selectId) {
+const tag_modal = document.getElementById("editmodal_tag_modal")
+const subject_modal = document.getElementById("editmodal_subject_modal")
+
+const change_modal = document.getElementById("editmodal_change_modal")
+
+function editmodal_close_a_modal (the_modal, selectId) {
     the_modal.style.display = "none";
-    const select = document.getElementById(selectId)
-    select.selectedIndex = "0";
+    if (selectId){
+        const select = document.getElementById(selectId)
+        select.selectedIndex = "0";
+      }
 }
+
+function removeAllEventListeners(element) {
+    const clone = element.cloneNode(true);
+    element.parentNode.replaceChild(clone, element);
+    return clone;
+  }
+  
+  function rgbToHex(rgb) {
+    const rgbValues = rgb.substring(4, rgb.length - 1).split(',');
+    return "#" + rgbValues.map(val => {
+      const hex = parseInt(val).toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    }).join('');
+  }
+
+  function hexToRgb(hex) {
+    // Remove the '#' character if it exists
+    hex = hex.replace("#", "");
+  
+    // Handle shorthand hex color codes (e.g., #abc)
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+  
+    // Parse the hex values for red, green, and blue
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+  
+    // Return the RGB color string
+    return "rgb(" + r + ", " + g + ", " + b + ")";
+  }
+
+
+function open_change_modal(type){ // type = "subject" OR type = "tag"
+    let h1 = change_modal.querySelector("label")
+    let label = change_modal.querySelector("h1")
+  
+    let change_modal_name = change_modal.querySelector('input[type="text"]')
+    let change_modal_bg_color = change_modal.querySelector('input[type="color"]')
+  
+    let option
+    let id
+    if (type == "subject"){
+        h1.innerHTML = "<b>Matière</b>"
+        label.innerHTML = "Changer une matière"
+        option = subject_select.options[subject_select.selectedIndex];
+        id = global_subject_id
+    } else if (type == "tag") {
+        h1.innerHTML = "<b>Tag</b>"
+        label.innerHTML = "Changer un tag"
+        option = tag_select.options[tag_select.selectedIndex];
+        id = global_tag_id
+    }
+    change_modal.style.display = "block";
+      
+    change_modal_name.value = option.innerHTML;
+    change_modal_bg_color.value = rgbToHex(option.style.backgroundColor);
+  
+    let change_modal_form = change_modal.querySelector("form")
+    change_modal_form = removeAllEventListeners(change_modal_form);
+    change_modal_form.addEventListener("submit", function(event){
+      func_change_modal(type, id)
+    });
+}
+
 
 async function dynamic_options(fetch_route, optgroup_id){
     let optionGroup = document.getElementById(optgroup_id);
@@ -140,24 +227,88 @@ async function dynamic_options(fetch_route, optgroup_id){
 dynamic_options("/api/tag", "editmodal_optionGroup2");
 dynamic_options("/api/subject", "editmodal_optionGroup");
 
-const tag_modal = document.getElementById("editmodal_tag_modal")
-const subject_modal = document.getElementById("editmodal_subject_modal")
-
 function editmodal_changeSelect(elem, elemId) {
-    if (document.getElementById(elemId).value ===  "new") {
-        switch (elem) {
+  switch (elem) {
             case "tag" :
-                tag_modal.style.display = "block";
+                if (document.getElementById(elemId).value ===  "new") {
+                  tag_modal.style.display = "block";
+                }
+                global_tag_id = document.getElementById(elemId).value;
                 break;
             case "subject" :
-                subject_modal.style.display = "block";
+                if (document.getElementById(elemId).value ===  "new") {
+                  subject_modal.style.display = "block";
+                }
+                global_subject_id = document.getElementById(elemId).value;
                 break;
         }
-    }
     const selectElement = document.getElementById(elemId)
     const selectedOption = selectElement.options[selectElement.selectedIndex]
     selectElement.style.backgroundColor = selectedOption.style.backgroundColor;
     selectElement.style.color = "white";
+}
+
+async function func_change_modal(type, id){ // type = "subject" OR type = "tag"
+    event.preventDefault();  // Prevent the default form submission
+  
+  let subject_select = document.getElementById('editmodal_subject_select')
+  let tag_select = document.getElementById('editmodal_tag_select')
+  let select
+  let post_link
+  if (type == "subject"){
+    select = subject_select
+    post_link = `/api/subject/${id}`
+  } else {
+    select = tag_select
+    post_link = `/api/tag/${id}`
+  }
+
+  option = select.options[select.selectedIndex];
+
+  // Get elements
+    const formElem = change_modal.querySelector("form")
+    const formChildren = formElem.elements;
+    const alertDiv = formElem.querySelector(".alert.alert-danger");
+    const alertText = alertDiv.querySelector("span")
+    const alertLink = alertDiv.querySelector("a");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    for (let i = 0; i < formChildren.length; i++) {
+        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+            	userAnswers[formChildren[i].name] = formChildren[i].value;
+        }
+    }
+    
+    // Make a PUT request to the server
+    let result = await fetch(post_link, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    if (result.ok) {
+      
+      let change_modal_name = change_modal.querySelector('input[type="text"]')
+      let change_modal_bg_color = change_modal.querySelector('input[type="color"]')
+
+      option.value = id;
+      option.innerHTML = change_modal_name.value;
+
+      const color = hexToRgb(change_modal_bg_color.value);
+      option.style.backgroundColor = color;
+      select.style.backgroundColor = color;
+      document.getElementById("editmodal_change_name").innerHTML = "";
+
+      editmodal_close_a_modal(change_modal, false)
+
+    } else if (result.status === 400) {
+        alertText.innerHTML = await result.text();
+        alertDiv.style.display = "block";
+    }
+
 }
 
 async function secondary_modal(event, post_link, modalElem, select_id) {
@@ -199,7 +350,7 @@ async function secondary_modal(event, post_link, modalElem, select_id) {
         selectElem.style.backgroundColor = response.bg_color;
         selectElem.style.color = 'white';
         optionGroup.appendChild(option);
-        close_a_modal(modalElem, select_id)
+        editmodal_close_a_modal(modalElem, select_id)
         let created_index = findIndexfromOptionName(selectElem, option.value)
         selectElem.selectedIndex = created_index;
     } else if (result.status === 400) {
