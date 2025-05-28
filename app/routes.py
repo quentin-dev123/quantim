@@ -375,7 +375,7 @@ def git_webhook():
 # Miscellaneous
 @app.route("/fetch_from_pronote", methods=["POST"])
 @login_required
-@swag_from('swagger/reminders/fetch_pronote.yml')
+@swag_from('swagger/miscellaneous/fetch_pronote.yml')
 def fetch_pronote():
     if request.data:
         data = json.loads(request.data)
@@ -454,7 +454,7 @@ def fetch_pronote():
 
 @app.route("/send_feedback", methods=["POST"])
 @login_required
-@swag_from('swagger/reminders/send_feedback.yml')
+@swag_from('swagger/miscellaneous/send_feedback.yml')
 def send_feedback():
     if request.data:
         try: 
@@ -610,20 +610,6 @@ def logout():
 @login_required
 @swag_from('swagger/user/delete_account.yml')
 def delete_account():
-    """Delete your account (must be logged in)
-    ---
-    tags:
-      - User Verification
-    description: Endpoint to delete your account (must be logged in). Beware, this is irreversible and will erase ALL data linked to your account.
-    responses:
-      200:
-        description: Account deleted succesfully, you are now logged out, this will return a validation message.
-        schema:
-          type: string
-          example: Account deleted succesfully 
-      500:
-        description: An error ocurred internally. This isn't planned and can have many causes.
-    """
     tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
     for table in tables:
         table.query.filter_by(user_id=current_user.id).delete()
