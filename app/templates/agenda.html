@@ -179,10 +179,10 @@ function remove_reminders(){
 var global_tagArr = undefined
 var global_subjectArr = undefined
 
-function createElem(object, index){
+function createElem(object, index, subject){
 	let elem = document.createElement(object.htmlType);
 	if (typeof elem.innerHTML === 'object'){
-	   elem.innerHTML = createElem(elem.innerHTML, index)
+	   elem.innerHTML = createElem(elem.innerHTML, index, subject)
 	} else {
 	   elem.innerHTML = object.elemContent;
 	}
@@ -364,7 +364,7 @@ async function fetchData (fetchlink) {
 		},*/
             };
             Object.keys(elem_attributes).forEach(function(attr){
-                reminder.appendChild(createElem(elem_attributes[attr], index));
+                reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
         });
 	    
