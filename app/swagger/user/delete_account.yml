@@ -1,0 +1,13 @@
+Delete your account (must be logged in)
+---
+tags:
+  - User Verification
+description: Endpoint to delete your account (must be logged in). Beware, this is irreversible and will erase ALL data linked to your account.
+responses:
+  200:
+    description: Account deleted succesfully, you are now logged out, this will return a validation message.
+    schema:
+      type: string
+      example: Account deleted succesfully 
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.

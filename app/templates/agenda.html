@@ -179,6 +179,49 @@ function remove_reminders(){
 var global_tagArr = undefined
 var global_subjectArr = undefined
 
+function createElem(object, index, subject){
+	let elem = document.createElement(object.htmlType);
+	if (typeof elem.innerHTML === 'object'){
+	   elem.innerHTML = createElem(elem.innerHTML, index, subject)
+	} else {
+	   elem.innerHTML = object.elemContent;
+	}
+	
+	if (object.class) {
+	   elem.className = object.class
+	} else {
+	   elem.className = `reminder${object.htmlType}`;
+	}
+	if (object.id) {
+	   elem.id = object.id + index;
+	} else {
+	   elem.id = `rem${object.htmlType}${index}`;	
+	}
+	
+	if (object.htmlType === "h2") {
+	    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+	}
+	
+	if (object.elemBgColor) {
+	    elem.style.backgroundColor = object.elemBgColor;
+	}
+	if (object.type) {
+	    elem.type = object.type;
+	}
+	if (object.onclick) {
+	    elem.onclick = object.onclick;
+	}
+	if (object.checked) {
+	    elem.checked = object.checked;
+	}
+	if (object.style) {
+	    elem.style = object.style;
+	}
+	return elem
+}
+
+
+	
 async function fetchData (fetchlink) {
     remove_reminders()
     loading.classList.remove('hide');
@@ -292,29 +335,44 @@ async function fetchData (fetchlink) {
                     onclick: function() {reminder_mark_as_done(element.id, index)},
                     checked: element.done,
                 },
+		/*top_bar_icons_div1: {
+		    htmlType: "div",
+		    elemContent: {
+		    top_bar_icons_div2: {
+			htmlType: "div",
+   			style: "margin-top: 5px; margin-bottom: 5px"
+			elemContent: {
+				expand_hidden: {
+					htmlType: "span",
+					elemContent: "expand_less",
+					style: "visibility: hidden",
+					onclick: "close_top_bar_icons()",
+					class: "material-icons icon",
+				},
+				pin: {
+					htmlType: "span",
+					elemContent: "push_pin",
+					class: "material-icons icon",
+				},
+				link: {
+					htmlType: "span",
+					class: "fa-solid fa-link icon link",
+				}
+			}
+		    }
+		    },
+		},
+		expand {
+		   htmlType: "span",
+		   elemContent: "expand_more",
+		   class: "material-icons icon expand",
+		   onclick: "open_top_bar_icons()",
+		   id: "expand",
+		},
+  		*/
             };
             Object.keys(elem_attributes).forEach(function(attr){
-                let elem = document.createElement(elem_attributes[attr].htmlType);
-                elem.innerHTML = elem_attributes[attr].elemContent;
-                elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
-                elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
-                if (elem_attributes[attr].htmlType === "a") {
-                    elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
-                } else if (elem_attributes[attr].htmlType === "h2") {
-                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                } else if (elem_attributes[attr].htmlType === "p" && elem_attributes["checkbox"].checked) {
-                    elem.classList.toggle('hidden')
-                }
-                if (elem_attributes[attr].type){
-                    elem.type = elem_attributes[attr].type;
-                }
-                if (elem_attributes[attr].onclick) {
-                    elem.onclick = elem_attributes[attr].onclick;
-                }
-                if (elem_attributes[attr].checked) {
-                    elem.checked = elem_attributes[attr].checked;
-                }
-                reminder.appendChild(elem);
+                reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
         });
 	    

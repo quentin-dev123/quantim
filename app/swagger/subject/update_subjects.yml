@@ -1,0 +1,40 @@
+Endpoint to update a subject
+---
+tags:
+  - Subject CRUD operations
+description: Endpoint to update a subject with a specified id (must be logged in)
+parameters:
+  - name: sub_id
+    in: path
+    type: integer
+    required: true
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Coding
+        bgColor:
+          type: string
+          example: red
+responses:
+  200:
+    description: A validation message
+    schema:
+      type: string
+      example: Subject updated succesfully
+  403:
+    description: The subject you're trying to update doesn't belong to you
+    schema:
+      type: string
+      example: Not logged into the account of the subject
+  404:
+    description: The subject with the specified id was not found
+    schema:
+      type: string
+      example: Subject not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.

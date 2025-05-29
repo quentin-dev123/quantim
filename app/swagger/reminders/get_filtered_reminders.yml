@@ -4,6 +4,12 @@ tags:
   - Reminder CRUD operations
 description: Endpoint returning all reminders  linked to your account filtered with a certain property (must be logged in)
 parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: true
+    description: An identification token to see if you are logged in
   - name: property
     in: path
     type: string
