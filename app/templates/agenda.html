@@ -364,7 +364,7 @@ async function fetchData (fetchlink) {
 		},*/
             };
             Object.keys(elem_attributes).forEach(function(attr){
-                reminder.appendChild(createElem(elem, index));
+                reminder.appendChild(createElem(elem_attributes[attr], index));
             });
         });
 	    
