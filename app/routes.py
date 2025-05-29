@@ -238,7 +238,7 @@ def send_reminders(): # Send email when due soon
             tomorrow = today + timedelta(days=1)
             emails_sent = 0
             for user in User.query.filter_by(active=True, accept_mail=True).all():
-                reminders = Reminder.query.filter(Reminder.user_id==user.id, func.DATE(Reminder.date) == tomorrow, Reminder.done == True).all()
+                reminders = Reminder.query.filter(Reminder.user_id==user.id, func.DATE(Reminder.date) == tomorrow, Reminder.done == False).all()
                 if reminders:
                     subjects = []
                     tags = []
