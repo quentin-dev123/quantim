@@ -46,6 +46,7 @@ class Reminder(db.Model):
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
     date = db.Column(db.DateTime, nullable=True)
     done = db.Column(db.Boolean)
+    pinned = db.Column(db.Boolean)
     # --- Relationships --- 
     pronote_id = db.mapped_column(db.ForeignKey("Pronote_homework.id"))
     pronote = db.relationship("Pronote_homework", back_populates="reminder")
@@ -107,6 +108,8 @@ class User(UserMixin, db.Model):
     subjects = db.relationship("Subject", backref="user")
     otp = db.relationship("Otp", backref="user")
     token = db.relationship("Token", backref="user")
+    friendeds = db.relationship("Friendship", foreign_keys="[Friendship.uid]", backref="user")
+    frienders = db.relationship("Friendship", foreign_keys="[Friendship.fid]", backref="friend")
 
 class Otp(db.Model):
     __tablename__ = 'Otp'
@@ -129,3 +132,10 @@ class Token(db.Model):
     expiry = db.Column(db.DateTime, nullable=False)
     # --- Relationships --- 
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+
+class Friendship(db.Model):
+    __tablename__ = 'Friendship'
+    id = db.Column(db.Integer, primary_key=True)
+    # --- Relationships --- 
+    uid = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    fid = db.Column(db.Integer, db.ForeignKey('Users.id'))
