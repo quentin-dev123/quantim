@@ -201,10 +201,11 @@ var global_tagArr = undefined
 var global_subjectArr = undefined
 
 function createElem(object, index, subject){
-	console.log(object)
 	let elem = document.createElement(object.htmlType);
 	if (typeof object.elemContent === 'object'){
-	   elem.innerHTML = createElem(elem.innerHTML, index, subject)
+        Object.keys(object.elemContent).forEach(function(attr){
+	        elem.appendChild(createElem(object.elemContent[attr], index, subject))
+        })
 	} else {
 	   elem.innerHTML = object.elemContent;
 	}
@@ -372,7 +373,6 @@ async function fetchData (fetchlink) {
 		    elemContent: {
 		    top_bar_icons_div2: {
 			htmlType: "div",
-   			style: "margin-top: 5px; margin-bottom: 5px",
 			elemContent: {
 				expand_hidden: {
 					htmlType: "span",
@@ -388,6 +388,7 @@ async function fetchData (fetchlink) {
 				link: {
 					htmlType: "span",
 					class: "fa-solid fa-link icon link",
+                    elemContent: "",
 				}
 			}
 		    }
@@ -406,14 +407,13 @@ async function fetchData (fetchlink) {
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
 	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
-	   top_bar_icon_height = top_bar_icon.offsetHeight - 5
-	   top_bar_icon.style.height = 0
+	   /*top_bar_icon.style.height = 0*/
         });
 	    
 	loading.classList.add('hide');
-        const top_bar_icon = document.getElementById("top_bar_icons0")
+    const top_bar_icon = document.getElementById("top_bar_icons0")
 	if (top_bar_icon) {
-	   top_bar_icon_height = top_bar_icon.offsetHeight - 5
+	   console.log(top_bar_icon.offsetHeight - 5)
 	}
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
