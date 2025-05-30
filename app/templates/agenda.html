@@ -84,7 +84,8 @@
     var top_bar_icons_height = 0
 	
 	
-	function open_top_bar_icons(id) {
+	function open_top_bar_icons(id, event) {
+		event.stopPropagation()
 		const top_bar_icons = document.getElementById("top_bar_icons" + id)
 		const expand = document.getElementById("expand" + id)
 		if (top_bar_icons.style.height == "0px"){
@@ -200,6 +201,7 @@ var global_tagArr = undefined
 var global_subjectArr = undefined
 
 function createElem(object, index, subject){
+	console.log(object)
 	let elem = document.createElement(object.htmlType);
 	if (typeof object.elemContent === 'object'){
 	   elem.innerHTML = createElem(elem.innerHTML, index, subject)
@@ -230,7 +232,7 @@ function createElem(object, index, subject){
 	}
 	if (object.onclick) {
 		if (object.onclick == "open_top_bar_icons()") {
-		   elem.onclick = `open_top_bar_icons${index})`
+		   elem.onclick = `open_top_bar_icons(${index}, event))`
 		} else {
 		   elem.onclick = object.onclick;
 		}
@@ -399,13 +401,15 @@ async function fetchData (fetchlink) {
             Object.keys(elem_attributes).forEach(function(attr){
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
+	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
+	   top_bar_icon_height = top_bar_icon.offsetHeight - 5
+	   top_bar_icon.style.height = 0
         });
 	    
 	loading.classList.add('hide');
         const top_bar_icon = document.getElementById("top_bar_icons0")
 	if (top_bar_icon) {
-	   var top_bar_icon_height = top_bar_icon.offsetHeight - 5
-	   top_bar_icon.style.height = 0
+	   top_bar_icon_height = top_bar_icon.offsetHeight - 5
 	}
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
