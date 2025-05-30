@@ -403,9 +403,10 @@ async function fetchData (fetchlink) {
 	    
 	loading.classList.add('hide');
         const top_bar_icon = document.getElementById("top_bar_icons0")
-        var top_bar_icon_height = top_bar_icons.offsetHeight - 5
-        top_bar_icon.style.height = 0
-	
+	if (top_bar_icon) {
+	   var top_bar_icon_height = top_bar_icon.offsetHeight - 5
+	   top_bar_icon.style.height = 0
+	}
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
 	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
