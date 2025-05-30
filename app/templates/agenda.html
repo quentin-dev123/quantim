@@ -232,7 +232,7 @@ function createElem(object, index, subject){
 	}
 	if (object.onclick) {
 		if (object.onclick == "open_top_bar_icons()") {
-		   elem.addEventListener('click', (index, event) => {
+		   elem.addEventListener('click', (event) => {
 		   open_top_bar_icons(index, event)
 		   })
 		} else {
