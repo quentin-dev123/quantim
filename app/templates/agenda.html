@@ -81,6 +81,28 @@
     document.getElementById("sort_icon-dropdown_content").style.height = header.offsetHeight
     document.getElementById("filter_dropdown_content").style.height = header.offsetHeight
 
+	const top_bar_icons = document.getElementById("top_bar_icons")
+	const top_bar_icons_height = top_bar_icons.offsetHeight - 5
+	top_bar_icons.style.height = 0
+	const expand = document.getElementById("expand")
+	
+	
+	function open_top_bar_icons() {
+		if (top_bar_icons.style.height == "0px"){
+	       top_bar_icons.style.height = top_bar_icons_height;
+	       timeoutId = setTimeout(() => {
+	        expand.innerHTML = "expand_less";
+	      }, 300);
+	    }
+	    else {
+	      top_bar_icons.style.height = "0"
+	      timeoutId = setTimeout(() => {
+	      expand.innerHTML = "expand_more";
+	    }, 300);
+	    }
+	   }
+
+	
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
         const checkbox = document.getElementById(`reminput${container_id}`);
@@ -181,7 +203,7 @@ var global_subjectArr = undefined
 
 function createElem(object, index, subject){
 	let elem = document.createElement(object.htmlType);
-	if (typeof elem.innerHTML === 'object'){
+	if (typeof object.elemContent === 'object'){
 	   elem.innerHTML = createElem(elem.innerHTML, index, subject)
 	} else {
 	   elem.innerHTML = object.elemContent;
