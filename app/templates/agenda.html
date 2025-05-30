@@ -335,7 +335,7 @@ async function fetchData (fetchlink) {
                     onclick: function() {reminder_mark_as_done(element.id, index)},
                     checked: element.done,
                 },
-		/*top_bar_icons_div1: {
+		top_bar_icons_div1: {
 		    htmlType: "div",
 		    elemContent: {
 		    top_bar_icons_div2: {
@@ -369,7 +369,7 @@ async function fetchData (fetchlink) {
 		   onclick: "open_top_bar_icons()",
 		   id: "expand",
 		},
-  		*/
+  		
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
