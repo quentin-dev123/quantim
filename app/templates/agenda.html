@@ -89,16 +89,14 @@
 		const top_bar_icons = document.getElementById("top_bar_icons" + id)
 		const expand = document.getElementById("expand" + id)
 		if (top_bar_icons.style.height == "0px"){
-	       top_bar_icons.style.height = top_bar_icons_height;
+	       top_bar_icons.style.height = "33px";
 	       timeoutId = setTimeout(() => {
 	        expand.innerHTML = "expand_less";
 	      }, 300);
 	    }
 	    else {
 	      top_bar_icons.style.height = "0"
-	      timeoutId = setTimeout(() => {
 	      expand.innerHTML = "expand_more";
-	    }, 300);
 	    }
 	   }
 
@@ -237,9 +235,7 @@ function createElem(object, index, subject){
 		   open_top_bar_icons(index, event)
 		   })
 		} else {
-		   elem.addEventListener('click', () => {
-		   object.onclick
-		   })
+            elem.onclick = object.onclick
 		}
 	}
 	if (object.checked) {
@@ -407,14 +403,10 @@ async function fetchData (fetchlink) {
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
 	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
-	   /*top_bar_icon.style.height = 0*/
+	   top_bar_icon.style.height = 0
         });
 	    
 	loading.classList.add('hide');
-    const top_bar_icon = document.getElementById("top_bar_icons0")
-	if (top_bar_icon) {
-	   console.log(top_bar_icon.offsetHeight - 5)
-	}
 	// add removeDarknessAll onclick to the body
 	const body = document.getElementById("body");
 	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});

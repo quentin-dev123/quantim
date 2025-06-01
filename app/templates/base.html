@@ -384,11 +384,13 @@ function removeDarknessALL(reminderArr) {
 	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
           const overlay = document.getElementById(`overlay${i}`);
           const remDiv = document.getElementById(`remDiv${i}`);
-	  const container = document.getElementById(`container${i}`);
+	        const container = document.getElementById(`container${i}`);
 
-          overlay.classList.remove('active');
-          remDiv.classList.remove('disable-content');
-          container.classList.remove('container-zoom');
+          if (overlay){
+            overlay.classList.remove('active');
+            remDiv.classList.remove('disable-content');
+            container.classList.remove('container-zoom');
+          }
         }
    }
 
