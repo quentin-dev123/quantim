@@ -109,18 +109,19 @@
 	const text = document.getElementById(`remp${container_id}`);
 
         let message;
-        if (checkbox.checked){
-            message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-	        checkbox.checked = false
-            mad_checkbox.checked = true
-        } else if (!mad_checkbox.checked) {
+        if (text.classList.contains('hidden')){
             message = await fetch("/api/reminder/done/" + reminder_id + "/False");
 	        mad_checkbox.checked = true
             checkbox.checked = false
+        } else {
+            message = await fetch("/api/reminder/done/" + reminder_id + "/True");
+	        checkbox.checked = false
+            mad_checkbox.checked = true
         }
+
         if (message.ok){
             overlay.classList.toggle('active');
-	    text.classList.toggle('hidden')
+	        text.classList.toggle('hidden')
         } else {
             console.log(message.statusText)
         }
@@ -287,8 +288,14 @@ async function fetchData (fetchlink) {
         // Close other overlays
         removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
 
-        // Toggle the current overlay
-        toggleDarkness(index);
+        const top_bar_icons = document.getElementById("top_bar_icons" + index)
+        if (top_bar_icons.style.height == "0px"){
+            // Toggle the current overlay
+            toggleDarkness(index);
+        }
+        else {
+            open_top_bar_icons(index, event)
+        }
         event.stopPropagation();
       });
 	    container.appendChild(reminder);
@@ -403,7 +410,11 @@ async function fetchData (fetchlink) {
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
 	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
+       const text_element = document.getElementById(`remp${index}`)
 	   top_bar_icon.style.height = 0
+       if (element.done){
+	        text_element.classList.toggle('hidden')
+       }
         });
 	    
 	loading.classList.add('hide');
