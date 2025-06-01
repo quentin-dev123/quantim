@@ -1,0 +1,10 @@
+{% extends 'form.html' %}
+
+{% set title = "Ajouter un ami" %}
+{% set next_destination = "/agenda" %} 
+{% set fetch_destination = "/friend" %}
+
+{% block form_content %} 
+<label for="username"><b> Entrer le username de votre ami</b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="f_username" required>
+{% endblock %}

@@ -16,7 +16,7 @@ from sqlalchemy import func
 from uuid import uuid4
 from flasgger import swag_from
 
-from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token
+from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -482,7 +482,7 @@ def send_feedback():
     return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
-# User Verification
+# User
 login_manager = LoginManager()
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
@@ -610,9 +610,13 @@ def logout():
 @login_required
 @swag_from('swagger/user/delete_account.yml')
 def delete_account():
-    tables = [Tag, Subject, Reminder, Pronote_homework, Otp]
+    tables = [Tag, Subject, Reminder, Pronote_homework, Otp, Token, Friendship]
     for table in tables:
-        table.query.filter_by(user_id=current_user.id).delete()
+        if table == Friendship:
+            table.query.filter_by(uid=current_user.id).delete()
+            table.query.filter_by(fid=current_user.id).delete()
+        else:
+            table.query.filter_by(user_id=current_user.id).delete()
     db.session.delete(User.query.get(current_user.id))
     db.session.commit()
     logout_user()
@@ -691,11 +695,87 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
+@app.route("/add_friend")
+@login_required
+def add_friend_page():
+    return render_template("add_friend.html")
+
+@app.route("/friend", methods=["POST"])
+@login_required
+def add_friend():
+    data = json.loads(request.data)
+    if data and data.get("username"):
+        f_username = data.get("username")
+        friend = User.query.filter_by(username=f_username).first()
+        if friend is not None:
+            if friend.id != current_user.id:
+                if Friendship.query.filter_by(fid=friend.id).first() is None:
+                    message = Mail(
+                            from_email='quantim.hk@gmail.com',
+                            to_emails=friend.email,
+                            subject="Requête d'amitié",
+                            html_content=f"<a href='{current_app.config['BASE_URL']}/friend_back?id=1'>clique</a>" # CHANGER CECI !!!
+                        )
+                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+                    sg.send(message)
+                    friendship = Friendship(
+                        uid = current_user.id,
+                        user = current_user,
+                        fid = friend.id,
+                        friend = friend
+                    )
+                    db.session.add(friendship)
+                    db.session.commit()
+                    return "Sent a friend request succesfully", 200
+                return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
+            return jsonify({"message": "You're not allowed to become friends with that person because it's you"}), 403
+        return jsonify({"message": "The user with the specified username was not found"}), 404
+    return "Missing or invalid data sent", 400
+
+@app.route("/friend_back")
+@login_required
+def friend_back():
+    args = request.args
+    if args and args.get("id"):
+        friend_id = args.get("id")
+        friend = User.query.get(friend_id)
+        if friend is not None:
+            friendship = Friendship.query.filter_by(fid=current_user.id, uid=friend_id).first()
+            if friendship is not None:
+                new_friendship = Friendship(
+                    uid = current_user.id,
+                    user = current_user,
+                    fid = friend.id,
+                    friend = friend
+                )
+                db.session.add(new_friendship)
+                db.session.commit()
+                return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
+            return "You aren't allowed to friend back this user because they never friended you", 403
+        return "The user with the specified id was not found", 404
+    return "Missing or invalid data sent", 400
+
+@app.route("/friendship_tester")
+@login_required
+def friendship_tester():
+    args = request.args
+    id_a = args.get("id_a")
+    id_b = args.get("id_b")
+    if args and None not in [id_a, id_b]:
+        friendship_a = Friendship.query.filter_by(uid=id_a, fid=id_b).first()
+        friendship_b = Friendship.query.filter_by(uid=id_b, fid=id_a).first()
+        if friendship_a is not None:
+            if friendship_b is not None:
+                return "Clearly two BFFs", 200
+            return "User b is not friend with User a ):", 400
+        return "User a is not friend with User b ):", 400
+    return "Missing or invalid data sent", 400
+
 #------------------------------------------------------
 # Commands
 @app.cli.command('clear')
 def drop_tables():
-    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token]
+    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship]
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()
@@ -706,6 +786,10 @@ def drop_tables():
 def sandbox():
     db.session.query(Pat).delete()
     print('Success')
+
+@app.cli.command('test')
+def sandbox():
+    print(User.query.get(1).reminders)
 
 @app.cli.command("create_pat")
 @click.option('--value')
