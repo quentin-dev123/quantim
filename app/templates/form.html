@@ -310,6 +310,7 @@ form.addEventListener('submit',  async (event) => {
         location.replace("{{ next_destination }}");
         {% endblock %}
     } else {
+        alertDiv.style.display = "block";
         const response = await result.json();
         alertText.innerHTML = response["message"];
         if (response["link_display"]) {
@@ -318,7 +319,6 @@ form.addEventListener('submit',  async (event) => {
         } else {
             alertLink.innerHTML = "";
         }
-        alertDiv.style.display = "block";
     }
 });
 
