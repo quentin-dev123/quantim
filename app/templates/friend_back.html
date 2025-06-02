@@ -1,0 +1,12 @@
+{% extends 'form.html' %}
+
+{% set title = "Se connecter" %}
+{% set next_destination = "/agenda" %} 
+{% set fetch_destination = "/friend_back" %}
+
+{% block form_content %} 
+<label for="username"><b> Entrer votre username </b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="username" required>
+<p>Mauvais compte ?<a href="/logout">Se déconnecter</a> </p>
+{% endblock %}
+{% block other_data %} userAnswers["id"] = {{id}}{% endblock %}

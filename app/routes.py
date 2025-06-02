@@ -734,42 +734,54 @@ def add_friend():
 
 @app.route("/friend_back")
 @login_required
-def friend_back():
+def friend_back_page():
     args = request.args
-    if args and args.get("id"):
-        friend_id = args.get("id")
-        friend = User.query.get(friend_id)
-        if friend is not None:
-            friendship = Friendship.query.filter_by(fid=current_user.id, uid=friend_id).first()
-            if friendship is not None:
-                new_friendship = Friendship(
-                    uid = current_user.id,
-                    user = current_user,
-                    fid = friend.id,
-                    friend = friend
-                )
-                db.session.add(new_friendship)
-                db.session.commit()
-                return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
-            return "You aren't allowed to friend back this user because they never friended you", 403
-        return "The user with the specified id was not found", 404
+    friend_id = args.get("id")
+    if None not in [args, friend_id]: 
+        return render_template("friend_back.html", id=friend_id)
+    return "Missing or invalid data sent", 400
+
+@app.route("/friend_back", methods=["POST"])
+@login_required
+def friend_back():
+    data = request.data
+    friend_id = data.get("id")
+    username = data.get("username")
+    if None not in [data, friend_id, username]:
+        if current_user.username == username:
+            friend = User.query.get(friend_id)
+            if friend is not None:
+                friendship = Friendship.query.filter_by(fid=current_user.id, uid=friend_id).first()
+                if friendship is not None:
+                    new_friendship = Friendship(
+                        uid = current_user.id,
+                        user = current_user,
+                        fid = friend.id,
+                        friend = friend
+                    )
+                    db.session.add(new_friendship)
+                    db.session.commit()
+                    return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
+                return "You aren't allowed to friend back this user because they never friended you", 403
+            return "The user with the specified id was not found", 404
+        return jsonify({"message": "Le username ne correspond pas à celui de votre compte"})
     return "Missing or invalid data sent", 400
 
 @app.route("/friendship_tester")
 @login_required
 def friendship_tester():
     args = request.args
-    id_a = args.get("id_a")
-    id_b = args.get("id_b")
-    if args and None not in [id_a, id_b]:
-        friendship_a = Friendship.query.filter_by(uid=id_a, fid=id_b).first()
-        friendship_b = Friendship.query.filter_by(uid=id_b, fid=id_a).first()
+    id = args.get("id")
+    if args and id is not None:
+        friendship_a = Friendship.query.filter_by(uid=current_user.id, fid=id).first()
+        friendship_b = Friendship.query.filter_by(uid=id, fid=current_user.id).first()
         if friendship_a is not None:
             if friendship_b is not None:
                 return "Clearly two BFFs", 200
-            return "User b is not friend with User a ):", 400
-        return "User a is not friend with User b ):", 400
+            return "That user is not friend with you ):", 400
+        return "You are not friend with that user ):", 400
     return "Missing or invalid data sent", 400
+
 
 #------------------------------------------------------
 # Commands
