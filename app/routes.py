@@ -743,6 +743,7 @@ def friend_back_page():
 
 @app.route("/friend_back", methods=["POST"])
 @login_required
+@swag_from('swagger/user/friend_back.yml')
 def friend_back():
     data = request.data
     friend_id = data.get("id")
@@ -762,13 +763,14 @@ def friend_back():
                     db.session.add(new_friendship)
                     db.session.commit()
                     return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
-                return "You aren't allowed to friend back this user because they never friended you", 403
-            return "The user with the specified id was not found", 404
-        return jsonify({"message": "Le username ne correspond pas à celui de votre compte"})
+                return jsonify({"message" : "You aren't allowed to friend back this user because they never friended you"}), 403
+            return jsonify({"message" : "The user with the specified id was not found"}), 404
+        return jsonify({"message": "Le username ne correspond pas à celui de votre compte"}), 401
     return "Missing or invalid data sent", 400
 
 @app.route("/friendship_tester")
 @login_required
+@swag_from('swagger/user/friendship_tester.yml')
 def friendship_tester():
     args = request.args
     id = args.get("id")

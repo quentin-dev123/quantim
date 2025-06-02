@@ -1,0 +1,61 @@
+Friend back a user
+---
+tags:
+  - User 
+description: Endpoint to friend back a user after they sent you a friend request (must be logged in).
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: true
+    description: An identification token to see if you are logged in
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        username:
+          type: string
+          example: TenaciousCoder404
+        id:
+          type: integer
+          example: 1234
+responses:
+  200:
+    description: You friended back the user, returns confirmation message.
+    schema:
+      type: string
+      example: Sucessfully friended back GraciousTiger200, I declare you now BFF
+  400:
+    description: The data sent is either missing, incomplete or invalid.
+    schema:
+      type: string
+      example: Missing or invalid data sent
+  401:
+    description: The username provided isn't yours, throws error message in french.
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Le username ne correspond pas à celui de votre compte
+  403:
+    description: The user you are trying to friend back never friended you in the first place. 
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: You aren't allowed to friend back this user because they never friended you
+  404:
+    description: There is no existing user that has the id you provided 
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The user with the specified id was not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.
