@@ -1,8 +1,15 @@
 Delete your account (must be logged in)
 ---
 tags:
-  - User Verification
+  - User 
 description: Endpoint to delete your account (must be logged in). Beware, this is irreversible and will erase ALL data linked to your account.
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: true
+    description: An identification token to see if you are logged in
 responses:
   200:
     description: Account deleted succesfully, you are now logged out, this will return a validation message.

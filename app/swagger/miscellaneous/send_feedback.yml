@@ -4,6 +4,12 @@ tags:
   - Miscellaneous
 description: Endpoint to send a given feedback to Quantim (can be anonymous or not)
 parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: true
+    description: An identification token to see if you are logged in
   - name: body
     in: body
     required: True
