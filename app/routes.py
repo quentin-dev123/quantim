@@ -773,14 +773,17 @@ def friendship_tester():
     args = request.args
     id = args.get("id")
     if args and id is not None:
-        friendship_a = Friendship.query.filter_by(uid=current_user.id, fid=id).first()
-        friendship_b = Friendship.query.filter_by(uid=id, fid=current_user.id).first()
-        if friendship_a is not None:
-            if friendship_b is not None:
-                return "Clearly two BFFs", 200
-            return "That user is not friend with you ):", 400
-        return "You are not friend with that user ):", 400
-    return "Missing or invalid data sent", 400
+        friend = User.query.get(id)
+        if friend is not None:
+            friendship_a = Friendship.query.filter_by(uid=current_user.id, fid=id).first()
+            friendship_b = Friendship.query.filter_by(uid=id, fid=current_user.id).first()
+            if friendship_a is not None:
+                if friendship_b is not None:
+                    return "Clearly two BFFs", 200
+                return "That user is not friend with you ):", 400
+            return "You are not friend with that user ):", 400
+        return "A user with the specified id was not found", 404
+    return "Missing or invalid data sent", 401
 
 
 #------------------------------------------------------

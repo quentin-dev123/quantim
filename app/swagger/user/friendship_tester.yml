@@ -1,0 +1,40 @@
+Test if you are friend
+---
+tags:
+  - User 
+description: Endpoint to test if you are friend with a user with a specified id (must be logged in).
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: true
+    description: An identification token to see if you are logged in
+  - name: id
+    in: query
+    required: True
+    example: 1234
+    description: The username of the person you're checking if you're friends with
+responses:
+  200:
+    description: You are friends, returns confirmation message.
+    schema:
+      type: string
+      example: Clearly two BFFs
+  400:
+    description: One (or both) of the two person (you and the person with the specified id) is not friend with the other.
+    schema:
+      type: string
+      example: You are not friend with that user 
+  401:
+    description: The data sent is either missing, incomplete or invalid.
+    schema:
+      type: string
+      example: Missing or invalid data sent
+  404:
+    description: There is no existing user that has the id you provided 
+    schema:
+      type: string
+      example: MA user with the specified id was not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.
