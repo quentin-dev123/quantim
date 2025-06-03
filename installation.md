@@ -38,23 +38,36 @@ First, initialize the db and migrations (the tool to manage changes to the datab
 flask db init
 ```
 
-Then remove the migrations folder :
+If you get this error: 
+```
+Error: Directory migrations already exists and is not empty
+```
+
+You'll need to erase migrations and redo db init: 
+```
+rm -rf migrations
+flask db init
+```
+
+Then remove the migrations folder (even if you just deleted it like detailed above) :
 ```
 rm -rf migrations
 ```
 
-Now you can pull the correct one from github:
+Now you can pull the correct one from GitHub:
 ```
-git stash
-git pull
+git stash # Cancel your changes (deleting migrations)
+git pull # This isn't necessary, you may already be up to date 
 ```
 
-Now you need to use that correct migration folder: 
+Now, update your db with the correct version: 
 ```
 flask db upgrade
 ```
 
-### After DB changes
+That's it, your database is up to date. Now you'll need to keep up with every new version of the db structure 
+
+### After DB structure changes
 
 to manage changes made on the database structure on the running environment you need to keep track of those change and prepare migrations scripts.
 These can be automativally generated.
