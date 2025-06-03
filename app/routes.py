@@ -714,7 +714,7 @@ def add_friend():
                             from_email='quantim.hk@gmail.com',
                             to_emails=friend.email,
                             subject="Requête d'amitié",
-                            html_content=f"<a href='{current_app.config['BASE_URL']}/friend_back?id=1'>clique</a>" # CHANGER CECI !!!
+                            html_content=f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
                         )
                     sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
                     sg.send(message)
@@ -738,32 +738,37 @@ def friend_back_page():
     args = request.args
     friend_id = args.get("id")
     if None not in [args, friend_id]: 
-        return render_template("friend_back.html", id=friend_id)
+        friend = User.query.get(friend_id)
+        if friend is not None:
+            return render_template("friend_back.html", id=friend_id, username=friend.username), 200
+        return "A user with the specified id was not found", 404
     return "Missing or invalid data sent", 400
 
 @app.route("/friend_back", methods=["POST"])
 @login_required
 @swag_from('swagger/user/friend_back.yml')
 def friend_back():
-    data = request.data
+    data = json.loads(request.data)
     friend_id = data.get("id")
     username = data.get("username")
     if None not in [data, friend_id, username]:
         if current_user.username == username:
             friend = User.query.get(friend_id)
             if friend is not None:
-                friendship = Friendship.query.filter_by(fid=current_user.id, uid=friend_id).first()
-                if friendship is not None:
-                    new_friendship = Friendship(
-                        uid = current_user.id,
-                        user = current_user,
-                        fid = friend.id,
-                        friend = friend
-                    )
-                    db.session.add(new_friendship)
-                    db.session.commit()
-                    return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
-                return jsonify({"message" : "You aren't allowed to friend back this user because they never friended you"}), 403
+                if friend.id != current_user.id:
+                    friendship = Friendship.query.filter_by(fid=current_user.id, uid=friend_id).first()
+                    if friendship is not None:
+                        new_friendship = Friendship(
+                            uid = current_user.id,
+                            user = current_user,
+                            fid = friend.id,
+                            friend = friend
+                        )
+                        db.session.add(new_friendship)
+                        db.session.commit()
+                        return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
+                    return jsonify({"message" : "You aren't allowed to friend back this user because they never friended you"}), 403
+                return jsonify({"message" : "Vous ne pouvez pas devenir ami avec cette personne car c'est vous"}), 403
             return jsonify({"message" : "The user with the specified id was not found"}), 404
         return jsonify({"message": "Le username ne correspond pas à celui de votre compte"}), 401
     return "Missing or invalid data sent", 400
