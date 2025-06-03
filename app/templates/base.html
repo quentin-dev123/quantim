@@ -319,9 +319,10 @@ amelioration_form.addEventListener('submit',  async (event) => {
    }
 
 
+
 	
 function getDayOfWeek(target_date){
- current_date = new Date('2025-04-06')
+ current_date = new Date()
  days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
   days_remaining = 7 - current_date.getDay()
  if (days_remaining == 7){ /* if sunday */
