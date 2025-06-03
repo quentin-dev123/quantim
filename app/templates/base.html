@@ -323,7 +323,7 @@ amelioration_form.addEventListener('submit',  async (event) => {
 	
 function getDayOfWeek(target_date){
  current_date = new Date()
- days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
+ days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
   days_remaining = 7 - current_date.getDay()
  if (days_remaining == 7){ /* if sunday */
    days_remaining = 5
@@ -332,7 +332,7 @@ function getDayOfWeek(target_date){
  difference_days = Math.round(difference_milliseconds / 86400000)
  if (difference_days <= days_remaining && difference_days > 0){
     day_of_week = current_date.getDay() + difference_days
-    return days[day_of_week - 1]
+    return days[day_of_week]
  }
  else {
     return false
@@ -352,10 +352,13 @@ function find_date_name(date){
    }
    else {
      if (getDayOfWeek(date)){
-       return getDayOfWeek(date)
+      return getDayOfWeek(date)
+     }
+     else if (today.getFullYear() == date.getFullYear()){
+      return date.toLocaleString("fr-FR", {day: "numeric", month: "short"})
      }
      else {
-       return date.toLocaleDateString('en-GB')
+      return date.toLocaleDateString('en-GB')
      }
    }
 
