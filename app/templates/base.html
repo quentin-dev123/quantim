@@ -323,16 +323,15 @@ amelioration_form.addEventListener('submit',  async (event) => {
 	
 function getDayOfWeek(target_date){
  current_date = new Date()
- days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-  days_remaining = 7 - current_date.getDay()
+ days_remaining = 7 - current_date.getDay()
  if (days_remaining == 7){ /* if sunday */
    days_remaining = 5
  }
   difference_milliseconds = target_date.getTime() - current_date.getTime()
  difference_days = Math.round(difference_milliseconds / 86400000)
  if (difference_days <= days_remaining && difference_days > 0){
-    day_of_week = current_date.getDay() + difference_days
-    return days[day_of_week]
+    day_of_week = target_date.toLocaleString("fr-FR", {weekday: "long"})
+    return day_of_week.charAt(0).toUpperCase() + day_of_week.slice(1);
  }
  else {
     return false
