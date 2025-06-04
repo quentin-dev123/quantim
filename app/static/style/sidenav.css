@@ -73,19 +73,29 @@
   .sidenav .amelioration {
   	margin: 4px 32px 8px 32px;
     padding: 0; /* Remove padding */
-    text-align: center;
+    text-align: left;
     box-sizing: border-box;
   }
 
   .sidenav .amelioration textarea {
-    padding: 5px; /* Remove padding */
+    padding: 5px;
     margin: 0; /* Remove margin padding */
     box-sizing: border-box;
     resize: vertical;
     width: 100%; /* Take full width */
   }
+
+  .sidenav .amelioration label {
+    color: white;
+    cursor: pointer;
+  }
+
+  .sidenav .amelioration input {
+    cursor: pointer;
+  }
+  
   .sidenav .amelioration div {
-    margin: 0; /* Remove margin padding */
+    margin: 0; /* Remove margin */
     margin-bottom: 50px;
   }
   
@@ -93,6 +103,7 @@
     background-color: #04AA6D;
     color: white;
     padding: 14px 20px;
+    margin-top: 5px;
     margin-bottom: 8px;
     border: none;
     cursor: pointer;
