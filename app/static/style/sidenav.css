@@ -86,9 +86,18 @@
   }
 
   .sidenav .amelioration label {
-    color: white;
+    color: #818181;
+    transition: 0.3s;
     cursor: pointer;
   }
+
+  .sidenav .amelioration label.on {
+    color: #f1f1f1;
+  }
+  .sidenav .amelioration label:hover {
+    color: #f1f1f1;
+  }
+
 
   .sidenav .amelioration input {
     cursor: pointer;

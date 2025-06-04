@@ -283,6 +283,8 @@ const amelioration_a = document.getElementById("amelioration_a")
 const amelioration_div = document.getElementById("amelioration_div")
 const amelioration_form = amelioration_div.querySelector("form")
 const amelioration_textarea = amelioration_div.querySelector("textarea")
+const amelioration_label = amelioration_div.querySelector("label")
+const amelioration_checkbox = amelioration_div.querySelector("input")
 
 function mySidenav_amelioration(){
     amelioration_div.classList.toggle('hide')
@@ -311,6 +313,14 @@ amelioration_form.addEventListener('submit',  async (event) => {
       }
 });
 
+
+amelioration_checkbox.addEventListener('change', function() {
+  if (this.checked) {
+    amelioration_label.classList.add('on');
+  } else {
+    amelioration_label.classList.remove('on');
+  }
+});
 	
 // Secret Sidenav menu
    function openNav2() {
