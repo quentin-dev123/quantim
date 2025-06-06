@@ -126,7 +126,8 @@ and create in application folder a file named .env containing:
 ```
 export GIT_REPO_PATH=<path to application folder>
 export GIT_REPO_BRANCH=main
-export BASE_URL='<base url used (if running local, usually is : http://127.0.0.1:5000)>'
+export BASE_URL='<the sendgrid sender email - the email that will send all mails>'
+export BASE_EMAIL='<base url used (if running local, usually is : http://127.0.0.1:5000)>'
 export SENDGRID_API_KEY='<your sendgrid api key>'
 export DEV_DATABASE_URL=sqlite://<absolute path to sqllite file>
 ```

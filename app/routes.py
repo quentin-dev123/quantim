@@ -248,7 +248,7 @@ def send_reminders(): # Send email when due soon
                         tag = Tag.query.get(reminder.tag_id)
                         tags.append(tag)
                     mail = Mail(
-                        from_email='quantim.hk@gmail.com',
+                        from_email=current_app.config["BASE_EMAIL"],
                         to_emails=user.email,
                         subject="Devoir(s) à faire pour demain",
                         html_content=render_template(
@@ -457,28 +457,26 @@ def fetch_pronote():
 @swag_from('swagger/miscellaneous/send_feedback.yml')
 def send_feedback():
     if request.data:
-        try: 
-            data = json.loads(request.data)
-            content = str(data.get("content"))
-            anonymous = data.get("anonymous") == "True"
-        except:
-            return "Invalid arguments to request (invalid type)", 400
-        if not (None in [content, anonymous]):
+        data = json.loads(request.data)
+        anonymous = data.get("anonymous")
+        content = data.get("content")
+        if None not in [anonymous, content] and type(anonymous) == bool:
+            mail = "<h1>"
             if not anonymous:
-                mail = f"Retour de l'utilisateur : {current_user.username}"
+                mail += f"Retour de l'utilisateur : {current_user.username}"
             else: 
-                mail = "Retour d'un utilisateur anonyme"
-            mail += content
+                mail += "Retour d'un utilisateur anonyme"
+            mail += "</h1><hr>" + content
             message = Mail(
-                from_email='quantim.hk@gmail.com',
-                to_emails='quantim.hk@gmail.com',
+                from_email=current_app.config["BASE_EMAIL"],
+                to_emails=current_app.config["BASE_EMAIL"],
                 subject="Retour d'utilisateur",
-                plain_text_content=content
+                html_content=mail
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-            response = sg.send(message)
+            sg.send(message)
             return "Succesfully sent feedback", 200
-        return "Missing arguments in body", 400
+        return "Missing or invalid ", 400
     return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
@@ -542,7 +540,7 @@ def create_otp():
             db.session.add(otp)
             db.session.commit()
             message = Mail(
-                from_email='quantim.hk@gmail.com',
+                from_email=current_app.config["BASE_EMAIL"],
                 to_emails=user.email,
                 subject="Requête d'inscription sur Quantim",
                 html_content=render_template(
@@ -641,7 +639,7 @@ def forgot_pw_mail():
         db.session.add(token)
         db.session.commit()
         message = Mail(
-                from_email='quantim.hk@gmail.com',
+                from_email=current_app.config["BASE_EMAIL"],
                 to_emails=email,
                 subject="Mot de passe oublié",
                 html_content=render_template(
@@ -711,7 +709,7 @@ def add_friend():
             if friend.id != current_user.id:
                 if Friendship.query.filter_by(fid=friend.id).first() is None:
                     message = Mail(
-                            from_email='quantim.hk@gmail.com',
+                            from_email=current_app.config["BASE_EMAIL"],
                             to_emails=friend.email,
                             subject="Requête d'amitié",
                             html_content=f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
