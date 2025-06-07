@@ -8,7 +8,7 @@ Vous avez un ou plusieurs devoir à faire pour demain.</h1>
 <div style="padding: 10px;">     
 <table style="
         background-color: {{subjects[i].bg_color}};
-        width: 21vw;
+        max-width: 250px;
         height: 102px;
         border-radius: 15px;
         overflow: auto;
@@ -33,7 +33,7 @@ position: relative;">Pour : Demain
     <a href="{{base_url}}/agenda">
     <img style="width: 15px;
     height: 15px;
-    height: 1vh;
+    height: 15px;
     position: absolute;
     top: 5; 
     right: 5;
@@ -49,7 +49,9 @@ position: relative;">Pour : Demain
         color:white>{{subjects[i].content}}</td>
   </tr>
   <tr>
-    <td colspan="2">{{reminders[i].content}}</td>
+    <td colspan="2" style="
+      padding-right: 5px;
+      padding-left: 5px;">{{reminders[i].content}}</td>
   </tr>
 </table>
 </div>
