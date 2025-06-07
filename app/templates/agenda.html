@@ -223,6 +223,12 @@ function createElem(object, index, subject){
 	if (object.htmlType === "h2") {
 	    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
 	}
+    if (object.htmlType === "p") {
+	    elem.contentEditable = true;
+        elem.addEventListener('click', (event) => {
+		   stopPropagation(event)
+		   })
+	}
 	
 	if (object.elemBgColor) {
 	    elem.style.backgroundColor = object.elemBgColor;
