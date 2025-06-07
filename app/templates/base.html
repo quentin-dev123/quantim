@@ -306,6 +306,7 @@ amelioration_form.addEventListener('submit',  async (event) => {
 
       if (result.ok) {
           alert('Amélioration envoyée !')
+          amelioration_textarea.value = ""
           mySidenav_amelioration()
       } else {
           const response = await result.json();
@@ -336,11 +337,8 @@ amelioration_checkbox.addEventListener('change', function() {
 	
 function getDayOfWeek(target_date){
  current_date = new Date()
- days_remaining = 7 - current_date.getDay()
- if (days_remaining == 7){ /* if sunday */
-   days_remaining = 5
- }
-  difference_milliseconds = target_date.getTime() - current_date.getTime()
+ days_remaining = 6
+ difference_milliseconds = target_date.getTime() - current_date.getTime()
  difference_days = Math.round(difference_milliseconds / 86400000)
  if (difference_days <= days_remaining && difference_days > 0){
     day_of_week = target_date.toLocaleString("fr-FR", {weekday: "long"})
