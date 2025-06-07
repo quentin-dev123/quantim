@@ -299,7 +299,7 @@ amelioration_form.addEventListener('submit',  async (event) => {
               'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-  "anonymous": false,
+  "anonymous": amelioration_checkbox.checked,
   "content": amelioration_textarea.value
 })
       });
