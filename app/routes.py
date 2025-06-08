@@ -371,120 +371,6 @@ def git_webhook():
     origin.pull(current_app.config['GIT_REPO_BRANCH'])
     return 'Updated PythonAnywhere successfully', 200
 
-#------------------------------------------------------
-# Miscellaneous
-@app.route("/fetch_from_pronote", methods=["POST"])
-@login_required
-@swag_from('swagger/miscellaneous/fetch_pronote.yml')
-def fetch_pronote():
-    if request.data:
-        data = json.loads(request.data)
-        url = data.get('pronote_url')
-        username = data.get('username')
-        password = data.get('password')
-        if None not in [username, password, url]:
-            try:
-                client = pronotepy.Client(
-                    pronote_url=url,
-                    username=username,
-                    password=password,
-                )
-                if current_user.pronote_tag_id is None:
-                    tag = Tag(
-                        content="de PRONOTE", 
-                        bg_color="#009853",
-                        user=current_user,
-                        user_id=current_user.id
-                    )
-                    db.session.add(tag)
-                    db.session.commit()
-                    current_user.pronote_tag_id = tag.id
-                current_user.pronote_url = url
-                current_user.pronote_username = username
-                db.session.commit()
-            except pronotepy.CryptoError:
-                return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 403  # the client has failed to log in
-            except (requests.exceptions.SSLError, pronotepy.exceptions.PronoteAPIError):
-                return jsonify({"message": "La page PRONOTE n'a pas été trouvé (lien invalide)"}), 404
-            homeworks = client.homework(date_from=d.date.today())
-            for homework in homeworks:
-                my_homework = Pronote_homework.query.filter_by(
-                    content=homework.description, 
-                    user_id=current_user.id,
-                ).first()
-                if my_homework is None:
-                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
-                    if subject is None:
-                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
-                        subject = Subject(
-                            content=homework.subject.name, 
-                            bg_color=bgColor,
-                            user=current_user,
-                            user_id=current_user.id
-                        )
-                        db.session.add(subject)
-                        db.session.commit()
-                    reminder = Reminder(
-                        content=homework.description, 
-                        date=homework.date,
-                        done = False,
-                        user=current_user,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(reminder)
-                    db.session.commit()
-                    print("One reminder added succesfully")
-                    my_homework = Pronote_homework(
-                        content=homework.description, 
-                        date=homework.date,
-                        hidden=False,
-                        reminder=reminder,
-                        user_id=current_user.id,
-                        tag_id=current_user.pronote_tag_id,
-                        subject_id=subject.id
-                    )
-                    db.session.add(my_homework)
-                    reminder.pronote = my_homework
-                    db.session.commit()
-            return "Homeworks fetched succesfully", 200
-        return "Invalid request (one or more arguments in body are missing or invalid)", 400
-    return "Missing body argument - No data sent", 401
-
-@app.route("/send_feedback", methods=["POST"])
-@login_required
-@swag_from('swagger/miscellaneous/send_feedback.yml')
-def send_feedback():
-    if request.data:
-        data = json.loads(request.data)
-        anonymous = data.get("anonymous")
-        content = data.get("content")
-        if None not in [anonymous, content] and type(anonymous) == bool:
-            mail = "<h1>"
-            if not anonymous:
-                mail += f"Retour de l'utilisateur : {current_user.username}"
-            else: 
-                mail += "Retour d'un utilisateur anonyme"
-            mail += "</h1><hr>" + content
-            message = Mail(
-                from_email=current_app.config["BASE_EMAIL"],
-                to_emails=current_app.config["BASE_EMAIL"],
-                subject="Retour d'utilisateur",
-                html_content=mail
-            )
-            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-            sg.send(message)
-            mail_log = Mail_log(
-                date = datetime.now(),
-                user_id = current_user.id,
-                user=current_user
-            )
-            db.session.add(mail_log)
-            db.session.commit()
-            return "Succesfully sent feedback", 200
-        return "Missing or invalid data sent", 400
-    return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
 # User
@@ -700,6 +586,8 @@ def unauthorized():
     return redirect(url_for('login'))
 
 
+#------------------------------------------------------
+# Friend
 @app.route("/add_friend")
 @login_required
 def add_friend_page():
@@ -751,7 +639,7 @@ def friend_back_page():
 
 @app.route("/friend_back", methods=["POST"])
 @login_required
-@swag_from('swagger/user/friend_back.yml')
+@swag_from('swagger/friend/friend_back.yml')
 def friend_back():
     data = json.loads(request.data)
     friend_id = data.get("id")
@@ -780,7 +668,7 @@ def friend_back():
 
 @app.route("/friendship_tester")
 @login_required
-@swag_from('swagger/user/friendship_tester.yml')
+@swag_from('swagger/friend/friendship_tester.yml')
 def friendship_tester():
     args = request.args
     id = args.get("id")
@@ -797,6 +685,121 @@ def friendship_tester():
         return "A user with the specified id was not found", 404
     return "Missing or invalid data sent", 401
 
+
+#------------------------------------------------------
+# Miscellaneous
+@app.route("/fetch_from_pronote", methods=["POST"])
+@login_required
+@swag_from('swagger/miscellaneous/fetch_pronote.yml')
+def fetch_pronote():
+    if request.data:
+        data = json.loads(request.data)
+        url = data.get('pronote_url')
+        username = data.get('username')
+        password = data.get('password')
+        if None not in [username, password, url]:
+            try:
+                client = pronotepy.Client(
+                    pronote_url=url,
+                    username=username,
+                    password=password,
+                )
+                if current_user.pronote_tag_id is None:
+                    tag = Tag(
+                        content="de PRONOTE", 
+                        bg_color="#009853",
+                        user=current_user,
+                        user_id=current_user.id
+                    )
+                    db.session.add(tag)
+                    db.session.commit()
+                    current_user.pronote_tag_id = tag.id
+                current_user.pronote_url = url
+                current_user.pronote_username = username
+                db.session.commit()
+            except pronotepy.CryptoError:
+                return jsonify({"message": "Le mot de passe ou l'identifiant est incorrect"}), 403  # the client has failed to log in
+            except (requests.exceptions.SSLError, pronotepy.exceptions.PronoteAPIError):
+                return jsonify({"message": "La page PRONOTE n'a pas été trouvé (lien invalide)"}), 404
+            homeworks = client.homework(date_from=d.date.today())
+            for homework in homeworks:
+                my_homework = Pronote_homework.query.filter_by(
+                    content=homework.description, 
+                    user_id=current_user.id,
+                ).first()
+                if my_homework is None:
+                    subject = Subject.query.filter_by(content=homework.subject.name, user_id=current_user.id).first()
+                    if subject is None:
+                        bgColor = helpers.adjust_color_brightness(homework.background_color, -35)
+                        subject = Subject(
+                            content=homework.subject.name, 
+                            bg_color=bgColor,
+                            user=current_user,
+                            user_id=current_user.id
+                        )
+                        db.session.add(subject)
+                        db.session.commit()
+                    reminder = Reminder(
+                        content=homework.description, 
+                        date=homework.date,
+                        done = False,
+                        user=current_user,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(reminder)
+                    db.session.commit()
+                    print("One reminder added succesfully")
+                    my_homework = Pronote_homework(
+                        content=homework.description, 
+                        date=homework.date,
+                        hidden=False,
+                        reminder=reminder,
+                        user_id=current_user.id,
+                        tag_id=current_user.pronote_tag_id,
+                        subject_id=subject.id
+                    )
+                    db.session.add(my_homework)
+                    reminder.pronote = my_homework
+                    db.session.commit()
+            return "Homeworks fetched succesfully", 200
+        return "Invalid request (one or more arguments in body are missing or invalid)", 400
+    return "Missing body argument - No data sent", 401
+
+@app.route("/send_feedback", methods=["POST"])
+@login_required
+@swag_from('swagger/miscellaneous/send_feedback.yml')
+def send_feedback():
+    if request.data:
+        data = json.loads(request.data)
+        anonymous = data.get("anonymous")
+        content = data.get("content")
+        if None not in [anonymous, content] and type(anonymous) == bool:
+            mail = "<h1>"
+            if not anonymous:
+                mail += f"Retour de l'utilisateur : {current_user.username}"
+            else: 
+                mail += "Retour d'un utilisateur anonyme"
+            mail += "</h1><hr>" + content
+            message = Mail(
+                from_email=current_app.config["BASE_EMAIL"],
+                to_emails=current_app.config["BASE_EMAIL"],
+                subject="Retour d'utilisateur",
+                html_content=mail
+            )
+            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+            sg.send(message)
+            mail_log = Mail_log(
+                date = datetime.now(),
+                user_id = current_user.id,
+                user=current_user
+            )
+            db.session.add(mail_log)
+            db.session.commit()
+            return "Succesfully sent feedback", 200
+        return "Missing or invalid data sent", 400
+    return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
 # Commands
