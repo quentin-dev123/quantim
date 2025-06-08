@@ -483,7 +483,7 @@ def send_feedback():
             db.session.add(mail_log)
             db.session.commit()
             return "Succesfully sent feedback", 200
-        return "Missing or invalid ", 400
+        return "Missing or invalid data sent", 400
     return "Argument body was not found (no data sent)", 400
 
 #------------------------------------------------------
