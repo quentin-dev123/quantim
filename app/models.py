@@ -108,6 +108,7 @@ class User(UserMixin, db.Model):
     subjects = db.relationship("Subject", backref="user")
     otp = db.relationship("Otp", backref="user")
     token = db.relationship("Token", backref="user")
+    mail_log = db.relationship("Mail_log", backref="user")
     friendeds = db.relationship("Friendship", foreign_keys="[Friendship.uid]", backref="user")
     frienders = db.relationship("Friendship", foreign_keys="[Friendship.fid]", backref="friend")
 
@@ -139,3 +140,10 @@ class Friendship(db.Model):
     # --- Relationships --- 
     uid = db.Column(db.Integer, db.ForeignKey('Users.id'))
     fid = db.Column(db.Integer, db.ForeignKey('Users.id'))
+
+class Mail_log(db.Model):
+    __tablename__ = 'Mail_log'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False)
+    # --- Relationships --- 
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))

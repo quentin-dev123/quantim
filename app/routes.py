@@ -16,7 +16,7 @@ from sqlalchemy import func
 from uuid import uuid4
 from flasgger import swag_from
 
-from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship
+from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship, Mail_log
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -475,6 +475,13 @@ def send_feedback():
             )
             sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
             sg.send(message)
+            mail_log = Mail_log(
+                date = datetime.now(),
+                user_id = current_user.id,
+                user=current_user
+            )
+            db.session.add(mail_log)
+            db.session.commit()
             return "Succesfully sent feedback", 200
         return "Missing or invalid ", 400
     return "Argument body was not found (no data sent)", 400
@@ -608,7 +615,7 @@ def logout():
 @login_required
 @swag_from('swagger/user/delete_account.yml')
 def delete_account():
-    tables = [Tag, Subject, Reminder, Pronote_homework, Otp, Token, Friendship]
+    tables = [Tag, Subject, Reminder, Pronote_homework, Otp, Token, Friendship, Mail_log]
     for table in tables:
         if table == Friendship:
             table.query.filter_by(uid=current_user.id).delete()
@@ -795,7 +802,7 @@ def friendship_tester():
 # Commands
 @app.cli.command('clear')
 def drop_tables():
-    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship]
+    tables = [Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship, Mail_log]
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()
