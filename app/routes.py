@@ -685,6 +685,52 @@ def friendship_tester():
         return "A user with the specified id was not found", 404
     return "Missing or invalid data sent", 401
 
+@app.route("/send_reminder")
+@login_required
+def send_rem_to_friend():
+    args = request.args
+    friend_id = args.get("f_id")
+    rem_id = args.get("r_id")
+    if None not in [args, friend_id, rem_id]:
+        friend = User.query.get(friend_id)
+        reminder = Reminder.query.get(rem_id)
+        if None not in [friend, reminder]:
+            friendship_a = Friendship.query.filter_by(uid=current_user.id, fid=friend_id).first()
+            friendship_b = Friendship.query.filter_by(uid=friend_id, fid=current_user.id).first()
+            if None not in [friendship_a, friendship_b]:
+                if friend.friend_tag_id is None:
+                    tag = Tag(
+                        content="d'un ami", 
+                        bg_color="#2951BD",
+                        user=friend,
+                        user_id=friend.id
+                    )
+                    db.session.add(tag)
+                    db.session.commit()
+                    friend.friend_tag_id = tag.id
+                subject = Subject.query.get(reminder.subject_id)
+                f_subject = Subject(
+                    content=subject.content, 
+                    bg_color=subject.bg_color,
+                    user=friend,
+                    user_id=friend.id
+                )
+                db.session.add(f_subject)
+                db.session.commit()
+                f_reminder = Reminder(
+                    content=reminder.content, 
+                    date=reminder.date,
+                    done = False,
+                    user=friend,
+                    user_id=friend.id,
+                    tag_id=friend.friend_tag_id,
+                    subject_id=f_subject.id
+                )
+                db.session.add(f_reminder)
+                db.session.commit()
+            return "You can't send a reminder to that person because you are not friends", 403
+        return "Friend or reminder (or both) with specified id was not found", 404
+    return "Missing or invalid data sent", 400
 
 #------------------------------------------------------
 # Miscellaneous

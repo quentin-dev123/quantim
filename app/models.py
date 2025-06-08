@@ -98,6 +98,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(250), nullable=False)
     active = db.Column(db.Boolean)
     accept_mail = db.Column(db.Boolean)
+    friend_tag_id = db.Column(db.Integer, nullable=True)
     # --- PRONOTE --- 
     pronote_tag_id = db.Column(db.Integer, nullable=True)
     pronote_username = db.Column(db.String(250), nullable=True)
