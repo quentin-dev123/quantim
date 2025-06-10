@@ -226,7 +226,7 @@ function createElem(object, index, subject){
     if (object.htmlType === "p") {
         let timer;
         const longPressDuration = 500;
-        elem.addEventListener('mousedown', (event) => { // or 'touchstart'
+        /*elem.addEventListener('mousedown', (event) => { // or 'touchstart'
             timer = setTimeout(() => {
                 stopPropagation(event)
                 elem.dataset.original = elem.innerHTML
@@ -254,7 +254,7 @@ function createElem(object, index, subject){
             if (event.key === 'Enter' && !event.shiftKey) {
                 elem.contentEditable = false;
             }
-        })
+        })*/
     }
 	if (object.elemBgColor) {
 	    elem.style.backgroundColor = object.elemBgColor;
@@ -444,6 +444,10 @@ async function fetchData (fetchlink) {
 	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
        const text_element = document.getElementById(`remp${index}`)
 	   top_bar_icon.style.height = 0
+
+       const top_bar_expand = document.getElementById(`expand${index}`)
+       top_bar_expand.style.display = "none"
+
        if (element.done){
 	        text_element.classList.toggle('hidden')
        }
