@@ -8,7 +8,7 @@ parameters:
     name: session
     type: string
     example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
-    required: true
+    required: false
     description: An identification token to see if you are logged in
   - name: property
     in: path

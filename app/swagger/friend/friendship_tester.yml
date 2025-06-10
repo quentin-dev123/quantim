@@ -1,14 +1,14 @@
 Test if you are friend
 ---
 tags:
-  - User 
+  - Friend 
 description: Endpoint to test if you are friend with a user with a specified id (must be logged in).
 parameters:
   - in: cookie
     name: session
     type: string
     example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
-    required: true
+    required: false
     description: An identification token to see if you are logged in
   - name: id
     in: query

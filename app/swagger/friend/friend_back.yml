@@ -1,14 +1,14 @@
 Friend back a user
 ---
 tags:
-  - User 
+  - Friend 
 description: Endpoint to friend back a user after they sent you a friend request (must be logged in).
 parameters:
   - in: cookie
     name: session
     type: string
     example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
-    required: true
+    required: false
     description: An identification token to see if you are logged in
   - name: body
     in: body
