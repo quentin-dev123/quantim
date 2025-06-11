@@ -124,7 +124,7 @@ def get_sorted_reminders(property): # Read all (sorted)
 @swag_from('swagger/reminders/get_filtered_reminders.yml')
 def get_filtered_reminders(property, property_value): # Read all (filtered)
     if property in ["tag_id", "subject_id", "date", "content", "id"]:
-        reminders = Reminder.query.filter_by(user_id=current_user.id, done=False).all()
+        reminders = Reminder.query.filter_by(user_id=current_user.id).all()
         filtered_rems = filter(lambda rem: getattr(rem, property) == type(getattr(rem, property))(property_value), reminders)
         sorted_rems = sorted(filtered_rems, key=attrgetter('date'))
         return jsonify([r.to_json() for r in sorted_rems]), 200
