@@ -1,7 +1,7 @@
 Endpoint to get all your friends
 ---
 tags:
-  - Reminder CRUD operations
+  - Friend
 description: Endpoint returning an array of all your friends (must be logged in)
 parameters:
   - in: cookie
