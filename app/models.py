@@ -112,6 +112,14 @@ class User(UserMixin, db.Model):
     mail_log = db.relationship("Mail_log", backref="user")
     friendeds = db.relationship("Friendship", foreign_keys="[Friendship.uid]", backref="user")
     frienders = db.relationship("Friendship", foreign_keys="[Friendship.fid]", backref="friend")
+    
+    def to_json(self):
+        js = {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+        }
+        return js 
 
 class Otp(db.Model):
     __tablename__ = 'Otp'

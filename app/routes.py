@@ -659,6 +659,14 @@ def friend_back():
                         )
                         db.session.add(new_friendship)
                         db.session.commit()
+                        message = Mail(
+                            from_email=current_app.config["BASE_EMAIL"],
+                            to_emails=friend.email,
+                            subject="Requête d'amitié",
+                            html_content=f"L'utilisateur {friend.username} a accepté votre requête d'amitié" # CHANGER CECI !!!
+                        )
+                        sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
+                        sg.send(message)
                         return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
                     return jsonify({"message" : "You aren't allowed to friend back this user because they never friended you"}), 403
                 return jsonify({"message" : "Vous ne pouvez pas devenir ami avec cette personne car c'est vous"}), 403
@@ -731,6 +739,16 @@ def send_rem_to_friend():
             return "You can't send a reminder to that person because you are not friends", 403
         return "Friend or reminder (or both) with specified id was not found", 404
     return "Missing or invalid data sent", 400
+
+@app.route("/friends")
+@login_required
+def get_friends():
+    friends = []
+    for friendship in Friendship.query.filter_by(uid=current_user.id).all():
+        friend = User.query.get(friendship.fid)
+        if Friendship.query.filter_by(uid=friend.id, fid=current_user.id).first() is not None:
+            friends.append(friend)
+    return [f.to_json() for f in friends], 200
 
 #------------------------------------------------------
 # Miscellaneous
