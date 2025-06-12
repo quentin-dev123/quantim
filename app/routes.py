@@ -742,6 +742,7 @@ def send_rem_to_friend():
 
 @app.route("/friends")
 @login_required
+@swag_from('swagger/friend/get_friends.yml')
 def get_friends():
     friends = []
     for friendship in Friendship.query.filter_by(uid=current_user.id).all():
