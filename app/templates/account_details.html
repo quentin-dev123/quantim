@@ -1,0 +1,20 @@
+{% extends 'form.html' %}
+
+{% set title = "Votre compte" %}
+{% set fetch_destination = "/agenda" %}
+
+{% block form_content %} 
+<label for="username"><b> Votre username</b></label>
+<input type="text" placeholder="Username" name="username" id="username" editable=true required disabled value="timothee"><i class="material-icons edit_icon">&#xe254;</i>
+<label for="email"><b> Votre adresse email </b></label>
+<input type="email" placeholder="Email" name="email" id="email" required disabled value="timotheehk@gmail.com"><i class="material-icons edit_icon">&#xe254;</i>
+
+<label for="accept_notif">
+<input type="checkbox"  name="accept_notif" id="accept_notif" style="margin-bottom:15px" checked> J'accepte de recevoir des emails
+</label>
+{% endblock %}
+{% block sucess %}
+const response = await result.json();
+ui = response["user_id"]
+location.replace(`/otp?ui=${ui}`)
+{% endblock %}

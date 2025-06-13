@@ -127,6 +127,12 @@
         }
     }
     
+    async function link_reminder(index) {
+        event.stopPropagation()
+    }
+
+
+
     const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
         event.stopPropagation()
@@ -414,21 +420,23 @@ async function fetchData (fetchlink) {
 					elemContent: "expand_less",
 					style: "visibility: hidden",
 					class: "material-icons icon",
-				},
+				},/*
 				pin: {
 					htmlType: "span",
 					elemContent: "push_pin",
 					class: "material-icons icon",
-				},
+				},*/
 				link: {
 					htmlType: "span",
 					class: "fa-solid fa-link icon link",
                     elemContent: "",
+                    onclick: function() {link_reminder(index)},
 				}
 			}
 		    }
 		    },
 		},
+        
 		expand: {
 		   htmlType: "span",
 		   elemContent: "expand_more",
@@ -436,6 +444,7 @@ async function fetchData (fetchlink) {
 		   onclick: "open_top_bar_icons()",
 		   id: "expand",
 		},
+        
   		
             };
             Object.keys(elem_attributes).forEach(function(attr){
@@ -444,9 +453,6 @@ async function fetchData (fetchlink) {
 	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
        const text_element = document.getElementById(`remp${index}`)
 	   top_bar_icon.style.height = 0
-
-       const top_bar_expand = document.getElementById(`expand${index}`)
-       top_bar_expand.style.display = "none"
 
        if (element.done){
 	        text_element.classList.toggle('hidden')
