@@ -83,6 +83,7 @@ def recover_homeworks(): # Recover all PRONOTE
                 content=homework.content, 
                 date=homework.date,
                 done=False,
+                pinned=False,
                 user=current_user,
                 user_id=current_user.id,
                 tag_id=current_user.pronote_tag_id,
@@ -105,6 +106,7 @@ def recover_homeworks(): # Recover all PRONOTE
 def get_reminders(): # Read all
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
+    sorted_rems = sorted(sorted_rems, key=attrgetter('pinned'))
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
 @app.route("/api/reminder/sort/<property>")
@@ -145,6 +147,7 @@ def create_reminders(): # Create
                         content=data.get("content"), 
                         date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
                         done=False,
+                        pinned=False,
                         user=current_user,
                         user_id=current_user.id,
                         tag_id=tag_id,
@@ -743,6 +746,7 @@ def send_rem_to_friend():
                         content=reminder.content, 
                         date=reminder.date,
                         done = False,
+                        pinned = False,
                         user=friend,
                         user_id=friend.id,
                         tag_id=friend.friend_tag_id,
@@ -824,6 +828,7 @@ def fetch_pronote():
                         content=homework.description, 
                         date=homework.date,
                         done = False,
+                        pinned=False,
                         user=current_user,
                         user_id=current_user.id,
                         tag_id=current_user.pronote_tag_id,

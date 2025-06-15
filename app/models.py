@@ -60,6 +60,7 @@ class Reminder(db.Model):
             'content': self.content,
             'date': self.date.isoformat(),
             'done': self.done,
+            'pinned': self.pinned,
             'tag_id': self.tag_id,
             'user_id': self.user_id,
             'subject_id': self.subject_id,
