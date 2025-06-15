@@ -470,9 +470,7 @@ def validate_otp():
     data = json.loads(request.data)
     otp_id = data.get("otp_id")
     otp_value = int(data.get("otp"))
-    print(otp_value)
     otp = Otp.query.get_or_404(otp_id)
-    print(otp.value)
     if otp.expiry > datetime.now():
         if otp.value == otp_value:
             user = User.query.get_or_404(otp.user_id)
@@ -836,7 +834,6 @@ def fetch_pronote():
                     )
                     db.session.add(reminder)
                     db.session.commit()
-                    print("One reminder added succesfully")
                     my_homework = Pronote_homework(
                         content=homework.description, 
                         date=homework.date,
@@ -914,7 +911,7 @@ def create_pat(value):
     pat = Pat(name="send_reminders", val=pat_value)
     db.session.add(pat)
     db.session.commit()
-    click.echo(Pat.query.get(pat.id).name)
+    click.echo(f"Added succesfully a pat with a name of: {Pat.query.get(pat.id).name}")
     return "Added succesfully"
 
 
