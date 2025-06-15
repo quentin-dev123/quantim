@@ -25,7 +25,7 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 To-do list :
     - Finish swagger 
     - Make it possible to send reminders to other persons/users
-    - Make it possible to pin a reminder
+    - Make it possible to pin a reminder (done, need to use that in read operations of remiders)
     - Change approach of filter and sort reminders (make one function with arguments)
 """
 
@@ -67,10 +67,8 @@ def get_reminder(rem_id): # Read one
     if reminders is not None:
         if reminders.user_id == current_user.id:
             return jsonify(reminders.to_json()), 200
-        else:
-            return "Not logged into the account of the reminder", 403
-    else:
-        return "Reminder not found", 404
+        return "Not logged into the account of the reminder", 403
+    return "Reminder not found", 404
     
 @app.route("/api/reminder/recover_pronote")
 @login_required
