@@ -33,26 +33,15 @@ responses:
     schema:
       type: string
       example: Missing or invalid data sent
-  401:
-    description: The username provided isn't yours, throws error message in french.
-    schema:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Le username ne correspond pas à celui de votre compte
   403:
-    description: You are not allowed to send a reminder to the user because you aren't friends
+    description: There is no back AND forth friendship between you and that user
     schema:
       type: string
       example: You can't send a reminder to that person because you are not friends 
   404:
-    description: There is no existing user that has the id you provided 
+    description: There is no existing user or reminder (or both) that has the id you provided 
     schema:
-      type: object
-      properties:
-        message:
-          type: string
-          example: The user with the specified id was not found
+      type: string
+      example: Friend with specified id was not found
   500:
     description: An error ocurred internally. This isn't planned and can have many causes.
