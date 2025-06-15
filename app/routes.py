@@ -23,10 +23,10 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 """
 To-do list :
-    - Finish swagger and externalize all doc in /swagger
-    - Make tag and subject editable
-    - Test possibility to send comments (for support or feedback)
+    - Finish swagger 
     - Make it possible to send reminders to other persons/users
+    - Make it possible to pin a reminder
+    - Change approach of filter and sort reminders (make one function with arguments)
 """
 
 #------------------------------------------------------
