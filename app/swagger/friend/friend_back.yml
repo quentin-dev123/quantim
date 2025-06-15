@@ -28,6 +28,8 @@ responses:
     schema:
       type: string
       example: Sucessfully friended back GraciousTiger200, I declare you now BFF
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   400:
     description: The data sent is either missing, incomplete or invalid.
     schema:

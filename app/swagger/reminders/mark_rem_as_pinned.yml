@@ -27,6 +27,8 @@ responses:
     schema:
       type: string
       example: Reminder marked as pinned (or not) succesfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   400:
     description: The status argument is invalid
     schema:

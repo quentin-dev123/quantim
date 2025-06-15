@@ -35,6 +35,8 @@ responses:
     description: A subject object
     schema:
       $ref: '#/definitions/Subject'
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   403:
     description: The subject with the specified id belongs to someone else
     schema:

@@ -42,6 +42,8 @@ responses:
         "tag_id": 8765,
         "user_id": 4321
       }
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   404:
     description: Meaning one of the params of the request was not found in the database 
     schema:

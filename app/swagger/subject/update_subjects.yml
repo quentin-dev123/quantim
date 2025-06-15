@@ -32,6 +32,8 @@ responses:
     schema:
       type: string
       example: Subject updated succesfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   403:
     description: The subject you're trying to update doesn't belong to you
     schema:

@@ -20,6 +20,8 @@ responses:
     schema:
       type: string
       example: Reminder deleted succesfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   403:
     description: The reminder you're trying to delete doesn't belong to you
     schema:

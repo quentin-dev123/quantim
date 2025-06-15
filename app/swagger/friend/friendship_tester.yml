@@ -21,6 +21,8 @@ responses:
     schema:
       type: string
       example: Clearly two BFFs
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   400:
     description: One (or both) of the two person (you and the person with the specified id) is not friend with the other.
     schema:

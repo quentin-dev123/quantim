@@ -17,6 +17,8 @@ responses:
       type: array
       items:
         $ref: '#/definitions/Reminder'
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   401:
     description: You are unauthenticated (you haven't ever added PRONOTE reminders)
     schema:

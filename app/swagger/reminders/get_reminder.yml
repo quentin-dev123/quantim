@@ -41,6 +41,8 @@ responses:
     description: A reminder object
     schema:
       $ref: '#/definitions/Reminder'
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   403:
     description: The reminder with the specified id belongs to someone else
     schema:

@@ -32,6 +32,8 @@ responses:
     schema:
       type: string
       example: Tag updated succesfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   403:
     description: The tag you're trying to update doesn't belong to you
     schema:

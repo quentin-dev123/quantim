@@ -32,6 +32,8 @@ responses:
     schema:
       type: string
       example: Homeworks fetched succesfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   400:
     description: Missing or invalid data in the body, throws error message
     schema:

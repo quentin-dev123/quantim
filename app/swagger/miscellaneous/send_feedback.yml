@@ -30,6 +30,8 @@ responses:
     schema:
       type: string
       example: Succesfully sent feedback
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   400:
     description: The body is malformated (doesnt exist or invalid content), throws error message descibing error precisely
     schema:

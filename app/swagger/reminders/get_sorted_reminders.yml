@@ -22,6 +22,8 @@ responses:
       type: array
       items:
         $ref: '#/definitions/Reminder'
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
   404:
     description: The specified property was not found
     schema:
