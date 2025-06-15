@@ -106,7 +106,7 @@ def recover_homeworks(): # Recover all PRONOTE
 def get_reminders(): # Read all
     reminders = Reminder.query.filter_by(user_id=current_user.id).all()
     sorted_rems = sorted(reminders, key=attrgetter('date'))
-    sorted_rems = sorted(sorted_rems, key=attrgetter('pinned'))
+    sorted_rems = sorted(sorted_rems, key=attrgetter('pinned'), reverse=True)
     return jsonify([r.to_json() for r in sorted_rems]), 200
 
 @app.route("/api/reminder/sort/<property>")
