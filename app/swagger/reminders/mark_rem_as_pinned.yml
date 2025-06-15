@@ -1,0 +1,46 @@
+Endpoint to mark as pinned a reminder
+---
+tags:
+  - Reminder CRUD operations
+description: Endpoint to mark as pinned (or unpinned) a reminder with a specified id (must be logged in)
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: false
+    description: An identification token to see if you are logged in
+  - name: rem_id
+    in: path
+    type: integer
+    required: true
+    description: The id of the reminder you are trying to mark as pinned (or not)
+  - name: status
+    in: path
+    type: string
+    enum: ['True', 'False']
+    required: true
+    description: The status of pinned you want to set the reminder to 
+responses:
+  200:
+    description: The reminder was succesfully marked as pinned (or unpinned)
+    schema:
+      type: string
+      example: Reminder marked as pinned (or not) succesfully
+  400:
+    description: The status argument is invalid
+    schema:
+      type: string
+      example: Invalid argument status. Must be included in ['True', 'False']
+  403:
+    description: The reminder you're trying to access doesn't belong to you
+    schema:
+      type: string
+      example: Not logged into the right account
+  404:
+    description: The reminder with the specified id was not found
+    schema:
+      type: string
+      example: Reminder not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

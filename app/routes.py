@@ -211,7 +211,7 @@ def update_reminders(rem_id): # Update
         return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
 
-@app.route("/api/reminder/done/<int:rem_id>/<status>")
+@app.route("/api/reminder/done/<int:rem_id>/<status>", methods=["PATCH"])
 @login_required
 @swag_from('swagger/reminders/mark_rem_as_done.yml')
 def mark_rem_as_done(rem_id, status): # Mark one as done
@@ -222,6 +222,21 @@ def mark_rem_as_done(rem_id, status): # Mark one as done
                 reminder.done = (status == "True")
                 db.session.commit()
                 return "Reminder marked as done succesfully", 200
+            return "Invalid argument status. Must be included in ['True', 'False']", 400
+        return "Not logged in the right account", 403
+    return "Reminder not found", 404
+
+@app.route("/api/reminder/pinned/<int:rem_id>/<status>", methods=["PATCH"])
+@login_required
+@swag_from('swagger/reminders/mark_rem_as_pinned.yml')
+def mark_rem_as_pinned(rem_id, status): # Mark one as pinned
+    reminder = Reminder.query.get(rem_id)
+    if reminder is not None:
+        if reminder.user_id == current_user.id: # Layer of security
+            if status in ["True", "False"]:
+                reminder.pinned= (status == "True")
+                db.session.commit()
+                return "Reminder marked as pinned (or not) succesfully", 200
             return "Invalid argument status. Must be included in ['True', 'False']", 400
         return "Not logged in the right account", 403
     return "Reminder not found", 404
