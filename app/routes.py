@@ -736,6 +736,7 @@ def send_rem_to_friend():
                 )
                 db.session.add(f_reminder)
                 db.session.commit()
+                return "Reminder sent succesfully", 200
             return "You can't send a reminder to that person because you are not friends", 403
         return "Friend or reminder (or both) with specified id was not found", 404
     return "Missing or invalid data sent", 400
