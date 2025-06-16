@@ -108,7 +108,7 @@
       </div>
     </form>
   </div>
-  <a class="green" href="/fetch_from_pronote">Se connecter à Pronote</a>
+  <a class="green" onclick="open_link('/fetch_from_pronote')">Se connecter à Pronote</a>
   <a class="red" onclick="open_confirm_modal('Effacer TOUS les rappels', 'Êtes-vous sûr de vouloir effacer TOUS vos rappels ? Vous ne pouvez pas revenir en arrière.', '/api/reminder', function(){history.go(0); /* reload the page */})">Effacer tous les rappels</a>
   <a class="red" onclick="open_confirm_modal('Effacer votre compte', 'Êtes-vous sûr de vouloir effacer votre compte ? Vous ne pouvez pas revenir en arrière.', '/account', function(){window.location.href = '/home';})">Effacer le compte</a>
 </div>
@@ -266,6 +266,42 @@
     let year = d.getFullYear();
     document.getElementById("date").innerHTML = `2024-${year}`;
 
+// Online vs offline functions
+var online_variable = true
+function went_online(){
+    online_variable = true
+    alert("Vous êtes à nouveau en ligne")
+}
+
+function went_offline(){
+    online_variable = false
+    alert("Vous êtes hors ligne, certaines fonctionnalités ne fonctionneront plus")
+}
+
+function offline_alert(){
+    alert("Cette fonctionnalité ne fonctionne pas hors ligne")
+}
+
+function online(){
+  if (online_variable){
+    return true
+  } else {
+    offline_alert()
+    return false
+  }
+}
+
+function open_link(link){
+  if (online()){
+    window.location.href = link
+  }
+}
+
+
+window.addEventListener("online", went_online);
+window.addEventListener("offline", went_offline);
+
+
 // Sidenav menu
    function openNav() {
      document.getElementById("mySidenav").style.width = "250px";
@@ -273,7 +309,9 @@
 
    function closeNav() {
      document.getElementById("mySidenav").style.width = "0"
-     mySidenav_amelioration()
+     if (online_variable){
+        mySidenav_amelioration()
+     }
    }
 
 function removeAllEventListeners(element) {
@@ -292,9 +330,11 @@ const amelioration_label = amelioration_div.querySelector("label")
 const amelioration_checkbox = amelioration_div.querySelector("input")
 
 function mySidenav_amelioration(){
+  if (online()){
     amelioration_div.classList.toggle('hide')
     amelioration_a.classList.toggle('on')
   }
+}
 
 amelioration_form.addEventListener('submit',  async (event) => {
     event.preventDefault();  // Prevent the default form submission
@@ -318,7 +358,8 @@ amelioration_form.addEventListener('submit',  async (event) => {
           const response = await result.json();
           alert(response["message"])
       }
-});
+    }
+);
 
 
 amelioration_checkbox.addEventListener('change', function() {
@@ -328,7 +369,7 @@ amelioration_checkbox.addEventListener('change', function() {
     amelioration_label.classList.remove('on');
   }
 });
-	
+
 // Secret Sidenav menu
    function openNav2() {
      document.getElementById("mySecretSidenav").style.width = "250px";
@@ -437,25 +478,27 @@ function close_confirm_modal() {
 
 	
 function open_confirm_modal(title, message, link, action) {
-  closeNav()
-  let confirm_modal = document.getElementById("confirm_modal");
-  let confirm_form = confirm_modal.querySelector("form");
-  let confirm_title = confirm_modal.querySelector("h1");
-  let confirm_message = confirm_modal.querySelector("p");
-  confirm_title.innerHTML = title
-  confirm_message.innerHTML = message
-  confirm_modal.style.display = "block";
-  confirm_form = removeAllEventListeners(confirm_form)
-  confirm_form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-      let response = await fetch(link, {method: 'DELETE'});
-      if (response.ok) {
-        console.log(response);
-        action()
-      } else {
-        console.log(response);
-      }
-  })
+  if (online(){
+    closeNav()
+    let confirm_modal = document.getElementById("confirm_modal");
+    let confirm_form = confirm_modal.querySelector("form");
+    let confirm_title = confirm_modal.querySelector("h1");
+    let confirm_message = confirm_modal.querySelector("p");
+    confirm_title.innerHTML = title
+    confirm_message.innerHTML = message
+    confirm_modal.style.display = "block";
+    confirm_form = removeAllEventListeners(confirm_form)
+    confirm_form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+        let response = await fetch(link, {method: 'DELETE'});
+        if (response.ok) {
+          console.log(response);
+          action()
+        } else {
+          console.log(response);
+        }
+    })
+  }
 }
 
 

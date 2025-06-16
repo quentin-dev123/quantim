@@ -21,7 +21,7 @@
 </div>
 <div>
     <div class="tooltip_container_left">
-        <span class="fas filter_icon" onclick="filter_icon_dropdown_content()">&#xf0b0;</span>
+        <span class="fas filter_icon" id="filter_icon" onclick="filter_icon_dropdown_content()">&#xf0b0;</span>
         <label class="tooltip">Filtrer</label>
     </div>
     <div class="filter_dropdown_content hide" id="filter_dropdown_content" onclick="stopPropagation(event)">
@@ -58,7 +58,7 @@
 </div>
 <div>
     <div class="tooltip_container_left">
-      <span class="material-icons sort_icon"  onclick="sort_icon_dropdown_content()">&#xe053;</span>
+      <span class="material-icons sort_icon" id="sort_icon" onclick="sort_icon_dropdown_content()">&#xe053;</span>
       <label class="tooltip">Trier</label>
     </div>
     <div class="sort_icon-dropdown_content" id="sort_icon-dropdown_content">
@@ -69,7 +69,7 @@
   </div>
 {% endblock %}
 {% block content %}
-<a class="add-dev-button" href="/add_reminder">+</a>
+<a class="add-dev-button" onclick="open_link('/add_reminder')">+</a>
 <div class="lds-ring" id="loading" style="text-align: middle;"><div></div><div></div><div></div><div></div></div>
 {% endblock %}
 {% block after_content %}{% endblock %}
@@ -102,27 +102,31 @@
 	
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
+
         const checkbox = document.getElementById(`reminput${container_id}`);
-	const mad_checkbox = document.getElementById(`madinput${container_id}`);
+        const mad_checkbox = document.getElementById(`madinput${container_id}`);
         const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
-	const text = document.getElementById(`remp${container_id}`);
+        const text = document.getElementById(`remp${container_id}`);
+        if (online()){
+            let message;
+            if (text.classList.contains('hidden')){
+                message = await patch("/api/reminder/done/" + reminder_id + "/False");
+                mad_checkbox.checked = true
+                checkbox.checked = false
+            } else {
+                message = await patch("/api/reminder/done/" + reminder_id + "/True");
+                checkbox.checked = false
+                mad_checkbox.checked = true
+            }
 
-        let message;
-        if (text.classList.contains('hidden')){
-            message = await fetch("/api/reminder/done/" + reminder_id + "/False");
-	        mad_checkbox.checked = true
+            if (message.ok){
+                overlay.classList.toggle('active');
+                text.classList.toggle('hidden')
+            } else {
+                console.log(message.statusText)
+            }
+        } else {
             checkbox.checked = false
-        } else {
-            message = await fetch("/api/reminder/done/" + reminder_id + "/True");
-	        checkbox.checked = false
-            mad_checkbox.checked = true
-        }
-
-        if (message.ok){
-            overlay.classList.toggle('active');
-	        text.classList.toggle('hidden')
-        } else {
-            console.log(message.statusText)
         }
     }
 
@@ -131,8 +135,10 @@
     const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
     function sort_icon_dropdown_content(){
         event.stopPropagation()
-        close_filter_icon_dropdown_content()
-        sort_dropdown_content.classList.toggle('show');
+        if (online()){
+            close_filter_icon_dropdown_content()
+            sort_dropdown_content.classList.toggle('show');
+        }
     }
 
     function close_sort_icon_dropdown_content(){
@@ -342,7 +348,9 @@ async function fetchData (fetchlink) {
 	    edit.className = "edit";
 	    edit.innerHTML = "Modifier";
         edit.addEventListener('click', () => {
-            editmodal_open_modal(element.id);
+            if (online()){
+                editmodal_open_modal(element.id);
+            }
         });
 	    edit.id = `edit${index}`;
 	    
@@ -350,8 +358,10 @@ async function fetchData (fetchlink) {
 	    del.className = "del";
 	    del.innerHTML = "Effacer";
 	    del.addEventListener('click', () => {
-		    toggleDarkness(index);
-		    open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
+            if (online()){
+                toggleDarkness(index);
+                open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
+            }
         });
 	    del.id = `del${index}`;
 	    

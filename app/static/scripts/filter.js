@@ -3,9 +3,11 @@ filter_datePicker.min = new Date().toISOString().split("T")[0];
 
 const filter_dropdown_content = document.getElementById('filter_dropdown_content');
     function filter_icon_dropdown_content(){
+      if (online()){
         event.stopPropagation()
         close_sort_icon_dropdown_content()
         filter_dropdown_content.classList.toggle('hide');
+      }
     }
 
     function close_filter_icon_dropdown_content(){

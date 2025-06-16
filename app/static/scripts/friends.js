@@ -2,9 +2,11 @@ var global_reminder_id
 let ul = document.getElementById('friends_list_modal');
 
 function open_friends_list(index) {
-    event.stopPropagation()
-    global_reminder_id = index
-    ul.classList.remove('hidden')
+    if (online()){
+        event.stopPropagation()
+        global_reminder_id = index
+        ul.classList.remove('hidden')
+    }
 }
 
 function close_friends_list() {
