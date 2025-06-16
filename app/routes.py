@@ -109,7 +109,6 @@ def get_reminders(): # Read all
     filter = args.get("filter")
     f_value = args.get("f_value")
     reminders = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) > date.today() - timedelta(days=1)).all()
-    print(reminders)
     if None not in [filter, f_value]:
         reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
     if sort is not None:
