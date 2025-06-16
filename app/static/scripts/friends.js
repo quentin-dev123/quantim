@@ -4,9 +4,14 @@ let ul = document.getElementById('friends_list_modal');
 function open_friends_list(index) {
     event.stopPropagation()
     global_reminder_id = index
-    ul.classList.toggle('hidden')
+    ul.classList.remove('hidden')
 }
 
+function close_friends_list() {
+    ul.classList.add('hidden')
+}
+
+document.addEventListener('click', close_friends_list)
 
 function send_rem_to_friend(friend_id){
     return
@@ -22,6 +27,7 @@ async function friends_dynamic_list(rem_id){
     if (response == ""){
         let li = document.createElement("li");
         li.innerHTML = "Vous n'avez pas encore d'amis. Ajoutez en !";
+        li.style = "padding-bottom: 5px;"
         li.addEventListener('click', (event) => {
             add_friend()
         })

@@ -273,6 +273,7 @@
 
    function closeNav() {
      document.getElementById("mySidenav").style.width = "0"
+     mySidenav_amelioration()
    }
 
 function removeAllEventListeners(element) {
@@ -312,6 +313,7 @@ amelioration_form.addEventListener('submit',  async (event) => {
           alert('Amélioration envoyée !')
           amelioration_textarea.value = ""
           mySidenav_amelioration()
+          closeNav()
       } else {
           const response = await result.json();
           alert(response["message"])
