@@ -120,9 +120,9 @@ def get_reminders(): # Read all
     else:
         reminders = sorted(reminders, key=attrgetter('date'))
     reminders = sorted(reminders, key=attrgetter('pinned'), reverse=True)
-    old_rems = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) < date.today() - timedelta(days=2))
+    """old_rems = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) < date.today() - timedelta(days=2))
     old_rems.delete()
-    db.session.commit()
+    db.session.commit()"""
     return jsonify([r.to_json() for r in reminders]), 200
 
 @app.route("/api/reminder/sort/<property>")
