@@ -106,12 +106,21 @@ def recover_homeworks(): # Recover all PRONOTE
 def get_reminders(): # Read all
     args = request.args
     sort = args.get("sort")
-    filter = args.get("filter")
+    my_filter = args.get("filter")
+    print(my_filter)
     f_value = args.get("f_value")
     reminders = Reminder.query.filter(Reminder.user_id == current_user.id, Reminder.date > date.today() - timedelta(days=1)).all()
-    if None not in [filter, f_value]:
-        if filter in ["tag_id", "subject_id", "date", "id"]:
-            reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
+    print(1, reminders)
+    if None not in [my_filter, f_value]:
+        if my_filter in ["tag_id", "subject_id", "date", "id"]:
+            try:
+                if my_filter == "date":
+                    reminders = list(filter(lambda rem: getattr(rem, my_filter) == datetime.strptime(f_value, '%Y-%m-%d').date(), reminders))
+                else: 
+                    reminders = list(filter(lambda rem: getattr(rem, my_filter) == int(f_value), reminders))
+            except Exception as e:
+                return f"Error - {e}", 500
+            print(2, reminders) 
         else:
             return 'Filtering property not included in ["tag_id", "subject_id", "date", "id"]', 400    
     if sort is not None:
@@ -121,7 +130,9 @@ def get_reminders(): # Read all
             return 'Sorting property not included in ["tag_id", "subject_id", "date", "content", "id"]', 400
     else:
         reminders = sorted(reminders, key=attrgetter('date'))
+        print(3, reminders)
     reminders = sorted(reminders, key=attrgetter('pinned'), reverse=True)
+    print(4, reminders)
     """old_rems = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) < date.today() - timedelta(days=2))
     old_rems.delete()
     db.session.commit()"""
