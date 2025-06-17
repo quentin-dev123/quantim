@@ -110,12 +110,15 @@ def get_reminders(): # Read all
     f_value = args.get("f_value")
     reminders = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) > date.today() - timedelta(days=1)).all()
     if None not in [filter, f_value]:
-        reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
+        if filter in ["tag_id", "subject_id", "date", "id"]:
+            reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
+        else:
+            return 'Filtering property not included in ["tag_id", "subject_id", "date", "id"]', 400    
     if sort is not None:
         if sort in ["tag_id", "subject_id", "date", "content", "id"]:
             reminders = sorted(reminders, key=attrgetter(sort))
         else:
-            return "Sorting property of reminder is invalid", 400
+            return 'Sorting property not included in ["tag_id", "subject_id", "date", "content", "id"]', 400
     else:
         reminders = sorted(reminders, key=attrgetter('date'))
     reminders = sorted(reminders, key=attrgetter('pinned'), reverse=True)
