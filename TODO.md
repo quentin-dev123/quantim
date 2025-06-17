@@ -13,3 +13,5 @@ Works as a online personal agenda
 - [ ] Need to create page with account info and possibility to change attributes of account (username, password)
 
 ### Front End
+- [ ] Adapt query of reminders after backend change (change filter and sort)
+- [ ] Implement pin reminder button and change mark as done button request method (GET -> PATCH)
