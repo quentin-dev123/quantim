@@ -44,7 +44,7 @@ class Reminder(db.Model):
     __tablename__ = 'Reminders'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
-    date = db.Column(db.DateTime, nullable=True)
+    date = db.Column(db.Date, nullable=True)
     done = db.Column(db.Boolean)
     pinned = db.Column(db.Boolean)
     # --- Relationships --- 
@@ -72,7 +72,7 @@ class Pronote_homework(db.Model):
     __tablename__ = 'Pronote_homework'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(R_CONTENT_MAX_SIZE), nullable=True)
-    date = db.Column(db.DateTime, nullable=True)
+    date = db.Column(db.Date, nullable=True)
     hidden = db.Column(db.Boolean)
     # --- Relationships --- 
     reminder = db.relationship("Reminder", uselist=False, back_populates="pronote")

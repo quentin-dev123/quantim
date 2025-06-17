@@ -108,7 +108,7 @@ def get_reminders(): # Read all
     sort = args.get("sort")
     filter = args.get("filter")
     f_value = args.get("f_value")
-    reminders = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) > date.today() - timedelta(days=1)).all()
+    reminders = Reminder.query.filter(Reminder.user_id == current_user.id, Reminder.date > date.today() - timedelta(days=1)).all()
     if None not in [filter, f_value]:
         if filter in ["tag_id", "subject_id", "date", "id"]:
             reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
@@ -163,7 +163,7 @@ def create_reminders(): # Create
                 if subject.user_id == current_user.id:
                     reminder = Reminder(
                         content=data.get("content"), 
-                        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+                        date=datetime.strptime(data.get("date"), "%Y-%m-%d").date(),
                         done=False,
                         pinned=False,
                         user=current_user,
