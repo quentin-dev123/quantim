@@ -19,7 +19,8 @@ parameters:
   - name: f_value
     in: query
     required: false
-    description: The value of the property. Data types depend on property. Integer for all id's and string ("YYYY-MM-DD") for date.
+    type: string
+    description: The value of the property. For example, a filter of subject_id and a f_value of 13 will select all reminders with a subject_id of 13
   - name: sort
     in: query
     type: string
