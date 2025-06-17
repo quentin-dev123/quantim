@@ -21,13 +21,6 @@ from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, To
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
-"""
-To-do list :
-    - Finish swagger 
-    - Make it possible to send reminders to other persons/users
-    - Make it possible to pin a reminder (done, need to use that in read operations of remiders)
-    - Change approach of filter and sort reminders (make one function with arguments)
-"""
 
 #------------------------------------------------------
 # HOME SITE
