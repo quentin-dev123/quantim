@@ -10,6 +10,16 @@ parameters:
     example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
     required: false
     description: An identification token to see if you are logged in
+  - name: filter
+    in: query
+    type: string
+    enum:  ["tag_id", "subject_id", "date", "id"]
+    required: false
+    description: The criteria of filtering that should be applied to the query of reminders
+  - name: f_value
+    in: query
+    required: false
+    description: The value of the criteria (e.g. 23 for subject_id will select all reminders with a subject_id of 23). Type of value depends on the property (argument filter). 
 responses:
   200:
     description: A list of all reminders sorted chronologically by date property

@@ -8,7 +8,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from git import Repo
 from flask_bcrypt import Bcrypt 
 from . import helpers, create_app, db, swagger
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from operator import attrgetter
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -104,10 +104,28 @@ def recover_homeworks(): # Recover all PRONOTE
 @login_required
 @swag_from('swagger/reminders/get_reminders.yml')
 def get_reminders(): # Read all
-    reminders = Reminder.query.filter_by(user_id=current_user.id).all()
-    sorted_rems = sorted(reminders, key=attrgetter('date'))
-    sorted_rems = sorted(sorted_rems, key=attrgetter('pinned'), reverse=True)
-    return jsonify([r.to_json() for r in sorted_rems]), 200
+    args = request.args
+    sort = args.get("sort")
+    filter = args.get("filter")
+    f_value = args.get("f_value")
+    reminders = Reminder.query.filter(Reminder.user_id == current_user.id, Reminder.date > date.today() - timedelta(days=1)).all()
+    if None not in [filter, f_value]:
+        if filter in ["tag_id", "subject_id", "date", "id"]:
+            reminders = filter(lambda rem: getattr(rem, f_value) == f_value, reminders)
+        else:
+            return 'Filtering property not included in ["tag_id", "subject_id", "date", "id"]', 400    
+    if sort is not None:
+        if sort in ["tag_id", "subject_id", "date", "content", "id"]:
+            reminders = sorted(reminders, key=attrgetter(sort))
+        else:
+            return 'Sorting property not included in ["tag_id", "subject_id", "date", "content", "id"]', 400
+    else:
+        reminders = sorted(reminders, key=attrgetter('date'))
+    reminders = sorted(reminders, key=attrgetter('pinned'), reverse=True)
+    """old_rems = Reminder.query.filter(Reminder.user_id == current_user.id, func.DATE(Reminder.date) < date.today() - timedelta(days=2))
+    old_rems.delete()
+    db.session.commit()"""
+    return jsonify([r.to_json() for r in reminders]), 200
 
 @app.route("/api/reminder/sort/<property>")
 @login_required
@@ -145,7 +163,7 @@ def create_reminders(): # Create
                 if subject.user_id == current_user.id:
                     reminder = Reminder(
                         content=data.get("content"), 
-                        date=datetime.strptime(data.get("date"), "%Y-%m-%d"),
+                        date=datetime.strptime(data.get("date"), "%Y-%m-%d").date(),
                         done=False,
                         pinned=False,
                         user=current_user,
