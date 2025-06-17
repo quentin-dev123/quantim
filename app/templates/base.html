@@ -123,6 +123,17 @@
   <li>Mes amis</li>
 </ul>
 
+<div class="add_friend_modal" id="add_friend_modal">
+  <form>
+    <label for="name">Ajouter un ami</label>
+    <input for="name" placeholder="Le username de votre ami" required>
+    <div>
+        <button type="button" onclick="open_close_add_friend()" class="cancel">Annuler</button>
+        <button type="submit" class="confirm">Ajouter</button>
+    </div>
+  </form>
+</div>
+
 <!-- Confirmation modal -->
 <div id="confirm_modal" class="my_modal">
   <span onclick="close_confirm_modal()" class="my_close" title="my_close Modal">&times;</span>
@@ -338,7 +349,7 @@ function mySidenav_amelioration(){
 
 amelioration_form.addEventListener('submit',  async (event) => {
     event.preventDefault();  // Prevent the default form submission
-    let result = await fetch("/send_feedback", {
+    let response = await fetch("/send_feedback", {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -349,16 +360,15 @@ amelioration_form.addEventListener('submit',  async (event) => {
 })
       });
 
-      if (result.ok) {
+      if (response.ok) {
           alert('Amélioration envoyée !')
           amelioration_textarea.value = ""
           mySidenav_amelioration()
           closeNav()
       } else {
-          const response = await result.json();
-          alert(response["message"])
+          alert(`Error ${response.status}`)
       }
-    }
+  }
 );
 
 
@@ -478,7 +488,7 @@ function close_confirm_modal() {
 
 	
 function open_confirm_modal(title, message, link, action) {
-  if (online(){
+  if (online()){
     closeNav()
     let confirm_modal = document.getElementById("confirm_modal");
     let confirm_form = confirm_modal.querySelector("form");

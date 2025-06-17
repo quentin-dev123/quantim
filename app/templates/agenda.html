@@ -102,7 +102,7 @@
 	
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
-
+        try {
         const checkbox = document.getElementById(`reminput${container_id}`);
         const mad_checkbox = document.getElementById(`madinput${container_id}`);
         const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
@@ -128,6 +128,9 @@
         } else {
             checkbox.checked = false
         }
+    } catch(error){
+        console.log('Error: ' + error)
+    }
     }
 
 
@@ -192,8 +195,12 @@
 
     async function loadRessource (ressource_route) {
             const ressource = await fetch(ressource_route);
-            const response = await ressource.json();
-            return response;
+            if (ressource.ok) {
+                const response = await ressource.json();
+                return response;
+            } else {
+                alert(`Error ${ressource.status}`);
+            }
     } 
 
 function remove_reminders(){
@@ -292,7 +299,6 @@ function createElem(object, index, subject){
 async function fetchData (fetchlink) {
     remove_reminders()
     loading.classList.remove('hide');
-    
     let reminderArr = await loadRessource("/api/reminder" + fetchlink);
     let tagArr = await loadRessource("/api/tag");
     let subjectArr = await loadRessource("/api/subject");
@@ -302,13 +308,13 @@ async function fetchData (fetchlink) {
 
     // remove expired reminders
     const removeExpiredObjects = (array) => {
-	    const currentDate = new Date();
-	    currentDate.setDate(currentDate.getDate() - 1);
-	    return array.filter(item => new Date(item.date) >= currentDate);
-     };
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+        return array.filter(item => new Date(item.date) >= currentDate);
+    };
     reminderArr = removeExpiredObjects(reminderArr);
 
-		
+        
     if (Array.isArray(reminderArr)) {
     
         reminderArr.forEach(function(element, index) {
@@ -316,8 +322,8 @@ async function fetchData (fetchlink) {
     container.className = "container";
     container.id = `container${index}`;
     
-	let reminder = document.createElement("div");
-		let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+    let reminder = document.createElement("div");
+        let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
             let tag = tagArr.find(myTag => myTag.id === element.tag_id);
             element.date = new Date(element.date)
     reminder.className = "reminder-container"; // Renamed for clarity
@@ -336,56 +342,56 @@ async function fetchData (fetchlink) {
             open_top_bar_icons(index, event)
         }
         event.stopPropagation();
-      });
-	    container.appendChild(reminder);
-	    
-	    let overlay = document.createElement("div");
-	    overlay.className = "overlay buttons_overlay";
-	    overlay.id = `overlay${index}`;
-	    container.appendChild(overlay);
-	    
-	    let edit = document.createElement("button");
-	    edit.className = "edit";
-	    edit.innerHTML = "Modifier";
+    });
+        container.appendChild(reminder);
+        
+        let overlay = document.createElement("div");
+        overlay.className = "overlay buttons_overlay";
+        overlay.id = `overlay${index}`;
+        container.appendChild(overlay);
+        
+        let edit = document.createElement("button");
+        edit.className = "edit";
+        edit.innerHTML = "Modifier";
         edit.addEventListener('click', () => {
             if (online()){
                 editmodal_open_modal(element.id);
             }
         });
-	    edit.id = `edit${index}`;
-	    
-	    let del = document.createElement("button");
-	    del.className = "del";
-	    del.innerHTML = "Effacer";
-	    del.addEventListener('click', () => {
+        edit.id = `edit${index}`;
+        
+        let del = document.createElement("button");
+        del.className = "del";
+        del.innerHTML = "Effacer";
+        del.addEventListener('click', () => {
             if (online()){
                 toggleDarkness(index);
                 open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
             }
         });
-	    del.id = `del${index}`;
-	    
-	    overlay.appendChild(edit);
-	    overlay.appendChild(del);
-	    
+        del.id = `del${index}`;
+        
+        overlay.appendChild(edit);
+        overlay.appendChild(del);
+        
         let mark_as_done_overlay = document.createElement("div");
-	    mark_as_done_overlay.className = "overlay mark_as_done_overlay";
-	    mark_as_done_overlay.id = `mark_as_done_overlay${index}`;
-	    if (element.done){
-	        mark_as_done_overlay.classList.add('active');
-	    }
+        mark_as_done_overlay.className = "overlay mark_as_done_overlay";
+        mark_as_done_overlay.id = `mark_as_done_overlay${index}`;
+        if (element.done){
+            mark_as_done_overlay.classList.add('active');
+        }
 
-	      let checkbox = document.createElement("input");
-	      checkbox.className =  "reminderinput";
-	      checkbox.id = `madinput${index}`;
-	      checkbox.type = "checkbox";
-	      checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
-	      checkbox.checked = true;
-	    mark_as_done_overlay.appendChild(checkbox)
-	    container.appendChild(mark_as_done_overlay);
+        let checkbox = document.createElement("input");
+        checkbox.className =  "reminderinput";
+        checkbox.id = `madinput${index}`;
+        checkbox.type = "checkbox";
+        checkbox.onclick = function() {reminder_mark_as_done(element.id, index)};
+        checkbox.checked = true;
+        mark_as_done_overlay.appendChild(checkbox)
+        container.appendChild(mark_as_done_overlay);
         
 
-	    document.getElementById("main").appendChild(container);
+        document.getElementById("main").appendChild(container);
     
             const elem_attributes = {
                 tagged: {
@@ -405,69 +411,69 @@ async function fetchData (fetchlink) {
                     htmlType: "p",
                     elemContent: element.content,
                 },
-		checkbox: {
+        checkbox: {
                     htmlType: "input",
                     elemContent: "",
                     type: "checkbox",
                     onclick: function() {reminder_mark_as_done(element.id, index)},
                     checked: element.done,
                 },
-		top_bar_icons_div1: {
-		    htmlType: "div",
-		    class: "top_bar_icons",
-		    id: "top_bar_icons",
-		    elemContent: {
-		    top_bar_icons_div2: {
-			htmlType: "div",
-			elemContent: {
-				expand_hidden: {
-					htmlType: "span",
-					elemContent: "expand_less",
-					style: "visibility: hidden",
-					class: "material-icons icon",
-				},/*
-				pin: {
-					htmlType: "span",
-					elemContent: "push_pin",
-					class: "material-icons icon",
-				},*/
-				link: {
-					htmlType: "span",
-					class: "fa-solid fa-link icon link",
+        top_bar_icons_div1: {
+            htmlType: "div",
+            class: "top_bar_icons",
+            id: "top_bar_icons",
+            elemContent: {
+            top_bar_icons_div2: {
+            htmlType: "div",
+            elemContent: {
+                expand_hidden: {
+                    htmlType: "span",
+                    elemContent: "expand_less",
+                    style: "visibility: hidden",
+                    class: "material-icons icon",
+                },/*
+                pin: {
+                    htmlType: "span",
+                    elemContent: "push_pin",
+                    class: "material-icons icon",
+                },*/
+                link: {
+                    htmlType: "span",
+                    class: "fa-solid fa-link icon link",
                     elemContent: "",
                     onclick: function() {open_friends_list(index)},
-				}
-			}
-		    }
-		    },
-		},
+                }
+            }
+            }
+            },
+        },
         
-		expand: {
-		   htmlType: "span",
-		   elemContent: "expand_more",
-		   class: "material-icons icon expand",
-		   onclick: "open_top_bar_icons()",
-		   id: "expand",
-		},
+        expand: {
+        htmlType: "span",
+        elemContent: "expand_more",
+        class: "material-icons icon expand",
+        onclick: "open_top_bar_icons()",
+        id: "expand",
+        },
         
-  		
+        
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
-	   const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
-       const text_element = document.getElementById(`remp${index}`)
-	   top_bar_icon.style.height = 0
+    const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
+    const text_element = document.getElementById(`remp${index}`)
+    top_bar_icon.style.height = 0
 
-       if (element.done){
-	        text_element.classList.toggle('hidden')
-       }
+    if (element.done){
+            text_element.classList.toggle('hidden')
+    }
         });
-	    
-	loading.classList.add('hide');
-	// add removeDarknessAll onclick to the body
-	const body = document.getElementById("body");
-	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
+        
+    loading.classList.add('hide');
+    // add removeDarknessAll onclick to the body
+    const body = document.getElementById("body");
+    body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
         } else {
         console.error("Data fetched is not an array");
     }
