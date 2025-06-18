@@ -1,0 +1,35 @@
+Endpoint to get all your friends
+---
+tags:
+  - User
+description: Endpoint returning an array of all your friends (must be logged in)
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: false
+    description: An identification token to see if you are logged in
+  - name: body
+    in: body
+    required: true
+    description: The data you want to send to update the user object
+    schema: 
+      type: object
+      properties: 
+        accept_mail:
+          type: boolean
+          example: true
+responses:
+  200:
+    description: The accept_mail property was modified succesfully
+    type: string
+    example: Accept_mail property modified succesafully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
+  400:
+    description: The data you sent in the body is either invalid or missing
+    type: string
+    example: Missing or invalid data sent
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes
