@@ -614,16 +614,45 @@ def reset_pw():
             return jsonify({"message": "Les deux mots de passe ne sont pas identique"}), 400 # the two passwords aren't the same
         return jsonify({"message": "Reéssayez plus tard (le token de la requête est incorrect)"}), 403 # request header token is invalid
     return jsonify({"message": "Reéssayez plus tard (aucun token fourni)"}), 401 # request header token is not provided
-                
+
+@login_manager.unauthorized_handler
+def unauthorized(): 
+    return redirect(url_for('login')) 
+
 @app.route("/profile")
 @login_required
 def profile():
-    pass
-            
-@login_manager.unauthorized_handler
-def unauthorized(): 
-    return redirect(url_for('login'))
+    return current_user.to_json(), 200
 
+@app.route("/username", methods=["PUT"])
+@login_required
+def change_username():
+    data = json.loads(request.data)
+    username = data.get("username")
+    if username is not None:
+        current_user.username = username
+        db.session.commit()
+        return "Username modified succesafully", 200
+    return "Missing or invalid data sent", 400
+        
+@app.route("/password", methods=["PUT"])
+@login_required
+def change_password():
+    data = json.loads(request.data)
+    old_password = data.get("old_password")
+    password1 = data.get("password1")
+    password2 = data.get("password2")
+    if None not in [old_password, password1, password2]:
+        if bcrypt.check_password_hash(current_user.password, old_password):
+            if password1 == password2:
+                if old_password == password1:
+                    current_user.password = bcrypt.generate_password_hash(password1.decode('utf-8'))
+                    db.session.commit()
+                    return "Username modified succesafully", 200
+                return "New password can't be old password", 403
+            return "Passwords don't match", 400
+        return "Can't modify passowrd, because invalid credentials (old_password) provided", 403
+    return "Missing or invalid data sent", 400
 
 #------------------------------------------------------
 # Friend
