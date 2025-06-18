@@ -615,7 +615,10 @@ def reset_pw():
         return jsonify({"message": "Reéssayez plus tard (le token de la requête est incorrect)"}), 403 # request header token is invalid
     return jsonify({"message": "Reéssayez plus tard (aucun token fourni)"}), 401 # request header token is not provided
                 
-
+@app.route("/profile")
+@login_required
+def profile():
+    pass
             
 @login_manager.unauthorized_handler
 def unauthorized(): 

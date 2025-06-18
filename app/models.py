@@ -119,9 +119,10 @@ class User(UserMixin, db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
+            'accept_mail': self.accept_mail
         }
         return js 
-
+    
 class Otp(db.Model):
     __tablename__ = 'Otp'
     id = db.Column(db.Integer, primary_key=True)
