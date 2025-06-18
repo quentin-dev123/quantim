@@ -11,7 +11,7 @@ Works as a online personal agenda
 - [x] Change approach of filter and sort reminders (make one function with arguments)
 - [ ] Finish swagger 
 - [X] Need to create page with account info and possibility to change attributes of account (username, password)
-- [ ] Add possibilty to change accept_mail property
+- [x] Add possibilty to change accept_mail property
 - [ ] Do swagger for profile page and change attributes of account
 - [ ] Test newly added features
 

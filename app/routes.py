@@ -654,6 +654,17 @@ def change_password():
         return "Can't modify passowrd, because invalid credentials (old_password) provided", 403
     return "Missing or invalid data sent", 400
 
+@app.route("/accept_mail", methods=["PUT"])
+@login_required
+def change_accept_mail():
+    data = json.loads(request.data)
+    accept_mail = data.get("accept_mail")
+    if accept_mail is not None:
+        current_user.accept_mail = bool(accept_mail)
+        db.session.commit()
+        return "Accept_mail property modified succesafully", 200
+    return "Missing or invalid data sent", 400
+
 #------------------------------------------------------
 # Friend
 @app.route("/add_friend")
