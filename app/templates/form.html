@@ -317,13 +317,17 @@ form.addEventListener('submit',  async (event) => {
         {% endblock %}
     } else {
         alertDiv.style.display = "block";
-        const response = await result.json();
-        alertText.innerHTML = response["message"];
-        if (response["link_display"]) {
-            alertLink.innerHTML = response["link_display"];
-            alertLink.href = response["link_href"];
-        } else {
-            alertLink.innerHTML = "";
+        try {
+          const response = await result.json();
+          alertText.innerHTML = response["message"];
+          if (response["link_display"]) {
+              alertLink.innerHTML = response["link_display"];
+              alertLink.href = response["link_href"];
+          } else {
+              alertLink.innerHTML = "";
+          }
+        } catch(error){
+          alertText.innerHTML = 'Error: ' + error
         }
     }
 });

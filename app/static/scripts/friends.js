@@ -2,7 +2,7 @@ var global_reminder_id
 let ul = document.getElementById('friends_list_modal');
 let div = document.getElementById('add_friend_modal')
 let input = div.querySelector('input')
-let form = div.querySelector('form')
+let friend_form = div.querySelector('form')
 
 function open_friends_list(index) {
     if (online()){
@@ -26,7 +26,7 @@ function send_rem_to_friend(friend_id){
     return
 }
 
-form.addEventListener('submit',  async (event) => {
+friend_form.addEventListener('submit',  async (event) => {
     event.preventDefault();  // Prevent the default form submission
 
 })
