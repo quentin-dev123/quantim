@@ -774,6 +774,7 @@ def friendship_tester():
 
 @app.route("/send_reminder")
 @login_required
+@swag_from('swagger/friend/send_rem_to_friend.yml')
 def send_rem_to_friend():
     args = request.args
     friend_id = args.get("f_id")
