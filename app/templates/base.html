@@ -390,6 +390,22 @@ amelioration_checkbox.addEventListener('change', function() {
    }
 
 
+async function patch(link){
+  result = await fetch(link, {
+      method: 'PATCH',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+  });
+  if (result.ok) {
+      return result
+  } else {
+      alert('Error: ' + result)
+  }
+}
+
+
+
 
 	
 function getDayOfWeek(target_date){

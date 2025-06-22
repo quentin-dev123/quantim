@@ -103,34 +103,38 @@
     async function reminder_mark_as_done(reminder_id, container_id){
         event.stopPropagation()
         try {
-        const checkbox = document.getElementById(`reminput${container_id}`);
-        const mad_checkbox = document.getElementById(`madinput${container_id}`);
-        const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
-        const text = document.getElementById(`remp${container_id}`);
-        if (online()){
-            let message;
-            if (text.classList.contains('hidden')){
-                message = await patch("/api/reminder/done/" + reminder_id + "/False");
-                mad_checkbox.checked = true
-                checkbox.checked = false
-            } else {
-                message = await patch("/api/reminder/done/" + reminder_id + "/True");
-                checkbox.checked = false
-                mad_checkbox.checked = true
-            }
+            const checkbox = document.getElementById(`reminput${container_id}`);
+            const mad_checkbox = document.getElementById(`madinput${container_id}`);
+            const overlay = document.getElementById(`mark_as_done_overlay${container_id}`);
+            const text = document.getElementById(`remp${container_id}`);
+            if (online()){
+                let message;
+                if (text.classList.contains('hidden')){
+                    message = await patch("/api/reminder/done/" + reminder_id + "/False")
 
-            if (message.ok){
-                overlay.classList.toggle('active');
-                text.classList.toggle('hidden')
+                    mad_checkbox.checked = true
+                    checkbox.checked = false
+                } else {
+                    message = await patch("/api/reminder/done/" + reminder_id + "/True")
+
+
+                    checkbox.checked = false
+                    mad_checkbox.checked = true
+                }
+
+                if (message.ok){
+                    overlay.classList.toggle('active');
+                    text.classList.toggle('hidden')
+                } else {
+                    console.log(message.statusText)
+                }
+
             } else {
-                console.log(message.statusText)
+                checkbox.checked = false
             }
-        } else {
-            checkbox.checked = false
+        } catch(error){
+            console.log('Error: ' + error)
         }
-    } catch(error){
-        console.log('Error: ' + error)
-    }
     }
 
 
