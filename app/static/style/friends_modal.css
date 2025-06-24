@@ -30,6 +30,7 @@
   background-color: #000000;
   cursor: auto;
   padding: 10px;
+  font-size: large;
 }
 
 
@@ -45,4 +46,86 @@
 
 .friends_list_modal li:hover:first-child {
   background-color: #000000;
+}
+
+
+
+
+/* Add friends modal */
+.add_friend_modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  background-color: #000000;
+  color: #f2f2f2;
+  border: none;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 15px;
+  padding: 10px 30px;
+  text-align: center;
+  max-height: 70vh;
+
+  box-shadow: 0 0 50vw rgba(0, 0, 0, 100);
+}
+
+.add_friend_modal label {
+  font-size: large;
+  padding: 10px;
+}
+
+.add_friend_modal input {
+  margin: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.add_friend_modal div:first-of-type{
+  margin-bottom: 10px;
+  background-color: red;
+  padding: 5px 10px;
+  border-radius: 7px;
+}
+
+
+
+.add_friend_modal button {
+	border-radius:42px;
+	border:1px solid;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:5px 10px;
+	text-decoration:none;
+	text-shadow:0px -1pxf 0px #2b665e;
+}
+
+.add_friend_modal button[type="button"] {
+  background-color:#3b4644;
+	border-color:#353f3d;
+  box-shadow:inset 0px 0px 2px 0px #353f3d;
+}
+
+.add_friend_modal button[type="submit"] {
+  background-color:#084000;
+	border-color:#073a00;
+  box-shadow:inset 0px 0px 2px 0px #073a00;
+}
+
+.add_friend_modal button[type="button"]:hover {
+	background-color:red;
+}
+
+.add_friend_modal button[type="submit"]:hover {
+	background-color:#107a00;
+}
+
+
+.add_friend_modal button:active {
+	position:relative;
+	top:1px;
 }

@@ -1,8 +1,12 @@
 var global_reminder_id
 let ul = document.getElementById('friends_list_modal');
+
 let div = document.getElementById('add_friend_modal')
 let input = div.querySelector('input')
 let friend_form = div.querySelector('form')
+let alert_box = div.querySelector('div')
+let span = document.getElementById('friend_username_span')
+
 
 function open_friends_list(index) {
     if (online()){
@@ -18,6 +22,7 @@ function close_friends_list() {
 
 function open_close_add_friend(){
     div.classList.toggle('hidden')
+    input.value = "";
 }
 
 document.addEventListener('click', close_friends_list)
@@ -28,11 +33,33 @@ function send_rem_to_friend(friend_id){
 
 friend_form.addEventListener('submit',  async (event) => {
     event.preventDefault();  // Prevent the default form submission
+    add_friend()
 
 })
 
-function add_friend(){
-    return
+async function add_friend(){
+    // Make a POST request to the server
+    let result = await fetch("/friend", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"username": input.value})
+    });
+    
+    if (result.ok) {
+        open_close_add_friend()
+        input.value = "";
+        alert_box.classList.add("hidden")
+    } else {
+        if (result.status == 404){
+            alert_box.classList.remove("hidden")
+            span.innerHTML = input.value
+        } else {
+            alert(`Error ${result.status}: ${result.statusText}`)
+        }
+    }
+        
 }
     
 async function friends_dynamic_list(rem_id){
