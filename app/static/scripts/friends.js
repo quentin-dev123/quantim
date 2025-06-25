@@ -7,6 +7,10 @@ let friend_form = div.querySelector('form')
 let alert_box = div.querySelector('div')
 let span = document.getElementById('friend_username_span')
 
+let notif_div = document.getElementsByClassName('notification_friend')[0]
+let friend_username = notif_div.querySelector('i')
+let ok_button = notif_div.querySelector('button')
+
 
 function open_friends_list(index) {
     if (online()){
@@ -20,16 +24,27 @@ function close_friends_list() {
     ul.classList.add('hidden')
 }
 
+document.addEventListener('click', close_friends_list)
+
 function open_close_add_friend(){
     div.classList.toggle('hidden')
     input.value = "";
 }
 
-document.addEventListener('click', close_friends_list)
+function open_close_notification_friend(){
+    notif_div.classList.toggle('hidden')
+    friend_username.value = "";
+}
+
+ok_button.addEventListener('click', open_close_notification_friend)
+
+
 
 function send_rem_to_friend(friend_id){
     return
 }
+
+
 
 friend_form.addEventListener('submit',  async (event) => {
     event.preventDefault();  // Prevent the default form submission
@@ -49,6 +64,8 @@ async function add_friend(){
     
     if (result.ok) {
         open_close_add_friend()
+        open_close_notification_friend()
+        friend_username.innerHTML = input.value
         input.value = "";
         alert_box.classList.add("hidden")
     } else {
@@ -62,6 +79,8 @@ async function add_friend(){
         
 }
     
+
+
 async function friends_dynamic_list(rem_id){
     let result = await fetch("/friends")
     const response = await result.json();
@@ -86,7 +105,7 @@ async function friends_dynamic_list(rem_id){
         let li = document.createElement("li");
         li.innerHTML = "Plus +";
         li.addEventListener('click', (event) => {
-            add_friend()
+            open_close_add_friend()
         })
         ul.appendChild(li);
     }   

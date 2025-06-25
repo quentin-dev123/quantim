@@ -129,13 +129,19 @@
     <br>
     <input for="friend_username" placeholder="Le username de votre ami" autocomplete="off" required>
     <div class="hidden">
-      <strong>Erreur : </strong> <span>l'utilisateur avec le nom </span><i id="friend_username_span"></i><span> n'existe pas</span>
+      <strong>Erreur : </strong> <span>l'utilisateur avec le username</span><i id="friend_username_span"></i><span> n'existe pas</span>
     </div>
     <div>
-        <button type="button" onclick="open_close_add_friend()" class="cancel">Annuler</button>
-        <button type="submit" class="confirm">Ajouter</button>
+        <button type="button" onclick="open_close_add_friend()">Annuler</button>
+        <button type="submit">Ajouter</button>
     </div>
   </form>
+</div>
+
+<div class="notification_friend ">
+  <span>L'utilisateur avec le username </span><i>Quentin</i><span> a normalement reçu un email indiquant que vous voulez devenir ami avec lui. Demandez-lui de regarder ses emails et d'aller sur le lien indiqué.</span>
+  <br>
+  <button>OK</button>
 </div>
 
 <!-- Confirmation modal -->
