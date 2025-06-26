@@ -1,4 +1,5 @@
 var global_reminder_id
+var global_friend_username
 let ul = document.getElementById('friends_list_modal');
 
 let div = document.getElementById('add_friend_modal')
@@ -7,9 +8,13 @@ let friend_form = div.querySelector('form')
 let alert_box = div.querySelector('div')
 let span = document.getElementById('friend_username_span')
 
-let notif_div = document.getElementsByClassName('notification_friend')[0]
-let friend_username = notif_div.querySelector('i')
-let ok_button = notif_div.querySelector('button')
+let notif_div = document.getElementById('notification_friend')
+let notif_friend_username = notif_div.querySelector('i')
+let notif_ok_button = notif_div.querySelector('button')
+
+let rem_sent_div = document.getElementById('rem_sent_div')
+let rem_sent_i = rem_sent_div.querySelector('i')
+let rem_sent_ok_button = rem_sent_div.querySelector('button')
 
 
 function open_friends_list(index) {
@@ -33,17 +38,38 @@ function open_close_add_friend(){
 
 function open_close_notification_friend(){
     notif_div.classList.toggle('hidden')
-    friend_username.value = "";
+    notif_friend_username.innerHTML = "";
 }
 
-ok_button.addEventListener('click', open_close_notification_friend)
+notif_ok_button.addEventListener('click', open_close_notification_friend)
 
-
-
-function send_rem_to_friend(friend_id){
-    return
+function open_close_rem_sent_div(){
+    rem_sent_div.classList.toggle('hidden')
+    rem_sent_i.innerHTML = ""
 }
 
+rem_sent_ok_button.addEventListener('click', open_close_rem_sent_div)
+
+
+
+
+async function send_rem_to_friend(friend_id){
+    let result = await fetch("/friend", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"f_id": friend_id, "r_id": global_reminder_id})
+    });
+    if (result.ok) {
+        open_close_rem_sent_div()
+        if (global_friend_username){
+            rem_sent_i.innerHTML = "à " + global_friend_username
+        }
+    } else {
+        alert(`Error ${result.status}: ${result.statusText}`)
+    }
+}
 
 
 friend_form.addEventListener('submit',  async (event) => {
@@ -63,9 +89,10 @@ async function add_friend(){
     });
     
     if (result.ok) {
+        global_friend_username = input.value
+        friend_username.innerHTML = input.value
         open_close_add_friend()
         open_close_notification_friend()
-        friend_username.innerHTML = input.value
         input.value = "";
         alert_box.classList.add("hidden")
     } else {
