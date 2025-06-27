@@ -54,12 +54,12 @@ rem_sent_ok_button.addEventListener('click', open_close_rem_sent_div)
 
 
 async function send_rem_to_friend(friend_id){
-    let result = await fetch("/send_reminder", {
+    let link = `/send_reminder?f_id=${friend_id}&r_id=${global_reminder_id}`
+    let result = await fetch(link, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        args: JSON.stringify({"f_id": friend_id, "r_id": global_reminder_id})
     });
     if (result.ok) {
         open_close_rem_sent_div()
