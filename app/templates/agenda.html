@@ -87,15 +87,20 @@
 		event.stopPropagation()
 		const top_bar_icons = document.getElementById("top_bar_icons" + id)
 		const expand = document.getElementById("expand" + id)
+        const outer_pin_icon = document.getElementById("outer_pin_icon" + id);
 		if (top_bar_icons.style.height == "0px"){
 	       top_bar_icons.style.height = "33px";
 	       timeoutId = setTimeout(() => {
+            outer_pin_icon.classList.add('hidden');
 	        expand.innerHTML = "expand_less";
 	      }, 300);
 	    }
 	    else {
-	      top_bar_icons.style.height = "0"
+	      top_bar_icons.style.height = "0";
 	      expand.innerHTML = "expand_more";
+          if (outer_pin_icon.classList.contains('active')){
+            outer_pin_icon.classList.remove('hidden');
+          }
 	    }
 	   }
 
@@ -126,59 +131,17 @@
                     overlay.classList.toggle('active');
                     text.classList.toggle('hidden')
                 } else {
-                    console.log(message.statusText)
+                    alert(message.statusText)
                 }
 
             } else {
                 checkbox.checked = false
             }
         } catch(error){
-            console.log('Error: ' + error)
+            alert('Error: ' + error)
         }
     }
 
-
-
-    const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
-    function sort_icon_dropdown_content(){
-        event.stopPropagation()
-        if (online()){
-            close_filter_icon_dropdown_content()
-            sort_dropdown_content.classList.toggle('show');
-        }
-    }
-
-    function close_sort_icon_dropdown_content(){
-        sort_dropdown_content.classList.remove('show');
-    }
-
-    // when the document is pressed
-    document.addEventListener('click', close_sort_icon_dropdown_content);
-
-  function sort(type, event){
-    event.stopPropagation();
-    const date = document.getElementById('sort_date_check')
-    const matière = document.getElementById('sort_matière_check')
-    const tag = document.getElementById('sort_tag_check')
-    if (type == 'date') {
-      fetchData('/sort/date');
-      date.classList.remove('hide')
-      matière.classList.add('hide')
-      tag.classList.add('hide')
-    }
-    else if (type == 'matière') {
-      fetchData('/sort/subject_id');
-      date.classList.add('hide')
-      matière.classList.remove('hide')
-      tag.classList.add('hide')
-    }
-    else if (type == 'tag') {
-      fetchData('/sort/tag_id');
-      date.classList.add('hide')
-      matière.classList.add('hide')
-      tag.classList.remove('hide')
-    }
-  }
 
 
 
@@ -330,10 +293,10 @@ async function fetchData (fetchlink) {
         let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
             let tag = tagArr.find(myTag => myTag.id === element.tag_id);
             element.date = new Date(element.date)
-    reminder.className = "reminder-container"; // Renamed for clarity
-    reminder.style.backgroundColor = subject.bg_color; // Corrected typo
-    reminder.id = `remDiv${index}`;
-    reminder.addEventListener('click', (event) => {
+        reminder.className = "reminder-container"; // Renamed for clarity
+        reminder.style.backgroundColor = subject.bg_color; // Corrected typo
+        reminder.id = `remDiv${index}`;
+        reminder.addEventListener('click', (event) => {
         // Close other overlays
         removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
 
@@ -370,7 +333,7 @@ async function fetchData (fetchlink) {
         del.addEventListener('click', () => {
             if (online()){
                 toggleDarkness(index);
-                open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
+                open_confirm_modal('Effacer le rappel', 'Êtes-vous sûr de vouloir effacer ce rappel ?', `/api/reminder/${element.id}`, function(){history.go(0); /* reload the page */})
             }
         });
         del.id = `del${index}`;
@@ -415,13 +378,22 @@ async function fetchData (fetchlink) {
                     htmlType: "p",
                     elemContent: element.content,
                 },
-        checkbox: {
+                checkbox: {
                     htmlType: "input",
                     elemContent: "",
                     type: "checkbox",
                     onclick: function() {reminder_mark_as_done(element.id, index)},
                     checked: element.done,
                 },
+        
+
+        outer_pin: {
+            htmlType: "span",
+            id: "outer_pin_icon",
+            elemContent: "push_pin",
+            class: "material-icons icon outer_pin",
+            onclick: function() {pin(element.id, index)},
+        },
         top_bar_icons_div1: {
             htmlType: "div",
             class: "top_bar_icons",
@@ -435,14 +407,18 @@ async function fetchData (fetchlink) {
                     elemContent: "expand_less",
                     style: "visibility: hidden",
                     class: "material-icons icon",
-                },/*
+                },
                 pin: {
                     htmlType: "span",
+                    id: "pin_icon",
                     elemContent: "push_pin",
-                    class: "material-icons icon",
-                },*/
+                    class: "material-icons icon pin",
+                    onclick: function() {pin(element.id, index)},
+                },
+                
                 link: {
                     htmlType: "span",
+                    id: "link_icon",
                     class: "fa-solid fa-link icon link",
                     elemContent: "",
                     onclick: function() {open_friends_list(element.id)},
@@ -453,11 +429,11 @@ async function fetchData (fetchlink) {
         },
         
         expand: {
-        htmlType: "span",
-        elemContent: "expand_more",
-        class: "material-icons icon expand",
-        onclick: "open_top_bar_icons()",
-        id: "expand",
+            htmlType: "span",
+            elemContent: "expand_more",
+            class: "material-icons icon expand",
+            onclick: "open_top_bar_icons()",
+            id: "expand",
         },
         
         
@@ -466,11 +442,18 @@ async function fetchData (fetchlink) {
                 reminder.appendChild(createElem(elem_attributes[attr], index, subject));
             });
     const top_bar_icon = document.getElementById(`top_bar_icons${index}`)
-    const text_element = document.getElementById(`remp${index}`)
     top_bar_icon.style.height = 0
 
     if (element.done){
-            text_element.classList.toggle('hidden')
+        const text_element = document.getElementById(`remp${index}`)
+        text_element.classList.toggle('hidden')
+    }
+
+    if (element.pinned){
+        pin(element.id, index)
+    } else {
+        const outer_pin_icon = document.getElementById(`outer_pin_icon${index}`);
+        outer_pin_icon.classList.add('hidden')
     }
         });
         
@@ -488,11 +471,17 @@ fetchData("")
 
     </script>
 
+<!-- Import sort.js -->
+<script src="/static/scripts/sort.js"></script>
+
 <!-- Import filter.js -->
 <script src="/static/scripts/filter.js"></script>
 
 <!-- Friends.js -->
 <script src="/static/scripts/friends.js"></script>
+
+<!-- Pinned.js -->
+<script src="/static/scripts/pinned.js"></script>
 
 <!-- Edit modal -->
 <script src="/static/scripts/edit_modal.js"></script>

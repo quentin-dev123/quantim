@@ -232,16 +232,39 @@
 
 .expand {
 	position: absolute;
-  	top: 5px;
-  	left: 5px;
+  top: 5px;
+  left: 5px;
+}
+
+.outer_pin {
+  position: absolute;
+  top: 5px;
+  left: 29px;
+}
+
+.outer_pin.active {
+  color: #35a4f2;
+}
+
+.outer_pin.active:hover{
+  color: #2d8bce;
 }
 
 .link {
 	font-size: 18px;
   transform: translate(0px, -7px);
+  margin-left: 3px;
+}
+
+.icon.pin.active {
+  color: #35a4f2;
+}
+
+.icon.pin.active:hover {
+  color: #2d8bce;
 }
 
 .icon:hover {
 	color: #d1d1d1;
-    translate: 0.5px 0.5px;
+  translate: 0.5px 0.5px;
 }
