@@ -632,7 +632,7 @@ def change_username():
     if username is not None:
         current_user.username = username
         db.session.commit()
-        return "Username modified succesafully", 200
+        return f"Username modified succesafully to {current_user.username}", 200
     return "Missing or invalid data sent", 400
         
 @app.route("/password", methods=["PUT"])
@@ -648,7 +648,7 @@ def change_password():
                 if old_password == password1:
                     current_user.password = bcrypt.generate_password_hash(password1.decode('utf-8'))
                     db.session.commit()
-                    return "Username modified succesafully", 200
+                    return "Password modified succesafully", 200
                 return "New password can't be old password", 403
             return "Passwords don't match", 400
         return "Can't modify passowrd, because invalid credentials (old_password) provided", 403
@@ -662,7 +662,7 @@ def change_accept_mail():
     if accept_mail is not None:
         current_user.accept_mail = bool(accept_mail)
         db.session.commit()
-        return "Accept_mail property modified succesafully", 200
+        return f"Accept_mail property modified successfully to {current_user.accept_mail}", 200
     return "Missing or invalid data sent", 400
 
 #------------------------------------------------------
