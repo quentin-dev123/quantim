@@ -1,7 +1,7 @@
 Endpoint to fetch all of your PRONOTE homeworks
 ---
 tags:
-  - Reminder CRUD operations
+  - Miscellaneous
 description: Endpoint to fetch all of your PRONOTE homeworks using the credentials provided.
 parameters:
   - in: cookie
