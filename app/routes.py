@@ -197,7 +197,7 @@ def delete_reminder(rem_id): # Delete one
                 pronote.reminder = None
             db.session.delete(reminder)
             db.session.commit()
-            return "Reminder deleted succesfully", 200
+            return "Reminder deleted successfully", 200
         else:
             return "Not logged in the right account", 403
     else:
@@ -215,7 +215,7 @@ def delete_reminders(): # Delete all
             pronote.reminder = None
         db.session.delete(reminder)
     db.session.commit()
-    return "Reminders deleted succesfully", 200
+    return "Reminders deleted successfully", 200
 
 @app.route("/api/reminder/<int:rem_id>", methods=["PUT"])
 @login_required
@@ -230,7 +230,7 @@ def update_reminders(rem_id): # Update
             db_reminder.tag_id = data.get("tag_id")
             db_reminder.subject_id = data.get("subject_id")
             db.session.commit()
-            return "Reminder updated succesfully", 200
+            return "Reminder updated successfully", 200
         return "Not logged in the account of the reminder", 403
     return "Reminder not found", 404
 
@@ -244,7 +244,7 @@ def mark_rem_as_done(rem_id, status): # Mark one as done
             if status in ["True", "False"]:
                 reminder.done = (status == "True")
                 db.session.commit()
-                return "Reminder marked as done succesfully", 200
+                return "Reminder marked as done successfully", 200
             return "Invalid argument status. Must be included in ['True', 'False']", 400
         return "Not logged in the right account", 403
     return "Reminder not found", 404
@@ -259,7 +259,7 @@ def mark_rem_as_pinned(rem_id, status): # Mark one as pinned
             if status in ["True", "False"]:
                 reminder.pinned= (status == "True")
                 db.session.commit()
-                return "Reminder marked as pinned (or not) succesfully", 200
+                return "Reminder marked as pinned (or not) successfully", 200
             return "Invalid argument status. Must be included in ['True', 'False']", 400
         return "Not logged in the right account", 403
     return "Reminder not found", 404
@@ -359,7 +359,7 @@ def update_subjects(sub_id): # Update
             db_subject.content = data.get("content")
             db_subject.bg_color = data.get("bgColor")
             db.session.commit()
-            return "Subject updated succesfully", 200
+            return "Subject updated successfully", 200
         return "Not logged in the account of the subject", 403
     return "Subject not found", 404
         
@@ -394,7 +394,7 @@ def update_tags(tag_id): # Update
             db_tag.content = data.get("content")
             db_tag.bg_color = data.get("bgColor")
             db.session.commit()
-            return "Tag updated succesfully", 200
+            return "Tag updated successfully", 200
         return "Not logged in the account of the tag", 403
     return "Tag not found", 404
         
@@ -438,7 +438,7 @@ def register():
                     )
                     db.session.add(user)
                     db.session.commit()
-                    return jsonify({"message": "Registering done succesfully", "user_id": user.id}), 200 # Error here ~Probably~
+                    return jsonify({"message": "Registering done successfully", "user_id": user.id}), 200 # Error here ~Probably~
                 else:
                     return jsonify({"message": "Les mots de passe ne correspondent pas."}), 400
             end_of_sentence = "ce username."
@@ -547,7 +547,7 @@ def delete_account():
     db.session.delete(User.query.get(current_user.id))
     db.session.commit()
     logout_user()
-    return "Account deleted succesfully", 200
+    return "Account deleted successfully", 200
     
 @app.route("/forgot_password")
 def forgot_pw_page():
@@ -609,7 +609,7 @@ def reset_pw():
                 if not bcrypt.check_password_hash(user.password, data.get('password2')):
                     user.password = bcrypt.generate_password_hash(data.get("password2")).decode('utf-8')
                     db.session.commit()
-                    return "Password modified succesfully", 200
+                    return "Password modified successfully", 200
                 return jsonify({"message": "Votre nouveau mot de passe ne peut pas être votre ancien mot de passe"}), 403 # new password can't be old password
             return jsonify({"message": "Les deux mots de passe ne sont pas identique"}), 400 # the two passwords aren't the same
         return jsonify({"message": "Reéssayez plus tard (le token de la requête est incorrect)"}), 403 # request header token is invalid
@@ -632,7 +632,7 @@ def change_username():
     if username is not None:
         current_user.username = username
         db.session.commit()
-        return f"Username modified succesafully to {current_user.username}", 200
+        return f"Username modified successfully to {current_user.username}", 200
     return "Missing or invalid data sent", 400
         
 @app.route("/password", methods=["PUT"])
@@ -648,10 +648,10 @@ def change_password():
                 if old_password == password1:
                     current_user.password = bcrypt.generate_password_hash(password1.decode('utf-8'))
                     db.session.commit()
-                    return "Password modified succesafully", 200
+                    return "Password modified successfully", 200
                 return "New password can't be old password", 403
             return "Passwords don't match", 400
-        return "Can't modify passowrd, because invalid credentials (old_password) provided", 403
+        return "Can't modify password, because invalid credentials (old_password) provided", 403
     return "Missing or invalid data sent", 400
 
 @app.route("/accept_mail", methods=["PUT"])
@@ -698,7 +698,7 @@ def add_friend():
                     )
                     db.session.add(friendship)
                     db.session.commit()
-                    return "Sent a friend request succesfully", 200
+                    return "Sent a friend request successfully", 200
                 return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
             return jsonify({"message": "You're not allowed to become friends with that person because it's you"}), 403
         return jsonify({"message": "The user with the specified username was not found"}), 404
@@ -818,7 +818,7 @@ def send_rem_to_friend():
                     )
                     db.session.add(f_reminder)
                     db.session.commit()
-                    return "Reminder sent succesfully", 200
+                    return "Reminder sent successfully", 200
                 return "You can't send a reminder to that person because you are not friends", 403
             return "Reminder with specified id was not found", 404
         return "Friend with specified id was not found", 404
@@ -912,7 +912,7 @@ def fetch_pronote():
                     db.session.add(my_homework)
                     reminder.pronote = my_homework
                     db.session.commit()
-            return "Homeworks fetched succesfully", 200
+            return "Homeworks fetched successfully", 200
         return "Invalid request (one or more arguments in body are missing or invalid)", 400
     return "Missing body argument - No data sent", 401
 
@@ -958,7 +958,7 @@ def drop_tables():
     for table in tables:
         db.session.query(table).delete()
     db.session.commit()
-    print("Tables cleared succesfully")
+    print("Tables cleared successfully")
 
 
 @app.cli.command('sandbox')
@@ -977,7 +977,7 @@ def create_pat(value):
     pat = Pat(name="send_reminders", val=pat_value)
     db.session.add(pat)
     db.session.commit()
-    click.echo(f"Added succesfully a pat with a name of: {Pat.query.get(pat.id).name}")
-    return "Added succesfully"
+    click.echo(f"Added successfully a pat with a name of: {Pat.query.get(pat.id).name}")
+    return "Added successfully"
 
 
