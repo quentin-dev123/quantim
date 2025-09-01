@@ -16,6 +16,7 @@
   overflow-y: scroll;
   padding:0px;
   max-height: 70vh;
+  font-size: large;
 
   box-shadow: 0 0 50vw rgba(0, 0, 0, 100);
 }
@@ -30,7 +31,7 @@
   background-color: #000000;
   cursor: auto;
   padding: 10px;
-  font-size: large;
+  font-size: x-large;
 }
 
 
@@ -66,12 +67,13 @@
   padding: 10px 30px;
   text-align: center;
   max-height: 70vh;
+  font-size: large;
 
   box-shadow: 0 0 50vw rgba(0, 0, 0, 100);
 }
 
 .add_friend_modal label {
-  font-size: large;
+  font-size: x-large;
   padding: 10px;
 }
 
@@ -79,7 +81,7 @@
   margin: 10px;
   padding: 2px;
   text-align: center;
-  font-size: 15px;
+  font-size: large;
 }
 
 .add_friend_modal div:first-of-type{
@@ -98,7 +100,7 @@
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
-	font-size:15px;
+	font-size: large;
 	padding:5px 10px;
 	text-decoration:none;
 	text-shadow:0px -1pxf 0px #2b665e;
@@ -152,7 +154,7 @@
 }
 
 .notification_friend span, .notification_friend i {
-  font-size: large;
+  font-size: x-large;
 }
 
 
@@ -164,7 +166,7 @@
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
-	font-size:15px;
+	font-size: large;
 	padding:5px 10px;
 	text-decoration:none;
 	text-shadow:0px -1pxf 0px #2b665e;
@@ -173,7 +175,7 @@
 	border-color:#073a00;
   box-shadow:inset 0px 0px 2px 0px #073a00;
 
-	font-size: large;
+	font-size: x-large;
 }
 
 .notification_friend button:hover {

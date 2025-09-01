@@ -33,6 +33,7 @@ document.addEventListener('click', close_friends_list)
 
 function open_close_add_friend(){
     div.classList.toggle('hidden')
+    div.querySelector('div').classList.add("hidden")
     input.value = "";
 }
 
