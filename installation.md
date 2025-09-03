@@ -126,9 +126,9 @@ and create in application folder a file named .env containing:
 ```
 export GIT_REPO_PATH=<path to application folder>
 export GIT_REPO_BRANCH=main
-export BASE_EMAIL='<the sendgrid sender email - the email that will send all mails>'
+export EMAIL_ADRESS='<A valid gmail adress - the email that will send all mails>'
+export EMAIL_PASSWORD='<Your app password (see further down -> Sending emails)>'
 export BASE_URL='<base url used (if running local, usually is : http://127.0.0.1:5000)>'
-export SENDGRID_API_KEY='<your sendgrid api key>'
 export DEV_DATABASE_URL=sqlite://<absolute path to sqllite file>
 ```
 > for windows it should look like sqlite:///C:\\\\path\\\\to\\\\foo.db
@@ -143,3 +143,9 @@ flask run
 ```
 export FLASK_APP=quantim.py
 ```
+
+### Sending mails ###
+
+**Quantim** uses mail sending a lot for various purposes. For example : confirming an email adress with OTP method.
+
+This explains we need a correct setup to send emails. We use the Gmail SMTP server to do it. But you don't need to worry about that. All you need to do is log in to the Google account homepage of the adress you put in ```.env```. Go to Security > Two step Authentication. Turn it on and then go to App passwords. Create a new one and copy the password. Then paste it into the ```.env``` variable EMAIL_PASSWORD. That's all you need to do !
