@@ -681,7 +681,7 @@ def add_friend():
                     mail = Mail(
                         friend.email,
                         "Requête d'amitié"
-                        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>"
+                        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
                     )
                     mail.send_mail()
                     friendship = Friendship(
