@@ -2,20 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import current_app
-
-class Response():
-    def __init__(self, gmail_response, error, message, html=True):
-        self.gmail_response = gmail_response
-        self.error = error
-        self.message = message
-
-    def format(self):
-        return {
-            "gmail_response": self.gmail_response,
-            "error": self.error,
-            "message" : self.message
-        }
-    
+  
 
 class Mail:
     def __init__(self, to, subject, body):
@@ -48,22 +35,22 @@ class Mail:
                 server.login(self.email, self.password)
                 r = server.sendmail(self.email, self.to, self.msg.as_string())
             
-            self.response = Response(
-                r,
-                False,
-                "Mail sent successfully"
-            )
+            self.response = {
+                "gmail_response": r,
+                "error": False,
+                "message" : "Mail sent successfully"
+            }
         except Exception as e:
-            self.response = Response(
-                r,
-                True,
-                f"An error ocurred : {e}"
-            )
+            self.response = {
+                "gmail_response": r,
+                "error": True,
+                "message" : f"An error ocurred : {e}"
+            }
         
     def send_mail(self):
         self.mail_config()
         self.server_connection()
-        return self.response.format()
+        return self.response
     
 
 """
