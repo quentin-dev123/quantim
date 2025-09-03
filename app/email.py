@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from flask import current_app
 
 class Response():
-    def __init__(self, gmail_response, error, message):
+    def __init__(self, gmail_response, error, message, html=True):
         self.gmail_response = gmail_response
         self.error = error
         self.message = message
@@ -33,8 +33,13 @@ class Mail:
         self.msg["From"] = self.email
         self.msg["To"] = self.to
         self.msg["Subject"] = self.subject
-
-        self.msg.attach(MIMEText(self.body, "plain"))
+        
+        if self.html:
+            m = MIMEText(self.body, "html")
+            
+        else:
+            m = MIMEText(self.body, "plain")
+        self.msg.attach(m)
 
     def server_connection(self):
         try:
