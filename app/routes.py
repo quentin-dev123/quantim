@@ -672,31 +672,31 @@ def add_friend_page():
 @login_required
 def add_friend():
     data = json.loads(request.data)
-    if data and data.get("username"):
-        f_username = data.get("username")
-        friend = User.query.filter_by(username=f_username).first()
-        if friend is not None:
-            if friend.id != current_user.id:
-                if Friendship.query.filter_by(fid=friend.id).first() is None:
-                    mail = Mail(
-                        friend.email,
-                        "Requête d'amitié"
-                        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
-                    )
-                    mail.send_mail()
-                    friendship = Friendship(
-                        uid = current_user.id,
-                        user = current_user,
-                        fid = friend.id,
-                        friend = friend
-                    )
-                    db.session.add(friendship)
-                    db.session.commit()
-                    return "Sent a friend request successfully", 200
-                return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
-            return jsonify({"message": "You're not allowed to become friends with that person because it's you"}), 403
+    if not (data and data.get("username")):
+        return "Missing or invalid data sent", 400
+    f_username = data.get("username")
+    friend = User.query.filter_by(username=f_username).first()
+    if friend is None:
         return jsonify({"message": "The user with the specified username was not found"}), 404
-    return "Missing or invalid data sent", 400
+    if friend.id == current_user.id:
+        return jsonify({"message": "You're not allowed to become friends with that person because it's you"}), 403
+    if Friendship.query.filter_by(fid=friend.id).first() is not None:
+        return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
+    mail = Mail(
+        friend.email,
+        "Requête d'amitié"
+        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
+    )
+    mail.send_mail()
+    friendship = Friendship(
+        uid = current_user.id,
+        user = current_user,
+        fid = friend.id,
+        friend = friend
+    )
+    db.session.add(friendship)
+    db.session.commit()
+    return "Sent a friend request successfully", 200
 
 @app.route("/friend_back")
 @login_required
