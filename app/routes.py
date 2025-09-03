@@ -10,8 +10,7 @@ from flask_bcrypt import Bcrypt
 from . import helpers, create_app, db, swagger
 from datetime import datetime, timedelta, date
 from operator import attrgetter
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from .email import Mail
 from sqlalchemy import func
 from uuid import uuid4
 from flasgger import swag_from
@@ -286,10 +285,9 @@ def send_reminders(): # Send email when due soon
                         tag = Tag.query.get(reminder.tag_id)
                         tags.append(tag)
                     mail = Mail(
-                        from_email=current_app.config["BASE_EMAIL"],
-                        to_emails=user.email,
-                        subject="Devoir(s) à faire pour demain",
-                        html_content=render_template(
+                        user.email,
+                        "Devoir(s) à faire pour demain",
+                        render_template(
                             "due_rem_mail.html", 
                             subjects=subjects, 
                             reminders=reminders, 
@@ -298,9 +296,11 @@ def send_reminders(): # Send email when due soon
                             base_url=current_app.config["BASE_URL"]
                         )
                     )
-                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-                    response = sg.send(mail)
-                    emails_sent += 1
+                    r = mail.send_mail()
+                    if not r.error:
+                        emails_sent += 1
+                    else:
+                        return f"An error ocurred after sending {emails_sent}. Error: '{r.message}'", 500
             return f"Sucesfully sent {emails_sent} email(s)!", 200
         return "Invalid PAT (Personnal Authorisation Token)", 403
     return "Invalid args to request, no PAT", 401
@@ -470,19 +470,17 @@ def create_otp():
             )
             db.session.add(otp)
             db.session.commit()
-            message = Mail(
-                from_email=current_app.config["BASE_EMAIL"],
-                to_emails=user.email,
-                subject="Requête d'inscription sur Quantim",
-                html_content=render_template(
+            mail = Mail(
+                user.email,
+                "Requête d'inscription sur Quantim",
+                render_template(
                     "verify_email.html", 
                     username=user.username, 
                     email=user.email, 
                     otp=otp.value, 
                     base_url=current_app.config["BASE_URL"])
             )
-            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-            response = sg.send(message)
+            mail.send_mail()
             return render_template("otp.html", otp_id=otp.id), 200
         return "<h1>403</h1>Account already activated", 403
     return "<h1>400</h1>Invalid arguments to request", 400
@@ -567,19 +565,17 @@ def forgot_pw_mail():
         )
         db.session.add(token)
         db.session.commit()
-        message = Mail(
-                from_email=current_app.config["BASE_EMAIL"],
-                to_emails=email,
-                subject="Mot de passe oublié",
-                html_content=render_template(
+        mail = Mail(
+            email,
+            "Mot de passe oublié",
+            html_content=render_template(
                     "forgot_pw_mail.html", 
                     user=user, 
                     token=token.val, 
                     base_url=current_app.config["BASE_URL"]
                 )
-            )
-        sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-        sg.send(message)
+        )
+        mail.send_mail()
         return "Email envoyé avec succès", 200
     return jsonify({"message": "L'adresse email ne correspond à aucun compte"}), 404
 
@@ -682,14 +678,12 @@ def add_friend():
         if friend is not None:
             if friend.id != current_user.id:
                 if Friendship.query.filter_by(fid=friend.id).first() is None:
-                    message = Mail(
-                            from_email=current_app.config["BASE_EMAIL"],
-                            to_emails=friend.email,
-                            subject="Requête d'amitié",
-                            html_content=f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
-                        )
-                    sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-                    sg.send(message)
+                    mail = Mail(
+                        friend.email,
+                        "Requête d'amitié"
+                        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>"
+                    )
+                    mail.send_mail()
                     friendship = Friendship(
                         uid = current_user.id,
                         user = current_user,
@@ -738,14 +732,12 @@ def friend_back():
                         )
                         db.session.add(new_friendship)
                         db.session.commit()
-                        message = Mail(
-                            from_email=current_app.config["BASE_EMAIL"],
-                            to_emails=friend.email,
-                            subject="Requête d'amitié",
-                            html_content=f"L'utilisateur {friend.username} a accepté votre requête d'amitié" # CHANGER CECI !!!
+                        mail = Mail(
+                            friend.email,
+                            "Requête d'amitié"
+                            f"L'utilisateur {friend.username} a accepté votre requête d'amitié" # CHANGER CECI !!!
                         )
-                        sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-                        sg.send(message)
+                        mail.send_mail()
                         return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
                     return jsonify({"message" : "You aren't allowed to friend back this user because they never friended you"}), 403
                 return jsonify({"message" : "Vous ne pouvez pas devenir ami avec cette personne car c'est vous"}), 403
@@ -932,13 +924,11 @@ def send_feedback():
                 mail += "Retour d'un utilisateur anonyme"
             mail += "</h1><hr>" + content
             message = Mail(
-                from_email=current_app.config["BASE_EMAIL"],
-                to_emails=current_app.config["BASE_EMAIL"],
-                subject="Retour d'utilisateur",
-                html_content=mail
+                current_app.config["EMAIL_ADRESS"],
+                "Retour d'utilisateur",
+                mail
             )
-            sg = SendGridAPIClient(current_app.config["SENDGRID_API_KEY"])
-            sg.send(message)
+            message.send_mail()
             mail_log = Mail_log(
                 date = datetime.now(),
                 user_id = current_user.id,

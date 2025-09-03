@@ -35,7 +35,6 @@ PyYAML==6.0.2
 referencing==0.36.2
 requests==2.32.3
 rpds-py==0.22.3
-sendgrid==6.11.0
 six==1.17.0
 smmap==5.0.2
 soupsieve==2.6
