@@ -37,3 +37,16 @@ class Mail:
         self.mail_config()
         response = self.server_connection()
         return response
+    
+
+"""
+Example of use:
+
+mail = Mail(
+    'user@gmail.com',
+    'Quantim',
+    'Using Quantim is a good idea because it lets you organize your daily tasks'
+)
+r = mail.send_mail()
+print(r)
+"""
