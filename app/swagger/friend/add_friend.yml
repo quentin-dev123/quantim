@@ -1,0 +1,52 @@
+Friend back a user
+---
+tags:
+  - Friend 
+description: Endpoint to add a user as friend. This will send a friend request to them via gmail. (must be logged in)
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: false
+    description: An identification token to see if you are logged in
+  - name: body
+    in: body
+    required: True
+    schema:
+      type: object
+      properties:
+        username:
+          type: string
+          example: TenaciousCoder404
+responses:
+  200:
+    description: A friend request was sent to the user you want to friend, returns confirmation message.
+    schema:
+      type: string
+      example: Sent a friend request successfully
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
+  400:
+    description: The data sent is either missing, incomplete or invalid.
+    schema:
+      type: string
+      example: Missing or invalid data sent
+  403:
+    description: Can't friend user for either two resons. Either it's you, either you're already friends.
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: You're not allowed to become friends with that person because you already are
+  404:
+    description: There is no existing user that has the username you provided 
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The user with the specified username was not found
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes.

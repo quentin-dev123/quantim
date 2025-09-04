@@ -670,6 +670,7 @@ def add_friend_page():
 
 @app.route("/friend", methods=["POST"])
 @login_required
+@swag_from('swagger/friend/add_friend.yml')
 def add_friend():
     data = json.loads(request.data)
     if not (data and data.get("username")):
