@@ -44,7 +44,7 @@ responses:
           type: string
           example: Le username ne correspond pas à celui de votre compte
   403:
-    description: You are not allowed to friend back for either two resons. Either it's you, either they nevwer friended you.
+    description: You are not allowed to friend back for either two resons. Either it's you, either they never friended you.
     schema:
       type: object
       properties:
