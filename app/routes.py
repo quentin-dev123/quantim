@@ -680,7 +680,7 @@ def add_friend():
         return jsonify({"message": "The user with the specified username was not found"}), 404
     if friend.id == current_user.id:
         return jsonify({"message": "You're not allowed to become friends with that person because it's you"}), 403
-    if Friendship.query.filter_by(fid=friend.id).first() is not None:
+    if Friendship.query.filter_by(fid=friend.id, uid=current_user.id).first() is not None: # changed smth here, added uid param, possible not having it was on purpose 
         return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
     mail = Mail(
         friend.email,
