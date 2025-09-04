@@ -638,6 +638,7 @@ def change_username():
         
 @app.route("/password", methods=["PUT"])
 @login_required
+@swag_from('swagger/profile/change_password.yml')
 def change_password():
     data = json.loads(request.data)
     old_password = data.get("old_password")
