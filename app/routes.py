@@ -641,17 +641,14 @@ def change_username():
 def change_password():
     data = json.loads(request.data)
     old_password = data.get("old_password")
-    password1 = data.get("password1")
-    password2 = data.get("password2")
-    if None not in [old_password, password1, password2]:
+    new_password = data.get("new_password")
+    if None not in [old_password, new_password]:
         if bcrypt.check_password_hash(current_user.password, old_password):
-            if password1 == password2:
-                if old_password == password1:
-                    current_user.password = bcrypt.generate_password_hash(password1.decode('utf-8'))
-                    db.session.commit()
-                    return "Password modified successfully", 200
-                return "New password can't be old password", 403
-            return "Passwords don't match", 400
+            if old_password == new_password:
+                current_user.password = bcrypt.generate_password_hash(new_password.decode('utf-8'))
+                db.session.commit()
+                return "Password modified successfully", 200
+            return "New password can't be old password", 403
         return "Can't modify password, because invalid credentials (old_password) provided", 403
     return "Missing or invalid data sent", 400
 
