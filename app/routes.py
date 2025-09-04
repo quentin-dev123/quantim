@@ -615,6 +615,10 @@ def reset_pw():
 def unauthorized(): 
     return redirect(url_for('login')) 
 
+
+#------------------------------------------------------
+# Profile
+
 @app.route("/profile")
 @login_required
 def profile():
