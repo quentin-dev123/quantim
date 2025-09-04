@@ -626,6 +626,7 @@ def profile():
 
 @app.route("/username", methods=["PUT"])
 @login_required
+@swag_from('swagger/profile/change_username.yml')
 def change_username():
     data = json.loads(request.data)
     username = data.get("username")
