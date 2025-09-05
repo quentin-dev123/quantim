@@ -304,6 +304,7 @@ form.addEventListener('submit',  async (event) => {
 {% block other_data %} {% endblock %}
 
     // Make a POST request to the server
+    {% block fetch %} 
     let result = await fetch("{{fetch_destination}}", {
         method: 'POST',
         headers: {
@@ -311,6 +312,7 @@ form.addEventListener('submit',  async (event) => {
         },
         body: JSON.stringify(userAnswers)
     });
+    {% endblock %}
     if (result.ok) {
       {% block sucess %}
         location.replace("{{ next_destination }}");

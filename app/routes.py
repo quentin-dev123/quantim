@@ -619,6 +619,11 @@ def unauthorized():
 #------------------------------------------------------
 # Profile
 
+@app.route("/profile")
+@login_required
+def profile_page():
+    return render_template("profile.html"), 200
+
 @app.route("/api/profile")
 @login_required
 def profile():
@@ -636,6 +641,11 @@ def change_username():
         return f"Username modified successfully to {current_user.username}", 200
     return "Missing or invalid data sent", 400
         
+@app.route("/change_password")
+@login_required
+def password_page():
+    return render_template("change_pw.html"), 200
+
 @app.route("/password", methods=["PUT"])
 @login_required
 @swag_from('swagger/profile/change_password.yml')
@@ -645,12 +655,12 @@ def change_password():
     new_password = data.get("new_password")
     if None not in [old_password, new_password]:
         if bcrypt.check_password_hash(current_user.password, old_password):
-            if old_password == new_password:
-                current_user.password = bcrypt.generate_password_hash(new_password.decode('utf-8'))
+            if old_password != new_password:
+                current_user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
                 db.session.commit()
                 return "Password modified successfully", 200
-            return "New password can't be old password", 403
-        return "Can't modify password, because invalid credentials (old_password) provided", 403
+            return jsonify({"message": "Votre nouveau mot de passe ne peut pas être votre ancien"}), 403
+        return jsonify({"message": "Mot de passe actuel invalide"}), 403
     return "Missing or invalid data sent", 400
 
 @app.route("/accept_mail", methods=["PUT"])

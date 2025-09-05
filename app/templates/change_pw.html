@@ -1,0 +1,33 @@
+{% extends 'form.html' %}
+
+{% set title = "Réinitialiser votre mot de passe" %}
+{% set next_destination = "/profile" %} 
+
+{% block form_content %} 
+<label for="old_password"><b> Entrez votre mot de passe actuel </b></label>
+<input type="password" placeholder="Mot de passe actuel" name="old_password" id="old_password" required>
+<label for="password1"><b> Choisissez un nouveau mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" id="password1" required><i class="fa fa-eye view_icon" id="view_icon1" onclick="toggle_password_visibility('1')"></i>
+<label for="password2"><b> Confirmez votre mot de passe </b></label>
+<input type="password" placeholder="Mot de passe" name="password2" id="password2" required><i class="fa fa-eye view_icon" id="view_icon2" onclick="toggle_password_visibility('2')"></i>
+{% endblock %}
+{% block fetch %} 
+    let result = await fetch("/password", {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    {% endblock %}
+{% block other_data %} 
+console.log(document.getElementById("password1").value)
+if (document.getElementById("password1").value !== document.getElementById("password2").value) {
+    alertDiv.style.display = "block";
+    alertText.innerHTML = "Les mots de passe ne correspondent pas";
+    console.log("in if")
+    return "unmatching passwords"
+} 
+console.log("out of if")
+userAnswers["new_password"] = document.getElementById("password1").value;
+{% endblock %}
