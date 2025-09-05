@@ -619,7 +619,7 @@ def unauthorized():
 #------------------------------------------------------
 # Profile
 
-@app.route("/profile")
+@app.route("/api/profile")
 @login_required
 def profile():
     return current_user.to_json(), 200
