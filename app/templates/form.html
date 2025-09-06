@@ -239,7 +239,7 @@ select {
   <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
   <form class="my_modal-content my_animate" id="form">
     <div class="my_container">
-      <h1>{{ title }}</h1>
+      <h1 id="title">{{ title }}</h1>
       <hr>
       {% block form_content %} {% endblock %}
         <div class=" alert alert-danger" id="alert" style="display: none;">
@@ -304,6 +304,7 @@ form.addEventListener('submit',  async (event) => {
 {% block other_data %} {% endblock %}
 
     // Make a POST request to the server
+    try {
     {% block fetch %} 
     let result = await fetch("{{fetch_destination}}", {
         method: 'POST',
@@ -313,6 +314,7 @@ form.addEventListener('submit',  async (event) => {
         body: JSON.stringify(userAnswers)
     });
     {% endblock %}
+    result2 = result.clone()
     if (result.ok) {
       {% block sucess %}
         location.replace("{{ next_destination }}");
@@ -329,9 +331,15 @@ form.addEventListener('submit',  async (event) => {
               alertLink.innerHTML = "";
           }
         } catch(error){
-          alertText.innerHTML = 'Error: ' + error
+          console.log(error)
+          result2.text().then(r => alertText.innerHTML = r)
         }
     }
+  } catch(error) {
+    alertDiv.style.display = "block";
+    console.log(error)
+    alertText.innerHTML = `Une erreur s'est produite, veuillez reéssayes plus tard (${error})`
+  }
 });
 
 
