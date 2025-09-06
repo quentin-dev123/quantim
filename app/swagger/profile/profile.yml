@@ -1,0 +1,21 @@
+Endpoint to get your account info
+---
+tags:
+  - Friend
+description: Endpoint to fetch all of your useful (it will not send internally used info - for example relationships with other DB tables) account info (must be logged in)
+parameters:
+  - in: cookie
+    name: session
+    type: string
+    example: 328rg3b29urjewUBIBE#beu33ebibe3vyu3r38ru23oehbh323
+    required: false
+    description: An identification token to see if you are logged in
+responses:
+  200:
+    description: An object with your account info 
+    schema:
+      $ref: '#/definitions/User'
+  302:
+    description: You didn't provide a valid session cookie and so you are being redirected to the login page
+  500:
+    description: An error ocurred internally. This isn't planned and can have many causes

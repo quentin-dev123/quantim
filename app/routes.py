@@ -626,6 +626,7 @@ def profile_page():
 
 @app.route("/api/profile")
 @login_required
+@swag_from('swagger/profile/profile.yml')
 def profile():
     return current_user.to_json(), 200
 
