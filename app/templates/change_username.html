@@ -1,0 +1,31 @@
+{% extends 'form.html' %}
+
+{% set next_destination = "/profile" %} 
+
+
+{% block form_content %} 
+<label for="username"><b> Entrer votre username </b></label>
+<input type="text" placeholder="Username" name="username" autocomplete="username" required>
+<p>Mauvais compte ?<a href="/logout">Se déconnecter</a> </p>
+{% block other_content %} 
+<script>
+    fetch("/api/profile")
+    .then(res => res.json())
+    .then((res) => {
+        document.getElementById("title").innerHTML = `Modification d'username (actuellement ${res.username})`
+        console.log("hi")
+        });
+</script>
+{% endblock %}
+
+{% endblock %}
+{% block fetch %} 
+    let result = await fetch("/username", {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    {% endblock %}
+

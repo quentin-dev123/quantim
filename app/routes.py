@@ -629,6 +629,12 @@ def profile_page():
 def profile():
     return current_user.to_json(), 200
 
+
+@app.route("/change_username")
+@login_required
+def username_page():
+    return render_template("change_username.html", username=current_user.username), 200
+
 @app.route("/username", methods=["PUT"])
 @login_required
 @swag_from('swagger/profile/change_username.yml')
@@ -636,9 +642,11 @@ def change_username():
     data = json.loads(request.data)
     username = data.get("username")
     if username is not None:
-        current_user.username = username
-        db.session.commit()
-        return f"Username modified successfully to {current_user.username}", 200
+        if User.query.filter_by(username=username).first() is None:
+            current_user.username = username
+            db.session.commit()
+            return f"Username modified successfully to {current_user.username}", 200
+        return "Un compte existe déjà avec ce username", 403
     return "Missing or invalid data sent", 400
         
 @app.route("/change_password")
