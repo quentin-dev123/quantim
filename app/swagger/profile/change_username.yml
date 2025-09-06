@@ -32,5 +32,10 @@ responses:
     schema:
       type: string
       example: Missing or invalid data sent
+  403:
+    description: The username you chose is already taken, this will throw an error message in french
+    schema:
+      type: string
+      example: Un compte existe déjà avec ce username
   500:
     description: An error ocurred internally. This isn't planned and can have many causes.
