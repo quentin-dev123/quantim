@@ -757,8 +757,8 @@ def friend_back():
                         db.session.commit()
                         mail = Mail(
                             friend.email,
-                            "Requête d'amitié"
-                            f"L'utilisateur {friend.username} a accepté votre requête d'amitié" # CHANGER CECI !!!
+                            "Requête d'amitié",
+                            render_template("friend_accepted.html", friend=username, user=friend.username, base_url=current_app.config["BASE_URL"])
                         )
                         mail.send_mail()
                         return f"Sucessfully friended back {friend.username}, I declare you now BFF", 200
