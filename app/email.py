@@ -5,10 +5,11 @@ from flask import current_app
   
 
 class Mail:
-    def __init__(self, to, subject, body):
+    def __init__(self, to, subject, body, html=True):
         self.to = to
         self.subject = subject
         self.body = body
+        self.html = html
         self.email = current_app.config["EMAIL_ADRESS"]
         self.password = current_app.config["EMAIL_PASSWORD"]
         self.SMTP_SERVER = "smtp.gmail.com"

@@ -149,3 +149,5 @@ export FLASK_APP=quantim.py
 **Quantim** uses mail sending a lot for various purposes. For example : confirming an email adress with OTP method.
 
 This explains we need a correct setup to send emails. We use the Gmail SMTP server to do it. But you don't need to worry about that. All you need to do is log in to the Google account homepage of the adress you put in ```.env```. Go to Security > Two step Authentication. Turn it on and then go to App passwords. Create a new one and copy the password. Then paste it into the ```.env``` variable EMAIL_PASSWORD. That's all you need to do !
+
+Note: when using a development server, mail sending wont work as you expect and no image will show because (for security reasons), Google proxies the request via their server and their server probably can't access your localhost where the image is rendered

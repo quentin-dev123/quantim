@@ -568,7 +568,7 @@ def forgot_pw_mail():
         mail = Mail(
             email,
             "Mot de passe oublié",
-            html_content=render_template(
+            render_template(
                     "forgot_pw_mail.html", 
                     user=user, 
                     token=token.val, 
@@ -707,8 +707,8 @@ def add_friend():
         return jsonify({"message": "You're not allowed to become friends with that person because you already are"}), 403
     mail = Mail(
         friend.email,
-        "Requête d'amitié"
-        f"<a href='{current_app.config['BASE_URL']}/friend_back?id={current_user.id}'>clique</a>" # CHANGER CECI !!!
+        "Requête d'amitié",
+        render_template("friend_request.html", base_url=current_app.config['BASE_URL'], id=current_user.id, friend=friend.username, user=current_user.username)
     )
     mail.send_mail()
     friendship = Friendship(
