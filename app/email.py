@@ -30,6 +30,7 @@ class Mail:
         self.msg.attach(m)
 
     def server_connection(self):
+        r = None
         try:
             with smtplib.SMTP(self.SMTP_SERVER, self.SMTP_PORT) as server:
                 server.starttls()
