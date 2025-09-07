@@ -88,10 +88,10 @@ async function add_friend(){
         },
         body: JSON.stringify({"username": input.value})
     });
-    
     if (result.ok) {
+        alert("Requête d'amitié envoyé avec succès")
         global_friend_username = input.value
-        friend_username.innerHTML = input.value
+        friend_username.innerHTML = input.value // Error here
         open_close_add_friend()
         open_close_notification_friend()
         input.value = "";
