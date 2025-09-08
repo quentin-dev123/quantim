@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Page Profile</title>
+  <style>
+    /* ===== General Reset ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .profile-container {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .profile-header h2 {
+      font-weight: 600;
+      font-size: 1.6rem;
+      color: #ffffff;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 12px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: #bbbbbb;
+      font-size: 0.9rem;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #eeeeee;
+    }
+
+    .info-actions a {
+      background-color: #3a3aff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: #fff;
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+
+    .info-actions a:hover {
+      background-color: #5a5aff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <h2>Votre profile</h2>
+    </div>
+    <div class="profile-info">
+      <div class="info-row">
+        <div>
+          <div class="info-label">Username</div>
+          <div id="username" class="info-value">Loading...</div>
+        </div>
+        <div class="info-actions">
+          <a href="/change_username">Modifier</a>
+        </div>
+      </div>
+      <div class="info-row">
+        <div>
+          <div class="info-label">Adresse Email</div>
+          <div id="email" class="info-value">Loading...</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div>
+          <div class="info-label">Mot de passe</div>
+          <div id="password" class="info-value">••••••••</div>
+        </div>
+        <div class="info-actions">
+          <a href="/change_password">Modifier</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    // Example: GET /profile should return { username: "", email: "" }
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/api/profile');
+
+        if (!response.ok) throw new Error("Failed to fetch profile");
+
+        const data = await response.json();
+
+        // Bind API data to DOM
+        document.getElementById("username").textContent = data.username || "Unknown";
+        document.getElementById("email").textContent = data.email || "Unknown";
+        // Password field always stays hidden
+      } catch (err) {
+        console.error("Error loading profile:", err);
+        document.getElementById("username").textContent = "Erreur";
+        document.getElementById("email").textContent = "Erreur";
+      }
+    };
+
+    
+
+    // Load when page starts
+    window.addEventListener("DOMContentLoaded", fetchProfile);
+  </script>
+</body>
+</html>
