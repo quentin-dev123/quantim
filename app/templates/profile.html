@@ -5,7 +5,7 @@
 
 {% block form_content %} 
 <label for="username"><b> Votre username</b></label>
-<input type="text" id="username" editable=true required disabled value="Loading..."><i class="material-icons edit_icon" onclick="document.location='change_username'" title="Modifier">&#xe254;</i>
+<input type="text" id="username" required disabled value="Loading..."><i class="material-icons edit_icon" onclick="document.location='change_username'" title="Modifier">&#xe254;</i>
 <label for="email"><b> Votre adresse email </b></label>
 <input type="email" id="email" required disabled value="Loading...">
 <label for="email"><b> Votre mot de passe </b></label>
@@ -17,9 +17,11 @@
 {% endblock %}
 {% block script %}
 <script>
+const username = document.getElementById("username")
+const email = document.getElementById("email")
+
+
 const fetchProfile = async () => {
-    const username = document.getElementById("username")
-    const email = document.getElementById("email")
     try {
       const response = await fetch('/api/profile');
 
@@ -39,6 +41,25 @@ const fetchProfile = async () => {
   };
 
   
+const username_i = username.nextElementSibling
+function edit_username(state){
+  username_i.classList.toggle("hidden")
+  if (state == "edit"){
+    username.disabled = false
+    username.focus()
+  } else {
+    username.disabled = true
+    if (state == "save"){
+      
+    }
+  }
+
+}
+
+
+
+
+
 
   // Load when page starts
   window.addEventListener("DOMContentLoaded", fetchProfile);
