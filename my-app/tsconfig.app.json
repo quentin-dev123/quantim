@@ -22,7 +22,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+
+    "allowJs": true,
+    "noImplicitAny": false
+  
   },
   "include": ["src"]
 }
