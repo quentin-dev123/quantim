@@ -1,12 +1,17 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import {login} from "./redux/reducers/authSlice";
+import { useState} from "react";
 
 function Login() {
+  const [password, setPassword] = useState("")
+  const key = useSelector(state => state.auth.key)
   const dispatch = useDispatch()
   return <>
   <h1>Enter password</h1>
-  <input onChange={(e) => {dispatch(login(e.target.value))}}/>
+  <input onChange={(e) => setPassword(e.target.value)}/>
+  <button onClick={() => dispatch(login(password))}>Submit</button>
+  <p>{key}</p>
   </>;
 }
 
