@@ -172,6 +172,14 @@ function change_username(state){
 }
 
 async function save_username(){
+  if (username.value == previous_username){
+    username.disabled = true
+    successDiv.classList.remove('hidden')
+    edit_icon.classList.toggle("hidden")
+    check_icon.classList.toggle("hidden")
+    cross_icon.classList.toggle("hidden")
+
+  } else {
     const alertText = document.getElementById("alert_text");
     const alertLink = document.getElementById("alert_link");
 
@@ -213,6 +221,7 @@ async function save_username(){
     alertDiv.classList.remove('hidden')
     console.log(error)
     alertText.innerHTML = `Une erreur s'est produite, veuillez reéssayer plus tard (${error})`
+  }
   }
 }
 
