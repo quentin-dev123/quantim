@@ -26,6 +26,45 @@
   width: 100%;
   background-color: #3182d4;
 }
+
+
+
+/* Icons */
+.cross_icon {
+  position: absolute;
+  transform: translateX(-60px) translateY(20px);
+  cursor: pointer;
+  font-weight: bold;
+  color: #cc0000;
+}
+
+.cross_icon:hover {
+  color: #ff0000;
+}
+
+.check_icon {
+  position: absolute;
+  transform: translateX(-30px) translateY(20px);
+  cursor: pointer;
+  font-weight: bold;
+  color: #00cc00;
+}
+
+.check_icon:hover {
+  color: #00ff00;
+}
+
+
+
+
+
+
+.success_box {
+  color: rgb(21, 88, 28);
+  background-color: rgb(215, 248, 218);
+  border-color: rgb(174, 241, 181);
+}
+
 </style>
 </head>
 <body>
@@ -36,8 +75,8 @@
     <div class="my_container">
       <h1 id="title">Votre compte</h1>
       <hr>
-      <label for="username"><b> Votre username</b></label>
-      <input type="text" id="username" required disabled value="Loading..."><i class="material-icons edit_icon" onclick="document.location='change_username'" title="Modifier">&#xe254;</i>
+      <label for="username"><b> Votre identifiant</b></label>
+      <input type="text" id="username" required disabled value="Loading..."><i class="material-icons edit_icon" onclick="change_username('edit')" title="Modifier">&#xe254;</i><i class="material-icons check_icon hidden" onclick="change_username('save')" title="Modifier">check</i><i class="material-icons cross_icon hidden" onclick="change_username('cancel')" title="Annuler">clear</i>
       <label for="email"><b> Votre adresse email </b></label>
       <input type="email" id="email" required disabled value="Loading...">
       <label for="email"><b> Votre mot de passe </b></label>
@@ -46,16 +85,12 @@
       <label for="accept_notif">
         <input type="checkbox" name="accept_notif" id="accept_notif" style="margin-bottom:15px" checked> J'accepte de recevoir des emails
       </label>
-<div class=" alert alert-danger" id="alert" style="display: none;">
+          <div class="alert alert-danger hidden" id="alert">
             <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
           </div>
-	<div style="display:none">
-      <label>
-        <!--input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"--> Se souvenir de moi
-      </label>
-		<span class="psw"><a href="#">Mot de pass oublié ?</a></span>
-        
-        </div>
+          <div class="success_box alert alert-danger hidden" id="success">
+            <span>Identifiant changé avec succès !</span>
+          </div>
       <div class="my_clearfix">
         <button type="button" onclick="close_modal()" class="back_button">Retour</button>
       </div>
@@ -94,21 +129,94 @@ const fetchProfile = async () => {
     }
   };
 
-  
-const username_i = username.nextElementSibling
-function edit_username(state){
-  username_i.classList.toggle("hidden")
-  if (state == "edit"){
-    username.disabled = false
-    username.focus()
-  } else {
-    username.disabled = true
-    if (state == "save"){
-      
+
+
+
+username.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    save_username()
+  }
+});
+
+
+
+
+
+const edit_icon = username.nextElementSibling
+const check_icon = edit_icon.nextElementSibling
+const cross_icon = check_icon.nextElementSibling
+const alertDiv = document.getElementById("alert")
+const successDiv = document.getElementById("success")
+let previous_username
+
+function change_username(state){
+  alertDiv.classList.add('hidden')
+  successDiv.classList.add('hidden')
+  if (state == "save"){
+    save_username()
+  }
+  else {
+    edit_icon.classList.toggle("hidden")
+    check_icon.classList.toggle("hidden")
+    cross_icon.classList.toggle("hidden")
+    if (state == "edit"){
+      username.disabled = false
+      username.focus()
+      previous_username = username.value
+    } else if (state == "cancel"){
+      username.value = previous_username
+      username.disabled = true
     }
   }
 
 }
+
+async function save_username(){
+    const alertText = document.getElementById("alert_text");
+    const alertLink = document.getElementById("alert_link");
+
+    let userAnswers = {username: username.value}
+
+    // Make a POST request to the server
+    try {
+     let result = await fetch("/username", {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    result2 = result.clone()
+    if (result.ok) { 
+      username.disabled = true
+      successDiv.classList.remove('hidden')
+      edit_icon.classList.toggle("hidden")
+      check_icon.classList.toggle("hidden")
+      cross_icon.classList.toggle("hidden")
+    } else {
+        alertDiv.classList.remove('hidden')
+        try {
+          const response = await result.json();
+          alertText.innerHTML = response["message"];
+          if (response["link_display"]) {
+              alertLink.innerHTML = response["link_display"];
+              alertLink.href = response["link_href"];
+          } else {
+              alertLink.innerHTML = "";
+          }
+        } catch(error){
+          console.log(error)
+          result2.text().then(r => alertText.innerHTML = r)
+        }
+    }
+  } catch(error) {
+    alertDiv.classList.remove('hidden')
+    console.log(error)
+    alertText.innerHTML = `Une erreur s'est produite, veuillez reéssayer plus tard (${error})`
+  }
+}
+
+
 
 
   // Load when page starts

@@ -105,6 +105,7 @@ form.addEventListener('submit',  async (event) => {
         body: JSON.stringify(userAnswers)
     });
     {% endblock %}
+    console.log(userAnswers)
     result2 = result.clone()
     if (result.ok) {
       {% block sucess %}
