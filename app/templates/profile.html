@@ -65,12 +65,17 @@
   border-color: rgb(174, 241, 181);
 }
 
+
+#accept_notif {
+  
+}
+
 </style>
 </head>
 <body>
 
 <div id="id01" class="my_modal">
-  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <span onclick="close_modal()" class="my_close" title="Fermer">&times;</span>
   <form class="my_modal-content my_animate" id="form">
     <div class="my_container">
       <h1 id="title">Votre compte</h1>
@@ -82,8 +87,8 @@
       <label for="email"><b> Votre mot de passe </b></label>
       <input type="password" id="password" required disabled value="••••••••"><i class="material-icons edit_icon" onclick="document.location='change_password'" title="Modifier">&#xe254;</i>
 
-      <label for="accept_notif">
-        <input type="checkbox" name="accept_notif" id="accept_notif" style="margin-bottom:15px" checked> J'accepte de recevoir des emails
+      <label for="accept_notif" style="cursor:pointer;">
+        <input type="checkbox" name="accept_notif" id="accept_notif" style="margin-bottom:15px; cursor:pointer;" checked> J'accepte de recevoir des emails
       </label>
           <div class="alert alert-danger hidden" id="alert">
             <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
