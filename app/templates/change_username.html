@@ -5,14 +5,14 @@
 
 {% block form_content %} 
 <label for="username"><b> Entrer votre username </b></label>
-<input type="text" placeholder="Username" name="username" autocomplete="username" required>
+<input type="text" placeholder="Identifiant" name="username" autocomplete="username" required>
 <p>Mauvais compte ?<a href="/logout">Se déconnecter</a> </p>
 {% block other_content %} 
 <script>
     fetch("/api/profile")
     .then(res => res.json())
     .then((res) => {
-        document.getElementById("title").innerHTML = `Modification d'username (actuellement ${res.username})`
+        document.getElementById("title").innerHTML = `Modification d'identifiant (actuellement ${res.username})`
         console.log("hi")
         });
 </script>
