@@ -1,7 +1,22 @@
 import style from "../style/form.module.css"
-import useImportCSS from "../modules/useImportCSS";
+import { useImportCSS, useFetch} from "../modules/modules.js";
 
 export default function Form(props){
+  function submit_form(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const userAnswers = {};
+    for (let [key, value] of formData.entries()) {
+        userAnswers[key] = value;
+    }
+    console.log(userAnswers);
+    if (props.onSubmit) {
+        props.onSubmit(userAnswers);
+    }
+    useFetch(props.api_url, "POST", userAnswers); // Need to handle response and errors
+  }
+
   function close_modal () {
     history.back();
     }
@@ -12,7 +27,7 @@ export default function Form(props){
     return <> 
     <div id="id01" className={style.my_modal}>
   <span onClick={close_modal} className={style.my_close} title="my_close Modal">&times;</span>
-  <form className={`${style["my_modal-content"]} ${style.my_animate}`} id="form">
+  <form className={`${style["my_modal-content"]} ${style.my_animate}`} id="form" onSubmit={() => submit_form(event, props.api_url)}>
     <div className={style.my_container}>
       <h1 id="title">{props.title}</h1>
       <hr />
