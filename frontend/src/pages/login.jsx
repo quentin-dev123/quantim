@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import Form from "../components/form"
 import Password from "../components/Password"
-import { useEffect } from "react";
 
 export default function Login(){
     return <>
