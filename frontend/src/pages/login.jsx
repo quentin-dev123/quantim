@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function Login(){
     return <>
     <Form title="Login"> 
-        <label htmlFor="username"><b> Entrer votre identifiant </b></label>
+        <label htmlFor="username"><b> Entrer votre username </b></label>
         <input type="text" placeholder="Username" name="username" autoComplete="username" required />
         <label htmlFor="password"><b> Entrer votre mot de passe </b></label>
         <Password />
