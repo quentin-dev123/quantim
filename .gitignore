@@ -5,3 +5,5 @@ env.*.sh
 *.sqlite
 set_env.cmd
 daily.py
+package-lock.json
+.vscode/settings.json

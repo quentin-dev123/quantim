@@ -20,8 +20,8 @@ export default function Form(props){
         <div className="alert alert-danger" id="alert" style={{display: 'none'}}>
             <strong>Erreur! </strong> <span id="alert_text"></span> <a className="alert-link" id="alert_link"></a>
           </div>
-	<div style={{display: "none"}}>
-		<span className={style.psw}><a href="#">Mot de pass oublié ?</a></span>
+        <div className={style.hidden}>
+          <span className={style.psw}><a href="#">Mot de pass oublié ?</a></span>
         
         </div>
       <div className={style.my_clearfix}>

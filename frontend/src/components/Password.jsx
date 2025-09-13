@@ -1,4 +1,5 @@
 import { useState } from "react";
+import style from "../style/form.module.css"
 
 export default function Password(){
     const [showPassword, setShowPassword] = useState(false);
@@ -9,9 +10,8 @@ export default function Password(){
         name="password"
         autoComplete="current-password"
         required
-    />
-    <i
-        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"} view_icon`}
+    /><i
+        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"} ${style.view_icon}`}
         onClick={() => setShowPassword((v) => !v)}
     ></i>
     </>
