@@ -500,29 +500,32 @@ def validate_otp():
         return "Wrong OTP", 400
     return "OTP sent too late", 403
  
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        data = json.loads(request.data)
-        username = data.get('username')
-        try:
-            user = User.query.filter_by(
-                username=username).first()
-            if user.active:
-                if bcrypt.check_password_hash(user.password, data.get('password')):
-                    login_user(user)
-                    return jsonify({"message": "Logged in successfully"}), 200
-                raise AttributeError
-            response = {
-                "message": "Votre compte n'est pas activé.",
-                "link_href": f"/otp?ui={user.id}",
-                "link_display":"L'activer"
-            }
-            return jsonify(response), 400
-        except AttributeError:
-            response = {"message": "Le username ou le mot de passe est incorrect."}
-            return jsonify(response), 400
+@app.route("/login")
+def login_page():
     return render_template("login.html")
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = json.loads(request.data)
+    username = data.get('username')
+    try:
+        user = User.query.filter_by(
+            username=username).first()
+        if user.active:
+            if bcrypt.check_password_hash(user.password, data.get('password')):
+                login_user(user)
+                return jsonify({"message": "Logged in successfully"}), 200
+            raise AttributeError
+        response = {
+            "message": "Votre compte n'est pas activé.",
+            "link_href": f"/otp?ui={user.id}",
+            "link_display":"L'activer"
+        }
+        return jsonify(response), 400
+    except AttributeError:
+        response = {"message": "Le username ou le mot de passe est incorrect."}
+        return jsonify(response), 400
+
  
  
 @app.route("/logout")

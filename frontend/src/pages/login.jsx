@@ -4,7 +4,7 @@ import Password from "../components/Password"
 
 export default function Login(){
     return <>
-    <Form title="Login"> 
+    <Form title="Login" api_url="/api/login"> 
         <label htmlFor="username"><b> Entrer votre username </b></label>
         <input type="text" placeholder="Username" name="username" autoComplete="username" required />
         <label htmlFor="password"><b> Entrer votre mot de passe </b></label>

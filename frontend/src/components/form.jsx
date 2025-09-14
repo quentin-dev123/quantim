@@ -3,27 +3,40 @@ import { useFetch } from "../modules/modules.js";
 import { icons, bootstrap, tooltip } from "../modules/stylesheets.js";
 
 export default function Form(props){
-  function submit_form(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    const userAnswers = {};
-    for (let [key, value] of formData.entries()) {
-        userAnswers[key] = value;
-    }
-    console.log(userAnswers);
-    if (props.onSubmit) {
-        props.onSubmit(userAnswers);
-    }
-    useFetch(props.api_url, "POST", userAnswers); // Need to handle response and errors
-  }
+    useImportCSS("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css");
+    useImportCSS("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+    useImportCSS("https://fonts.googleapis.com/icon?family=Material+Icons");
+    useImportCSS("https://timothee123456.github.io/library/tooltip/style.css");
+    const [fetchParams, setFetchParams] = useState(false);
+    const [response, error] = useFetch(fetchParams || {});
 
-  function close_modal () {
-    history.back();
+    useEffect(() => {console.log(error.err ? error.msg : "success (for now)")}, [error])
+
+    const submit_form = (event) => {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const userAnswers = {};
+      for (let [key, value] of formData.entries()) {
+          userAnswers[key] = value;
+      }
+      if (props.onSubmit) {
+          props.onSubmit(userAnswers);
+      }
+      setFetchParams({
+        url: props.api_url,
+        method: "POST",
+        body: userAnswers,
+      }); // Need to handle response and errors
     }
   icons();
   bootstrap();
   tooltip();
+
+    function close_modal () {
+      history.back();
+    }
+
     return <> 
     <div id="id01" className={style.my_modal}>
   <span onClick={close_modal} className={style.my_close} title="my_close Modal">&times;</span>
