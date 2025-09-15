@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import "../style/home.page.css"
 import Base from "../components/base"
+import { useImportCSS } from "../modules/modules.js";
 
 export default function Home(){
+    useImportCSS("./home.page.css");
     return <>
     <Base header="Accueil">
         <h1>Bienvenue</h1>

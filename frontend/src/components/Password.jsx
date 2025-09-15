@@ -1,7 +1,8 @@
 import { useState } from "react";
-import style from "../style/form.module.css"
+import { useImportCSS } from "../modules/modules.js";
 
 export default function Password(){
+    useImportCSS("./form.module.css");
     const [showPassword, setShowPassword] = useState(false);
     return <>
     <input

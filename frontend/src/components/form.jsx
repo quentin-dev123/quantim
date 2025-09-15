@@ -1,12 +1,11 @@
-import style from "../style/form.module.css"
+import { useState, useEffect } from "react";
 import { useFetch } from "../modules/modules.js";
 import { icons, bootstrap, tooltip } from "../modules/stylesheets.js";
+import { useImportCSS } from "../modules/modules.js";
 
 export default function Form(props){
-    useImportCSS("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css");
-    useImportCSS("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
-    useImportCSS("https://fonts.googleapis.com/icon?family=Material+Icons");
-    useImportCSS("https://timothee123456.github.io/library/tooltip/style.css");
+    useImportCSS("./form.module.css");
+    icons(); bootstrap(); tooltip();
     const [fetchParams, setFetchParams] = useState(false);
     const [response, error] = useFetch(fetchParams || {});
 
@@ -29,9 +28,6 @@ export default function Form(props){
         body: userAnswers,
       }); // Need to handle response and errors
     }
-  icons();
-  bootstrap();
-  tooltip();
 
     function close_modal () {
       history.back();
