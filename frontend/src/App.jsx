@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Login from "./pages/login.jsx";
 import Home from "./pages/home.jsx";
+import Login from "./pages/login.jsx";
+import Register from "./pages/register.jsx";
 import NotFound from "./pages/404.jsx";
 
 
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for undefined paths */}
       </Routes>
     </BrowserRouter>

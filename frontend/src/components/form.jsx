@@ -1,10 +1,9 @@
+import style from "../style/form.module.css"
 import { useState, useEffect } from "react";
 import { useFetch } from "../modules/modules.js";
 import { icons, bootstrap, tooltip } from "../modules/stylesheets.js";
-import { useImportCSS } from "../modules/modules.js";
 
 export default function Form(props){
-    useImportCSS("./form.module.css");
     icons(); bootstrap(); tooltip();
     const [fetchParams, setFetchParams] = useState(false);
     const [response, error] = useFetch(fetchParams || {});

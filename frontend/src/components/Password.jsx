@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useImportCSS } from "../modules/modules.js";
+import style from "../style/form.module.css"
 
-export default function Password(){
-    useImportCSS("./form.module.css");
+function Password(){
     const [showPassword, setShowPassword] = useState(false);
     return <>
     <input
@@ -13,7 +12,29 @@ export default function Password(){
         required
     /><i
         className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"} ${style.view_icon}`}
+        title="Voir"
         onClick={() => setShowPassword((v) => !v)}
     ></i>
     </>
 }
+
+function NewPassword(){
+    const [showPassword, setShowPassword] = useState(false);
+    return <>
+    <input
+        type={showPassword ? "text" : "password"}
+        placeholder="Mot de passe"
+        name="password"
+        autoComplete="current-password"
+        pattern=".{4,}"
+        title="Doit contenir au moins 4 caractères ou plus"
+        required
+    /><i
+        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"} ${style.view_icon}`}
+        title="Voir"
+        onClick={() => setShowPassword((v) => !v)}
+    ></i>  
+    </>
+}
+
+export { Password, NewPassword }
