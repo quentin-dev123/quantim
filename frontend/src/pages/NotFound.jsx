@@ -1,8 +1,5 @@
 import { useImportCSS } from "../modules/modules.js";
 
-function startRedirect() {
-    window.location.href = "/home";
-}
 
 export default function NotFound() {
     useImportCSS("./404.css");
@@ -12,7 +9,7 @@ export default function NotFound() {
 
         <p><strong>Page not found :(</strong></p>
         <p>The requested page could not be found.</p>
-        <div onLoad={startRedirect()}> <h2>If you are not redirected shortly, please click <a href="/home">here</a></h2> </div>
+        <h2>To go back to the home page, click <a href="/">here</a></h2> 
         </div>
     </>;
 }

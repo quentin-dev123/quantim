@@ -3,34 +3,30 @@ import { useState, useEffect } from "react";
 const useFetch = ({url, json=true, method="GET", body=null}) => {
   const [data, setData] = useState(null);
     const [err, setErr] = useState({err: false, msg: ""});
-    var [response, setResponse] = useState(null);
+    const [clone, setClone] = useState(null);
 
-  useEffect(() => {
-    if (url) {
-      fetch(url, {
-        method: method,
-        headers: body ? {
-            'Content-Type': 'application/json'
-        } : {},
-        body: body ? JSON.stringify(body) : null
-    })
-      .then((res) => {
-        setResponse(res.clone())
-        if (res.ok) {
-          json ? res.json() : res.text();
-        } else {
-          throw new Error(res.text())
-        }
-      })
-      .then((data) => setData(data))
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        setErr({err: true, msg: err.message});
-        console.log(response.statusText)
-        response.text().then(res => console.log(res));
-      }
-    );
+const fetchAPI = async () => {
+  try{
+    const response = await fetch(url)
+    setClone(response.clone())
+  } catch (err) {
+    console.error(err)
+    return ["An error ocurred while fetching", true]
+  }
+
+  const clone2 = clone.clone()
+  try {
+  result = json ? await response.json() : await response.text();
+  } catch (err) {
+    const txt = await clone2.text()
+    console.error(err)
+    console.error(txt)
+    return [`An error ocurred while receiving data (${txt})`, true]
+  }
+  return ["success", false]
 }
+  useEffect(() => {
+    [r, err] = fetchAPI()
   }, [url]);
 
   return [data, err];
