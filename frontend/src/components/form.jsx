@@ -40,8 +40,8 @@ export default function Form(props){
       <h1 id="title">{props.title}</h1>
       <hr />
       {props.children}
-        <div className="alert alert-danger" id="alert" style={{display: 'none'}}>
-            <strong>Erreur! </strong> <span id="alert_text"></span> <a className="alert-link" id="alert_link"></a>
+        <div className="alert alert-danger" id="alert" style={{display: error.err ? "block" : "none"}} role="alert">
+            <strong>Erreur! </strong> <span id="alert_text">{error.msg}</span> <a className="alert-link" id="alert_link"></a>
           </div>
         <div className={style.hidden}>
           <span className={style.psw}><a href="#">Mot de pass oublié ?</a></span>

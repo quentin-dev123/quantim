@@ -19,14 +19,21 @@ const fetchAPI = async () => {
   result = json ? await response.json() : await response.text();
   } catch (err) {
     const txt = await clone2.text()
+    console.log(`An error ocurred while receiving data (${txt})`)
     console.error(err)
     console.error(txt)
-    return [`An error ocurred while receiving data (${txt})`, true]
+    return [txt, true]
   }
   return ["success", false]
 }
   useEffect(() => {
-    [r, err] = fetchAPI()
+    fetchAPI().then( ([r, err]) => {
+      if (err) {
+        setErr({err: true, msg: r})
+      } else {
+        setData(r)
+      }
+    })
   }, [url]);
 
   return [data, err];
