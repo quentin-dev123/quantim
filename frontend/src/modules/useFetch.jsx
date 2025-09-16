@@ -13,27 +13,30 @@ const fetchAPI = async () => {
     console.error(err)
     return ["An error ocurred while fetching", true]
   }
-
-  const clone2 = clone.clone()
+  
+  if (clone) {
+    const clone2 = clone.clone()
+    var txt = await clone2.text()
+  }  
   try {
-  result = json ? await response.json() : await response.text();
+  result = json ? await clone.json() : await clone.text();
   } catch (err) {
-    const txt = await clone2.text()
-    console.log(`An error ocurred while receiving data (${txt})`)
     console.error(err)
-    console.error(txt)
-    return [txt, true]
+    console.error(txt ? txt : "No parsable text received")
+    return [txt ? txt : "An error ocurred while receiving and parsing data", true]
   }
   return ["success", false]
 }
   useEffect(() => {
-    fetchAPI().then( ([r, err]) => {
+    if (url) {
+    fetchAPI().then(([r, err]) => {
       if (err) {
-        setErr({err: true, msg: r})
+        setErr({err:true, msg:r})
       } else {
         setData(r)
       }
     })
+  }
   }, [url]);
 
   return [data, err];
