@@ -7,7 +7,12 @@ export default function Form(props){
     icons(); bootstrap(); tooltip();
     const [[response, error], setResult] = useState([null, false]);
 
-    useEffect(() => {console.log(error ? response : "success (for now)")}, [error])
+    useEffect(() => {
+      if (response && !error) {
+        console.log(response);
+        props.onSuccess(response);
+      }
+    }, [response])
 
     const submit_form = (event) => {
       event.preventDefault();
@@ -39,10 +44,10 @@ export default function Form(props){
       <h1 id="title">{props.title}</h1>
       <hr />
       {props.children}
-        <div className="alert alert-danger" id="alert" style={{display: error.err ? "block" : "none"}} role="alert">
+        <div className="alert alert-danger" id="alert" style={{display: error ? "block" : "none"}} role="alert">
             <strong>Erreur! </strong> <span id="alert_text">
-              {error && response? 
-                typeof(response) == "string" ? response : response["message"] :
+              {error ? 
+                typeof(response) === "string" ? response : response["message"] :
                 ""
               }
               </span> <a className="alert-link" id="alert_link" 

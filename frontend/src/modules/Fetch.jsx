@@ -1,6 +1,4 @@
 async function Fetch ({url, json=true, method="GET", body=null}){
-console.log(body)
-
   try{
     var response = await fetch(url, {
       method: method,
@@ -22,10 +20,6 @@ console.log(body)
     } 
 
     if (clone) {
-      const clone2 = clone.clone()
-      var txt = await clone2.text()
-    }  
-    if (clone) {
       try {
         const clone2 = clone.clone()
         var txt = await clone2.text()
@@ -35,12 +29,15 @@ console.log(body)
       }
       try {
         var jsonR = await clone.json()
+        return [jsonR, true];
       } catch (err) {
         console.error(err)
         return [txt, true]
       }
-      return [jsonR, true];
-    }
+      
+    } 
+
+    return ["No valid response received from server", true]
 
 
   } catch (err) {

@@ -3,7 +3,7 @@ import { Input } from "../components/Inputs";
 
 export default function Login(){
     return <>
-    <Form title="Login" api_url="/api/login"> 
+    <Form title="Login" api_url="/api/login" onSuccess={() => location.replace("/")}> { /* Need to change to /agenda once it exists*/}
         <label htmlFor="username"><b> Entrer votre username </b></label>
         <Input type="username" />
         <label htmlFor="password"><b> Entrer votre mot de passe </b></label>
