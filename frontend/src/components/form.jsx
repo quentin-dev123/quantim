@@ -1,14 +1,13 @@
 import style from "../style/form.module.css"
 import { useState, useEffect } from "react";
-import { useFetch } from "../modules/modules.js";
+import { Fetch } from "../modules/modules.js";
 import { icons, bootstrap, tooltip } from "../modules/stylesheets.js";
 
 export default function Form(props){
     icons(); bootstrap(); tooltip();
-    const [fetchParams, setFetchParams] = useState(false);
-    const [response, error] = useFetch(fetchParams || {});
+    const [[response, error], setResult] = useState([null, false]);
 
-    useEffect(() => {console.log(error.err ? error.msg : "success (for now)")}, [error])
+    useEffect(() => {console.log(error ? response : "success (for now)")}, [error])
 
     const submit_form = (event) => {
       event.preventDefault();
@@ -21,11 +20,11 @@ export default function Form(props){
       if (props.onSubmit) {
           props.onSubmit(userAnswers);
       }
-      setFetchParams({
+      Fetch({
         url: props.api_url,
         method: "POST",
         body: userAnswers,
-      }); // Need to handle response and errors
+      }).then(res => setResult(res)); // Need to handle response and errors
     }
 
     function close_modal () {
@@ -41,7 +40,19 @@ export default function Form(props){
       <hr />
       {props.children}
         <div className="alert alert-danger" id="alert" style={{display: error.err ? "block" : "none"}} role="alert">
-            <strong>Erreur! </strong> <span id="alert_text">{error.msg}</span> <a className="alert-link" id="alert_link"></a>
+            <strong>Erreur! </strong> <span id="alert_text">
+              {error && response? 
+                typeof(response) == "string" ? response : response["message"] :
+                ""
+              }
+              </span> <a className="alert-link" id="alert_link" 
+              href={error && response? 
+                typeof(response) == "string" ? "" : response["link_href"] :
+                ""}>
+                  {error && response? 
+                typeof(response) == "string" ? "" : response["link_display"] :
+                ""}
+                  </a>
           </div>
         <div className={style.hidden}>
           <span className={style.psw}><a href="#">Mot de pass oublié ?</a></span>
