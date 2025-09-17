@@ -20,7 +20,7 @@ header h1 {
 main {
     background-color: #1d2a35;
     padding: 20px;
-    min-height: calc(100vh - 225px);
+    min-height: calc(100vh - 202px);
     text-align: center;
 }
 
