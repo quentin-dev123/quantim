@@ -1,3 +1,3 @@
-import useFetch from "./useFetch";
+import Fetch from "./Fetch";
 import useImportCSS from "./useImportCSS";
-export { useFetch, useImportCSS };
+export { Fetch, useImportCSS };
