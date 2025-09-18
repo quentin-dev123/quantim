@@ -9,13 +9,9 @@ function bootstrap() {
     useImportCSS("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css");
 }
 
-function tooltip() {
-    useImportCSS("https://timothee123456.github.io/library/tooltip/style.css");
-}
-
 function fonts() {
     useImportCSS("https://fonts.googleapis.com/css?family=Anaheim");
     useImportCSS("https://fonts.googleapis.com/css?family=Architects%20Daughter");
 }
 
-export { icons, bootstrap, tooltip, fonts };
+export { icons, bootstrap, fonts };

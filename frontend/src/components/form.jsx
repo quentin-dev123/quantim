@@ -1,10 +1,11 @@
 import style from "../style/form.module.css"
 import { useState, useEffect } from "react";
 import { Fetch } from "../modules/modules.js";
-import { icons, bootstrap, tooltip } from "../modules/stylesheets.js";
+import { icons, bootstrap } from "../modules/stylesheets.js";
+import "../modules/tooltip.js";
 
 export default function Form(props){
-    icons(); bootstrap(); tooltip();
+    icons(); bootstrap();
     const [[response, error], setResult] = useState([null, false]);
 
     useEffect(() => {

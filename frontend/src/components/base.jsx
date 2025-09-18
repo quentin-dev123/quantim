@@ -1,4 +1,5 @@
 import "../style/base.css";
+import "../style/tooltip.css";
 
 export default function Base(props){
     return <>

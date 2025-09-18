@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from "./pages/home.jsx";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
+import LoginPronote from "./pages/login_pronote.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/fetch_pronote" element={<LoginPronote />} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for undefined paths */}
       </Routes>
     </BrowserRouter>
