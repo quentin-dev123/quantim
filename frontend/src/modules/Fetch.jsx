@@ -1,6 +1,9 @@
 async function Fetch ({url, json=true, method="GET", body=null}){
   try{
-    var response = await fetch(url, {
+    const apiBaseUrl = import.meta.env.VITE_BACKEND_URL;
+    const apiUrl = url.startsWith('/api') ? apiBaseUrl+url: url;
+    console.log(apiUrl)
+    var response = await fetch(apiUrl, {
       method: method,
       body: body ? JSON.stringify(body) : null,
       headers: body ? {
