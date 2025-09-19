@@ -1,0 +1,11 @@
+name: Set env variables
+on:
+  push:
+    branches:
+      - react
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo 'VITE_BACKEND_URL = "https://quantim.pythonanywhere.com"' >> .env.production

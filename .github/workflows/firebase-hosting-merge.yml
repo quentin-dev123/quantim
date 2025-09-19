@@ -19,3 +19,4 @@ jobs:
           channelId: live
           projectId: quantim-hk
           entryPoint: frontend
+          
