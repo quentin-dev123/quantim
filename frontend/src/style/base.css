@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+}
+
+header {
+    background-image: url('https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    color: #fff;
+    font-size: 36px;
+    margin: 0;
+}
+
+main {
+    background-color: #1d2a35;
+    padding: 20px;
+    min-height: calc(100vh - 202px);
+    text-align: center;
+    h1, p {
+    color:white;
+    }
+}
+
+footer {
+    background-color: #171921;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+}
+
+.hide,
+.hidden  {
+display: none;
+}
+
+.white {
+    color: white;
+}
