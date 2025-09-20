@@ -71,7 +71,7 @@ export default function Form(props){
         <button type="button" onClick={close_modal} className={style.my_cancelbtn}>Annuler</button>
         <button type="submit" id="valider" className={style.my_signupbtn}>Valider</button>
       </div>
-      <LinearLoading />
+      {loading ? <LinearLoading /> : <></>}
     </div>
   </form>
 </div>
