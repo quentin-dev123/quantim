@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import { Fetch } from "../modules/modules.js";
 import { icons, bootstrap } from "../modules/stylesheets.js";
 import "../modules/tooltip.js";
+import LinearLoading from "./Loading.jsx";
 
 export default function Form(props){
     icons(); bootstrap();
     const [[response, error], setResult] = useState([null, false]);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
       if (response && !error) {
@@ -17,6 +19,7 @@ export default function Form(props){
 
     const submit_form = (event) => {
       event.preventDefault();
+      setLoading(true)
       const form = event.target;
       const formData = new FormData(form);
       const userAnswers = {};
@@ -30,7 +33,7 @@ export default function Form(props){
         url: props.api_url,
         method: "POST",
         body: userAnswers,
-      }).then(res => setResult(res)); // Need to handle response and errors
+      }).then(res => {setResult(res); setLoading(false)}); // Need to handle response and errors
     }
 
     function close_modal () {
@@ -68,6 +71,7 @@ export default function Form(props){
         <button type="button" onClick={close_modal} className={style.my_cancelbtn}>Annuler</button>
         <button type="submit" id="valider" className={style.my_signupbtn}>Valider</button>
       </div>
+      <LinearLoading />
     </div>
   </form>
 </div>
