@@ -1,24 +1,30 @@
 import { useState, useEffect } from "react";
-import Fetch from "./Fetch";
+import { Fetch, findInArray} from "./modules";
+
 
 export default function fectReminders () {
 // Need to add tag & subject fetch + treatment of asnwer
 
-    const [[r, err], setResponse] = useState([null, false])
+    const [[tags, tagErr], setTags] = useState([null, false])
+    const [[subjects, subjectErr], setSubjects] = useState([null, false])
+    const [[rems, remErr], setRems] = useState([null, false])
+    const [jointArr, setJointArr] = useState(null)
 
     useEffect(() => {
-        Fetch("/api/reminder").then(([r, err]) => setResponse([r, err]));
+        Fetch("/api/reminder").then(([r, err]) => jointArr += [r, err]);
+        Fetch("/api/tag").then(([r, err]) => jointArr += [r, err]);
+        Fetch("/api/subject").then(([r, err]) => jointArr += [r, err]);
     })
 
     useEffect(() => {
-        if (r) {
+        if (jointArr.length === 3) {
+            const err = findInArray(jointArr, 1, true);
             if (err) {
-                alert("An error ocurred, please try again later");
-                return [r, err];
+                return [err[0], err[1]]
             }
-            return [r, err]
+            
         }
-    }, [r])
+    }, [tags, subjects, rems, finalArr])
 
     return [r, err]
 }

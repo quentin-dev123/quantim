@@ -1,3 +1,4 @@
 import Fetch from "./Fetch";
 import useImportCSS from "./useImportCSS";
-export { Fetch, useImportCSS };
+import findInArray from "./findInArray";
+export { Fetch, useImportCSS, findInArray };
