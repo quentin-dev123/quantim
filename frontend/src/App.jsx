@@ -4,6 +4,7 @@ import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
 import LoginPronote from "./pages/login_pronote.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Agenda from './pages/agenda.jsx';
 
 
 function About() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/fetch_pronote" element={<LoginPronote />} />
+        <Route path="/agenda" element={<Agenda />} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for undefined paths */}
       </Routes>
     </BrowserRouter>
