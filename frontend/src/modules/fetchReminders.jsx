@@ -4,16 +4,13 @@ import { Fetch, findInArray} from "./modules";
 
 export default function fectReminders () {
 // Need to add tag & subject fetch + treatment of asnwer
-
-    const [[tags, tagErr], setTags] = useState([null, false])
-    const [[subjects, subjectErr], setSubjects] = useState([null, false])
-    const [[rems, remErr], setRems] = useState([null, false])
     const [jointArr, setJointArr] = useState(null)
 
     useEffect(() => {
-        Fetch("/api/reminder").then(([r, err]) => jointArr += [r, err]);
-        Fetch("/api/tag").then(([r, err]) => jointArr += [r, err]);
-        Fetch("/api/subject").then(([r, err]) => jointArr += [r, err]);
+        Promise.all([Fetch("/api/reminder"), Fetch("/api/tag"), Fetch("/api/subject")])
+        .then((res) => {
+            setJointArr(res);
+        })
     })
 
     useEffect(() => {
@@ -22,9 +19,23 @@ export default function fectReminders () {
             if (err) {
                 return [err[0], err[1]]
             }
-            
+            var subjects = {}
+            for (let i = 0; i < jointArr[0][0].length; i++) {
+                const rem = jointArr[0][0][i]
+                const tag = jointArr[1][0][i]
+                if (!subjects[rem.subjectId]) {
+                    subjects += findInArray(jointArr[2][0], id, rem.subjectId)
+                }
+                const subject = subjects[rem.subjectId] ? subjects[rem.subjectId] : findInArray(jointArr[2][0], id, rem.subjectId)
+                const finalRem = {
+                    date: rem.date,
+                    content: rem.content,
+                    id: rem.id,
+                    subjectName: 
+                }
+            }
         }
-    }, [tags, subjects, rems, finalArr])
+    }, [jointArr])
 
     return [r, err]
 }
