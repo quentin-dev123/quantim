@@ -616,7 +616,7 @@ def reset_pw():
 
 @login_manager.unauthorized_handler
 def unauthorized(): 
-    return redirect(url_for('login')) 
+    return redirect(url_for('login_page')) 
 
 
 #------------------------------------------------------

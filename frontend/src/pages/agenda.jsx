@@ -1,5 +1,6 @@
 import Base from "../components/base"
 import Reminder from "../components/Reminder";
+import Reminders from "../components/Reminders";
 
 export default function Agenda(){
     return <>
@@ -15,6 +16,7 @@ export default function Agenda(){
         subjectName="Test"
         content="I hope this works :)"
     />
+    <Reminders />
     </Base>
     </>;
 }
