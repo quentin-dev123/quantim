@@ -15,6 +15,7 @@ export default function Agenda(){
         })()}
         subjectName="Test"
         content="I hope this works :)"
+        id={0}
     />
     <Reminders />
     </Base>
