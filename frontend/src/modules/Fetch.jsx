@@ -9,6 +9,7 @@ async function Fetch ({url, json=true, method="GET", body=null}){
       headers: body ? {
             'Content-Type': 'application/json'
         } : {}, 
+      credentials: 'include'
     })
     var clone = response.clone()
     if (response.ok) {

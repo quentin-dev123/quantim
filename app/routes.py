@@ -14,6 +14,7 @@ from .email import Mail
 from sqlalchemy import func
 from uuid import uuid4
 from flasgger import swag_from
+from .login import loginUser
 
 from .models import Tag, Subject, Reminder, Pronote_homework, User, Otp, Pat, Token, Friendship, Mail_log
 
@@ -513,8 +514,8 @@ def login():
             username=username).first()
         if user.active:
             if bcrypt.check_password_hash(user.password, data.get('password')):
-                login_user(user)
-                return jsonify({"message": "Logged in successfully"}), 200
+                response = loginUser(user)
+                return response
             raise AttributeError
         response = {
             "message": "Votre compte n'est pas activé.",

@@ -1,0 +1,13 @@
+from flask_login import login_user
+from flask import make_response
+
+def loginUser(user):
+    try: 
+        login_user(user)
+        response = make_response("User logged in successfully", 200)
+        response.headers["Content-Type"] = "text/plain"
+        response.set_cookie(key = "authenticated", value = "true", samesite="None", secure=True)
+        return response
+    except Exception as e: 
+        print(e)
+        return "An error ocurred while configuring the user session", 500

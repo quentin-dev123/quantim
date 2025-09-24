@@ -33,6 +33,7 @@ export default function Form(props){
         url: props.api_url,
         method: "POST",
         body: userAnswers,
+        json: props.json ? props.json : false
       }).then(res => {setResult(res); setLoading(false)}); // Need to handle response and errors
     }
 
