@@ -1,10 +1,13 @@
+import styles from "../style/agenda.module.css"
 import Base from "../components/base"
 import Reminder from "../components/Reminder";
 import Reminders from "../components/Reminders";
+import { open_link } from "../modules/online.js";
 
 export default function Agenda(){
     return <>
-    <Base header="Agenda">
+    <Base header="Agenda Personnel">
+    <a className={styles.add_rem_button} onClick={() => open_link('/add_reminder')}>+</a>
     <Reminder 
         subjectColor="blue"
         tagColor="red"

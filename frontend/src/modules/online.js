@@ -1,20 +1,28 @@
 // Online vs offline functions
 var online_variable = true
+function isPageVisible() {
+  return document.visibilityState === 'visible';
+}
+    
 function went_online(){
     online_variable = true
-    alert("Vous êtes à nouveau en ligne")
+    if (isPageVisible()){
+      alert("Vous êtes à nouveau en ligne")
+    }
 }
 
 function went_offline(){
     online_variable = false
-    alert("Vous êtes hors ligne, certaines fonctionnalités ne fonctionneront plus")
+    if (isPageVisible()){
+      alert("Vous êtes hors ligne, certaines fonctionnalités ne fonctionneront plus")
+    }
 }
 
 function offline_alert(){
     alert("Cette fonctionnalité ne fonctionne pas hors ligne")
 }
 
-function online(){
+export function online(){
   if (online_variable){
     return true
   } else {
@@ -23,7 +31,7 @@ function online(){
   }
 }
 
-function open_link(link){
+export function open_link(link){
   if (online()){
     window.location.href = link
   }

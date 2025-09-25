@@ -474,7 +474,7 @@ function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exc
       if (i !== excludeIndex) { // Skip the excluded index
           const overlay = document.getElementById(`overlay${i}`);
           const remDiv = document.getElementById(`remDiv${i}`);
-	  const container = document.getElementById(`container${i}`);
+	        const container = document.getElementById(`container${i}`);
 	      
           overlay.classList.remove('active');
           remDiv.classList.remove('disable-content');

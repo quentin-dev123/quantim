@@ -1,6 +1,6 @@
-
 let timeoutId;
-function oc_top_bar_icons(id, event) {
+
+export function oc_top_bar_icons(id, event) {
     event.stopPropagation()
     const top_bar_icons = document.getElementById("top_bar_icons" + id)
     const expand = document.getElementById("expand" + id)
@@ -13,11 +13,12 @@ function oc_top_bar_icons(id, event) {
         }, 300);
     }
     else {
-        close_top_bar_icons(id)
+        close_top_bar_icons(id, event)
     }
 }
 
-function close_top_bar_icons(id) {
+export function close_top_bar_icons(id, event) {
+    event.stopPropagation()
     const top_bar_icons = document.getElementById("top_bar_icons" + id)
     const expand = document.getElementById("expand" + id)
     const outer_pin_icon = document.getElementById("outer_pin_icon" + id);

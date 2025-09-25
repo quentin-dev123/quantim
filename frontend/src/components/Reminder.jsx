@@ -1,16 +1,16 @@
 import styles from "../style/reminder.module.css"
 import adjustColorBrightness from "../modules/adjustColor.js";
-import { icons } from "../modules/stylesheets.js";
+import { icons, fonts } from "../modules/stylesheets.js";
+import { oc_top_bar_icons } from "../modules/reminder/top_bar_icons.js";
+import { remClick } from "../modules/reminder/remClick.js";
 
 export default function Reminder(props){
-    icons()
-
-
-
+    icons(); fonts();
     return (
     <div 
         className={styles.container} 
         id={`container${props.id}`}
+        onClick={event => remClick(props.id, event)}
     >
         <div 
             className={styles.reminder_container}
