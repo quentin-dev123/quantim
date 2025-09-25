@@ -4,6 +4,9 @@ import { icons } from "../modules/stylesheets.js";
 
 export default function Reminder(props){
     icons()
+
+
+
     return (
     <div 
         className={styles.container} 
@@ -43,18 +46,59 @@ export default function Reminder(props){
                 type="checkbox"
             >
             </input>
-            <div className="hidden">
-                <span
-                    className={`material-icons ${styles.icon} ${styles.outer_pin} hidden`}
-                    id={`outer_pin_icon${props.id}`}
-                >push_pin
-                </span>
-                <span 
-                    className={`fa-solid fa-paper-plane ${styles.icon} ${styles.link}`}
-                    id={`link_icon${props.id}`}
+            <span
+                className={`material-icons ${styles.icon} ${styles.outer_pin} ${styles.hidden}`}
+                id={`outer_pin_icon${props.id}`}
+            >push_pin
+            </span>
+            <div 
+                className={styles.top_bar_icons} 
+                id={`top_bar_icons${props.id}`} 
+                style={{height: "0px"}}
+            >
+                <div 
+                    className={styles.reminderdiv}
+                    id={`remdiv${props.id}`}
                 >
-                </span>
+                    <span 
+                        className={`material-icons ${styles.icon}`}
+                        id={`remspan${props.id}`} 
+                        style={{visibility: "hidden"}}
+                    >expand_less
+                    </span>
+                    <span 
+                        className={`material-icons ${styles.icon} ${styles.pin}`} 
+                        id={`pin_icon${props.id}`}
+                    >push_pin
+                    </span>
+                    <span 
+                        className={`fa-solid fa fa-paper-plane ${styles.icon} ${styles.link}`} 
+                        id={`link_icon${props.id}`}
+                    >
+                    </span>
+                </div>
             </div>
+            <span 
+                className={`material-icons ${styles.icon} ${styles.expand}`}
+                id={`expand${props.id}`}
+                onClick={event => oc_top_bar_icons(props.id, event)}
+            >expand_more
+            </span>
+        </div>
+        <div 
+            className={`${styles.overlay} ${styles.buttons_overlay}`} 
+            id={`overlay${props.id}`}
+        >
+            <button 
+                className={styles.edit}
+                id={`edit${props.id}`}
+            >Modifier
+            </button>
+            <button 
+                className={styles.del}
+                id={`del${props.id}`}
+            >Effacer
+            </button>
         </div>
     </div>
     );

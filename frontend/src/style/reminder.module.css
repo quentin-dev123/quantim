@@ -45,7 +45,7 @@ padding-left: 10px;
 font-family: "Architects Daughter", sans-serif;
 font-size: 23px;
 font-weight: bold;
-line-height: 0.1;
+line-height: 0;
 }
 
 .reminderinput { /* Mark as done checkbox */
@@ -267,4 +267,8 @@ transform: scale(1.05);
 .icon:hover {
 	color: #d1d1d1;
   translate: 0.5px 0.5px;
+}
+
+.hidden {
+  display: none;
 }

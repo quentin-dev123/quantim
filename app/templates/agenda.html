@@ -79,9 +79,6 @@
 
     document.getElementById("sort_icon-dropdown_content").style.height = header.offsetHeight
     document.getElementById("filter_dropdown_content").style.height = header.offsetHeight
-
-    var top_bar_icons_height = 0
-	
 	
 	function open_top_bar_icons(id, event) {
 		event.stopPropagation()
@@ -102,7 +99,7 @@
             outer_pin_icon.classList.remove('hidden');
           }
 	    }
-	   }
+    }
 
 	
     async function reminder_mark_as_done(reminder_id, container_id){
