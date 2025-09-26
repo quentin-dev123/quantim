@@ -16,8 +16,6 @@ db = SQLAlchemy()
 # Create Swagger
 swagger = Swagger()
 
-cors = CORS(supports_credentials=True)
-
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -26,6 +24,6 @@ def create_app(config_name):
     # Apply all modification in the DB Schema
     migrate = Migrate(app, db)
     swagger.init_app(app)
-    cors.init_app(app)
+    cors = CORS(app, supports_credentials=True, origins=[app.config["FRONTEND_URL"]])
     
     return app
