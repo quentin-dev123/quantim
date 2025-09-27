@@ -54,6 +54,14 @@
   color: #369c74;
 }
 
+.sidenav a.blue {
+  color: #2f3582;
+}
+
+.sidenav a.blue:hover {
+  color: #4f4aa6;
+}
+
 .sidenav .closebtn {
   position: absolute;
   top: 0;

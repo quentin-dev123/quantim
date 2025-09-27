@@ -6,7 +6,7 @@ import { open_link } from "../modules/online.js";
 
 export default function Agenda(){
     return <>
-    <Base header="Agenda Personnel" menuIcon={true}>
+    <Base header="Agenda Personnel" topIcons={true}>
     <a className={styles.add_rem_button} onClick={() => open_link('/add_reminder')}>+</a>
     <Reminder 
         subjectColor="blue"
