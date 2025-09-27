@@ -1,11 +1,15 @@
 import "../style/base.css";
 import "../style/tooltip.css";
+import "../modules/tooltip.jsx";
+import MenuIcon from "./menuIcon";
 
 export default function Base(props){
     return <>
         <header>
         <h1>{props.header}</h1>
-        {props.menuIcon}
+        {props.menuIcon && ( // Conditionally render the menuIcon
+            <MenuIcon />
+        )}
         </header>
         <main>
             {props.children}

@@ -2,7 +2,7 @@ import style from "../style/form.module.css"
 import { useState, useEffect } from "react";
 import { Fetch } from "../modules/modules.js";
 import { icons, bootstrap } from "../modules/stylesheets.js";
-import "../modules/tooltip.js";
+import Tooltip from "../modules/tooltip.jsx";
 import LinearLoading from "./Loading.jsx";
 
 export default function Form(props){

@@ -1,0 +1,132 @@
+/* Sidenav menu */
+    .menu_icon {
+    	font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        
+        position: absolute;
+        top: 30px;
+        left: 20px;
+    }
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  font-family: "Lato", sans-serif;
+  transition: 0.3s;
+	cursor: pointer;
+}
+
+.sidenav a:hover, .sidenav a.on {
+  color: #f1f1f1;
+}
+
+
+.sidenav a.red {
+  color: #ff0000;
+}
+
+.sidenav a.red:hover {
+  color: #ff6666;
+}
+
+.sidenav a.green {
+  color: #247b56;
+}
+
+.sidenav a.green:hover {
+  color: #369c74;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+
+
+.sidenav .amelioration {
+    margin: 4px 32px 8px 32px;
+    padding: 0; /* Remove padding */
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.sidenav .amelioration textarea {
+    padding: 5px;
+    margin: 0; /* Remove margin padding */
+    box-sizing: border-box;
+    resize: vertical;
+    width: 100%; /* Take full width */
+}
+
+.sidenav .amelioration label {
+    color: #818181;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.sidenav .amelioration label.on {
+    color: #f1f1f1;
+}
+.sidenav .amelioration label:hover {
+    color: #f1f1f1;
+}
+
+
+.sidenav .amelioration input {
+    cursor: pointer;
+}
+
+.sidenav .amelioration div {
+    margin: 0; /* Remove margin */
+    margin-bottom: 50px;
+}
+
+.sidenav .amelioration button{
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+    float: left;
+    width: 50%;
+}
+
+.sidenav .amelioration button:hover {
+    opacity:1;
+}
+
+.sidenav .amelioration button[type="button"]{
+    padding: 14px 20px;
+    background-color: #f44336;
+}
