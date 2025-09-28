@@ -619,6 +619,17 @@ def reset_pw():
 def unauthorized(): 
     return redirect(url_for('login_page')) 
 
+@app.route("/api/authenticated")
+def check_login_status():
+    c = request.cookies
+    print(f"""Cookies
+authenticated: {c.get("authenticated")}
+session: {c.get("session")}
+""")
+    s = current_user.is_authenticated
+    if s:
+        return "User is authenticated", 200
+    return "User is not authenticated", 200
 
 #------------------------------------------------------
 # Profile
@@ -996,5 +1007,4 @@ def create_pat(value):
     db.session.commit()
     click.echo(f"Added successfully a pat with a name of: {Pat.query.get(pat.id).name}")
     return "Added successfully"
-
 
