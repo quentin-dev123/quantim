@@ -6,6 +6,7 @@ import Register from "./pages/register.jsx";
 import LoginPronote from "./pages/login_pronote.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Agenda from './pages/agenda.jsx';
+import RequireAuth from './modules/loginMangement.jsx';
 
 
 function About() {
@@ -29,7 +30,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/fetch_pronote" element={<LoginPronote />} />
-        <Route path="/agenda" element={<Agenda />} />
+        <Route path="/agenda" element={<RequireAuth><Agenda /></RequireAuth>} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for undefined paths */}
       </Routes>
     </BrowserRouter>
