@@ -1,8 +1,8 @@
 import "../style/base.css";
 import "../style/tooltip.css";
 import "../modules/tooltip.jsx";
-import TopIcons from "./topIcons.jsx";
-import { Sidenav } from "./sidenav.jsx";
+import TopIcons from "./agenda_icons/topIcons.jsx";
+import { Sidenav } from "./agenda_icons/sidenav.jsx";
 
 export default function Base(props){
     return <>

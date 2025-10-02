@@ -1,6 +1,6 @@
-import styles from "../style/sidenav.module.css"
-import { online } from "../modules/online.js";
-import Tooltip from "../modules/tooltip.jsx";
+import styles from "../../style/sidenav.module.css"
+import { online } from "../../modules/online.js";
+import Tooltip from "../../modules/tooltip.jsx";
 
 function setNavWidth(width) {
     document.getElementById("mySidenav").style.width = width;
@@ -41,7 +41,7 @@ export function Sidenav() {
     return (
         <div id="mySidenav" className={styles.sidenav}>
             <a className={styles.closebtn} onClick={closeNav}>&times;</a>
-            <a href="/home">Accueil</a>
+            <a href="/">Accueil</a>
             <a href="/profile" className={styles.blue}>Votre profile</a>
             <a href="/logout">Se déconnecter</a>
             <a onClick={toggleAmelioration} id="amelioration_a">Proposer une amélioration</a>

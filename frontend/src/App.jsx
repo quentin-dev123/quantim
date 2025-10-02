@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import useImportCSS from './modules/useImportCSS.js';
 import Home from "./pages/home.jsx";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
@@ -16,6 +17,8 @@ function Contact() {
 }
 
 export default function App() {
+  useImportCSS("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+  useImportCSS("https://fonts.googleapis.com/icon?family=Material+Icons");
   return (
     <BrowserRouter>
       {/* Routes */}

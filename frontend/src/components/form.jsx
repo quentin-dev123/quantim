@@ -1,12 +1,12 @@
 import style from "../style/form.module.css"
 import { useState, useEffect } from "react";
 import { Fetch } from "../modules/modules.js";
-import { icons, bootstrap } from "../modules/stylesheets.js";
+import { bootstrap } from "../modules/stylesheets.js";
 import Tooltip from "../modules/tooltip.jsx";
 import LinearLoading from "./Loading.jsx";
 
 export default function Form(props){
-    icons(); bootstrap();
+    bootstrap();
     const [[response, error], setResult] = useState([null, false]);
     const [loading, setLoading] = useState(false)
 
