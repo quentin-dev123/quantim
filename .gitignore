@@ -8,3 +8,5 @@ daily.py
 package-lock.json
 .vscode/settings.json
 frontend/.env.developpment
+localhost+2.pem
+localhost+2-key.pem

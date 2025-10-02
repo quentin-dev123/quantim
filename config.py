@@ -21,6 +21,9 @@ class DevelopmentConfig(Config):
     BASE_URL = os.environ.get('BASE_URL')
     EMAIL_ADRESS = os.environ.get('EMAIL_ADRESS')
     FRONTEND_URL = os.environ.get('FRONTEND_URL')
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None'
+    PREFERRED_URL_SCHEME="https"
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv("TST_DATABASE_URL")
