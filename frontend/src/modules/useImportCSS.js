@@ -1,20 +1,23 @@
 import { useEffect } from 'react';
 
-function useImportCSS(href) {
+function useImportCSS(href, integrity = "", crossorigin = "", referrerpolicy = "") {
     try{
     useEffect(() => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    if (href.startsWith('./')){
-        href = href.replace('./', '/src/style/'); // Adjust path if it starts with ./
-    }
-    link.href = href; // external CSS file URL
-    document.head.appendChild(link);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      if (href.startsWith('./')){
+          href = href.replace('./', '/src/style/'); // Adjust path if it starts with ./
+      }
+      link.href = href; // external CSS file URL
+      link.integrity = integrity; // optional
+      link.crossOrigin = crossorigin; // optional
+      link.referrerPolicy = referrerpolicy; // optional
+      document.head.appendChild(link);
 
-    return () => {
-      document.head.removeChild(link); // cleanup when component unmounts
-    };
-  }, []);
+      return () => {
+        document.head.removeChild(link); // cleanup when component unmounts
+      };
+    }, []);
 
     return "link tag added successfully !";
     } catch(err) {

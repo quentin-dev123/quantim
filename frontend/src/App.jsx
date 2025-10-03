@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import "./style/hide.css";
 import useImportCSS from './modules/useImportCSS.js';
 import Home from "./pages/home.jsx";
 import Login from "./pages/login.jsx";
@@ -18,8 +19,13 @@ function Contact() {
 }
 
 export default function App() {
-  useImportCSS("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
   useImportCSS("https://fonts.googleapis.com/icon?family=Material+Icons");
+  useImportCSS(
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+    "sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==",
+    "anonymous",
+    "no-referrer"
+  );
   return (
     <BrowserRouter>
       {/* Routes */}

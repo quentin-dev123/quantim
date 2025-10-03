@@ -1,24 +1,25 @@
-import styles from "../../style/agenda_icons.module.css";
+import styles from "../../style/agenda_icons/sort_icon.module.css";
 import { online } from "../../modules/online.js";
 import Tooltip from "../../modules/tooltip.jsx";
 
-function open_dropdown_content() {
-    if (!online()) return;
-    const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
-    sort_dropdown_content.classList.toggle('hide');
+function oc_dropdown() {
+    const dropdown_content = document.getElementById('dropdown_content');
+    const dropdown_content_hidden = dropdown_content.classList.contains('hide');
+    if (!online() && dropdown_content_hidden) return;
+    dropdown_content.classList.toggle('hide');
 }
 
-function close_dropdown_content() {
-    const sort_dropdown_content = document.getElementById('sort_icon-dropdown_content');
-    sort_dropdown_content.classList.remove('hide');
+function close_dropdown() {
+    const dropdown_content = document.getElementById('dropdown_content');
+    dropdown_content.classList.add('hide');
 }
 
 function sort(type, event){
     event.stopPropagation();
     if (!online()) return;
-    const date = document.getElementById('sort_date_check')
-    const matière = document.getElementById('sort_matière_check')
-    const tag = document.getElementById('sort_tag_check')
+    const date = document.getElementById('date_check')
+    const matière = document.getElementById('matière_check')
+    const tag = document.getElementById('tag_check')
     switch (type) {
         case 'date':
             //fetchData('/sort/date');
@@ -46,40 +47,37 @@ export default function SortIcon() {
         <div>
             <Tooltip text="Menu">
                 <span 
-                    className={`material-icons ${styles.sort_icon}`}
+                    className={`material-icons ${styles.icon}`}
                     id="sort_icon" 
-                    onClick={open_dropdown_content}
+                    onClick={oc_dropdown}
                 >&#xe053;
                 </span>
             </Tooltip>
             <div 
-                className={` ${styles.sort_icon_dropdown_content} hide`}
-                id="sort_icon-dropdown_content"
+                className={`${styles.dropdown_content} hide`}
+                id="dropdown_content"
             >
                 <a 
                     onClick={(event) => sort('date', event)}
-                >Date 
-                    <i 
+                >Date <i 
                         className={`fa-regular ${styles.check}`}
-                        id="sort_date_check"
+                        id="date_check"
                     >&#xf058;
                     </i>
                 </a>
                 <a 
                     onClick={(event) => sort('matière', event)}
-                >Matière 
-                    <i 
+                >Matière <i 
                         className={`fa-regular ${styles.check} hide`}
-                        id="sort_matière_check"
+                        id="matière_check"
                     >&#xf058;
                     </i>
                 </a>
                 <a
                     onClick={(event) => sort('tag', event)}
-                >Tag
-                    <i
+                >Tag <i
                         className={`fa-regular ${styles.check} hide`} 
-                        id="sort_tag_check"
+                        id="tag_check"
                     >&#xf058;
                     </i>
                 </a>

@@ -35,11 +35,6 @@ footer {
     font-size: 14px;
 }
 
-.hide,
-.hidden  {
-display: none;
-}
-
 .white {
     color: white;
 }
