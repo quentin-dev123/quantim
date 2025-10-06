@@ -20,23 +20,21 @@ function sort(type, event){
     const date = document.getElementById('date_check')
     const matière = document.getElementById('matière_check')
     const tag = document.getElementById('tag_check')
+
+    date.classList.add('hide')
+    matière.classList.add('hide')
+    tag.classList.add('hide')
     switch (type) {
         case 'date':
             //fetchData('/sort/date');
             date.classList.remove('hide')
-            matière.classList.add('hide')
-            tag.classList.add('hide')
             break;
         case 'matière':
             //fetchData('/sort/subject_id');
-            date.classList.add('hide')
             matière.classList.remove('hide')
-            tag.classList.add('hide')
             break;
         case 'tag':
             //fetchData('/sort/tag_id');
-            date.classList.add('hide')
-            matière.classList.add('hide')
             tag.classList.remove('hide')
             break;
     }

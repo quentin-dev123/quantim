@@ -199,7 +199,7 @@ hr {
 
 
 	
-/* View & edit icon */
+/* View & edit icons */
 .view_icon {
   position: absolute;
   transform: translateX(-30px) translateY(25px);
@@ -212,6 +212,28 @@ hr {
   cursor: pointer;
 }
 
-.hidden {
-  display: none;
+
+/* Cross & check icons */
+.cross_icon {
+  position: absolute;
+  transform: translateX(-60px) translateY(20px);
+  cursor: pointer;
+  font-weight: bold;
+  color: #cc0000;
+}
+
+.cross_icon:hover {
+  color: #ff0000;
+}
+
+.check_icon {
+  position: absolute;
+  transform: translateX(-30px) translateY(20px);
+  cursor: pointer;
+  font-weight: bold;
+  color: #00cc00;
+}
+
+.check_icon:hover {
+  color: #00ff00;
 }

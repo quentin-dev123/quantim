@@ -64,10 +64,6 @@ export default function Form(props){
                 ""}
                   </a>
           </div>
-        <div className={style.hidden}>
-          <span className={style.psw}><a href="#">Mot de pass oublié ?</a></span>
-        
-        </div>
       <div className={style.my_clearfix}>
         <button type="button" onClick={close_modal} className={style.my_cancelbtn}>Annuler</button>
         <button type="submit" id="valider" className={style.my_signupbtn}>Valider</button>

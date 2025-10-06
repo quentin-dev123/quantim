@@ -57,7 +57,7 @@ export function Sidenav() {
                     </div>
                 </form>
             </div>
-            <a href="/fetch_from_pronote" className={styles.green}>Se connecter à Pronote</a>
+            <a href="/fetch_pronote" className={styles.green}>Se connecter à Pronote</a>
         </div>
     );
 }

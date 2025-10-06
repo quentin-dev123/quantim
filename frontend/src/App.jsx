@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import "./style/hide.css";
 import useImportCSS from './modules/useImportCSS.js';
+import RequireAuth from './modules/loginMangement.jsx';
 import Home from "./pages/home.jsx";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
 import LoginPronote from "./pages/login_pronote.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Agenda from './pages/agenda.jsx';
-import RequireAuth from './modules/loginMangement.jsx';
-
+import Profile from './pages/profile.jsx';
 
 function About() {
   return <h1>About Page</h1>;
@@ -37,6 +37,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/fetch_pronote" element={<LoginPronote />} />
         <Route path="/agenda" element={<RequireAuth><Agenda /></RequireAuth>} />
+        <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for undefined paths */}
       </Routes>
     </BrowserRouter>
